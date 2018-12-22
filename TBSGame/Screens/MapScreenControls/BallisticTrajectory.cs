@@ -10,45 +10,76 @@ namespace TBSGame.Screens.MapScreenControls
 {
     public class BallisticTrajectory
     {
-        private List<Point> sequence = new List<Point>();
-        public int Count => sequence.Count;
+        private List<Point> data;
 
-        public BallisticTrajectory(Engine engine, Point a, Point b)
+        public int Count { get; private set; }
+        public Point A { get; private set; }
+
+        public BallisticTrajectory(Map map, Engine engine, Point a, Point b)
         {
-            System.Drawing.PointF A = engine.GetPoint(a.X, a.Y);
-            System.Drawing.PointF B = engine.GetPoint(b.X, b.Y);
+            //reálná velikost čtverce
+            double size = engine.Size * 1.235;
+            double height = (engine.Size / 2.5) * 1.235;
 
-            int len = (int)Math.Pow(Math.Pow(A.X - B.X, 2) + Math.Pow(A.Y - B.Y, 2), 0.5);
-            int h = 50;
-            Point C = new Point((int)(A.X + B.X) / 2, (int)(A.Y + B.Y) / 2 + h);
+            A = a;
 
-            int ca_sx = (int)Math.Abs(C.X - A.X);
-            int ca_sy = (int)Math.Abs(C.Y - A.Y);
+            //posunutí ze startu na cíl
+            Vector3 s = new Vector3((float)((b.X - a.X) * size), (float)((b.Y - a.Y) * size), (float)((map.GetElevation(b.X, b.Y) - map.GetElevation(a.X, a.Y)) * height));
 
-            int bc_sx = (int)Math.Abs(B.X - C.X);
-            int bc_sy = (int)Math.Abs(B.Y - C.Y);
+            //úhly otočení
+            double alpha = Math.Atan2(0, 1) - Math.Atan2(s.Y, s.X); 
+            double gama = (Math.Atan2(0, 1) - Math.Atan2(s.Z, s.X)) % Math.PI; 
+            double beta = Math.PI / 5.2;
 
-            double coef_x1 = ca_sx / (len / 2);
-            double coef_y1 = ca_sy / h;
+            if (gama != 0)
+                gama = Math.PI - gama;
 
-            double coef_x2 = bc_sx / (len / 2);
-            double coef_y2 = bc_sy / h;
+            //vzdálenost startu k cíli
+            double distance = Math.Pow(Math.Pow(s.X, 2) + Math.Pow(s.Y, 2) + Math.Pow(s.Z, 2), 0.5);
 
-            for (int i = len / 2; i >= 0; i--)
+            Count = (int)distance;
+            data = new List<Point>(Count);
+
+            //vrchol paraboly
+            double vx = distance / 2;
+            double vy = distance / 4;
+
+            if (Math.Abs(a.X - b.X) <= 1 && Math.Abs(a.Y - b.Y) <= 1)
+                vy = 10;
+
+            //parametr
+            double p = Math.Pow(vx, 2) / (-2 * vy);
+
+            for (int t = -Count / 2; t <= Count / 2; t++)
             {
-                int px = (int)(A.X + i * coef_x1);
-                int py = (int)(A.Y + Math.Pow(i, 3) / 10 * coef_y1);
-                sequence.Add(new Point(px, py));
-            }
+                //parametrická rovnice paraboly
+                double px = t + vx;
+                double py = Math.Pow(t, 2) / (2 * p) + vy;
+                
+                //otočení paraboly do správne pozice
+                double x = cx(px, 0, py, Math.PI / 4 - alpha, beta, gama);
+                double y = cy(px, 0, py, Math.PI / 4 - alpha, beta, gama);
 
-            for (int i = len / 2; i >= 0; i--)
-            {
-                int px = (int)(C.X + i * coef_x2);
-                int py = (int)(C.Y - Math.Pow(i, 3) / 10 * coef_y2);
-                sequence.Add(new Point(px, py));
+                data.Add(new Point((int)x, (int)y));
             }
         }
 
-        public Point this[int index] => sequence[index];
+        public Point GetPoint(Engine engine, int index)
+        {
+            System.Drawing.PointF s = engine.GetCenter(A.X, A.Y);
+            int x = data[index].X;
+            int y = data[index].Y;
+            return new Point((int)(s.X + x), (int)(s.Y + y));
+        }
+
+        private double cxx(double a, double b, double c) => Math.Cos(c) * Math.Cos(a) - Math.Sin(c) * Math.Sin(a) * Math.Sin(b);
+        private double cxy(double a, double b, double c) => Math.Cos(c) * Math.Sin(a) * Math.Sin(b) + Math.Sin(c) * Math.Cos(a);
+        private double cyx(double a, double b, double c) => -Math.Cos(c) * Math.Sin(a) - Math.Sin(c) * Math.Cos(a) * Math.Sin(b);
+        private double cyy(double a, double b, double c) => Math.Cos(c) * Math.Cos(a) * Math.Sin(b) - Math.Sin(c) * Math.Sin(a);
+        private double czx(double a, double b, double c) => -Math.Sin(c) * Math.Cos(b);
+        private double czy(double a, double b, double c) => Math.Cos(c) * Math.Cos(b);
+
+        private double cx(double x, double y, double z, double a, double b, double c = 0) => x * cxx(a, b, c) + y * cyx(a, b, c) + z * czx(a, b, c);
+        private double cy(double x, double y, double z, double a, double b, double c = 0) => x * cxy(a, b, c) + y * cyy(a, b, c) + z * czy(a, b, c);
     }
 }

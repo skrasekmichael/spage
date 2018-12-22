@@ -70,7 +70,7 @@ namespace TBSGame.Screens.MapScreenControls
                         this.Unit.Direction = (byte)MoveUnit.GetDirection(X - enemy.X, Y - enemy.Y);
                         attack.Play();
 
-                        BallisticTrajectory = new BallisticTrajectoryControl(engine, new Point(X, Y), new Point(enemy.X, enemy.Y));
+                        BallisticTrajectory = new BallisticTrajectoryControl(map, engine, new Point(X, Y), new Point(enemy.X, enemy.Y));
                         BallisticTrajectory.Load(graphics, content, sprite, driver, font);
 
                         enemy.Unit.Health -= (ushort)(Unit.Attack - enemy.Unit.Armor);
@@ -97,7 +97,7 @@ namespace TBSGame.Screens.MapScreenControls
             this.map = map;
             this.engine = engine;
 
-            BallisticTrajectory?.Update(time);
+            BallisticTrajectory?.Update(engine, time);
 
             Rectangle get_unit_bounds(Rectangle bounds)
             {

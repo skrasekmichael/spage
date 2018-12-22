@@ -14,13 +14,14 @@ namespace TBSGame.Screens.MapScreenControls
         private BallisticTrajectory trajetory;
         private Texture2D arrow;
         private int index = 0;
-        private Point p;
+        private Point[] p;
 
         private TimeSpan start = TimeSpan.Zero;
 
-        public BallisticTrajectoryControl(Engine engine, Point a, Point b)
+        public BallisticTrajectoryControl(Map map, Engine engine, Point a, Point b)
         {
-            trajetory = new BallisticTrajectory(engine, a, b);
+            trajetory = new BallisticTrajectory(map, engine, a, b);
+            p = new Point[trajetory.Count];
         }
 
         protected override void load()
@@ -28,20 +29,23 @@ namespace TBSGame.Screens.MapScreenControls
             arrow = sprite.GetColorFill(Color.Red);
         }
 
-        public void Update(GameTime time)
+        public void Update(Engine engine, GameTime time)
         {
             if (index < trajetory.Count)
             {
-                p = trajetory[index];
-                index++;
+                for (int i = 0; i < trajetory.Count; i++)
+                    p[i] = trajetory.GetPoint(engine, i);
+                index = trajetory.Count;
             }
         }
 
         public void Draw()
         {
-            Vector2 point = parse(p.ToVector2());
-            sprite.Draw(arrow, new Rectangle((int)point.X - 2, (int)point.Y - 2, 4, 4), Color.White);
-            Console.WriteLine(p);
+            for (int i = 0; i < trajetory.Count; i++)
+            {
+                Vector2 point = parse(p[i].ToVector2());
+                sprite.Draw(arrow, new Rectangle((int)point.X - 1, (int)point.Y - 1, 2, 2), Color.White);
+            }
         }
     }
 }
