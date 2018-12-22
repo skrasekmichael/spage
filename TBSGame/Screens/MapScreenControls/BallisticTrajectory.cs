@@ -17,25 +17,29 @@ namespace TBSGame.Screens.MapScreenControls
 
         public BallisticTrajectory(Map map, Engine engine, Point a, Point b)
         {
+            A = a;
+
             //reálná velikost čtverce
             double size = engine.Size * 1.235;
             double height = (engine.Size / 2.5) * 1.235;
 
-            A = a;
+            double elev1 = map.GetTerrain(a.X, a.Y).Elevation;
+            double elev2 = map.GetTerrain(b.X, b.Y).Elevation;
 
             //posunutí ze startu na cíl
-            Vector3 s = new Vector3((float)((b.X - a.X) * size), (float)((b.Y - a.Y) * size), (float)((map.GetElevation(b.X, b.Y) - map.GetElevation(a.X, a.Y)) * height));
-
-            //úhly otočení
-            double alpha = Math.Atan2(0, 1) - Math.Atan2(s.Y, s.X); 
-            double gama = (Math.Atan2(0, 1) - Math.Atan2(s.Z, s.X)) % Math.PI; 
-            double beta = Math.PI / 5.2;
-
-            if (gama != 0)
-                gama = Math.PI - gama;
+            Vector3 s = new Vector3((float)((b.X - a.X) * size), (float)((b.Y - a.Y) * size), (float)((elev2 - elev1) * height));
 
             //vzdálenost startu k cíli
             double distance = Math.Pow(Math.Pow(s.X, 2) + Math.Pow(s.Y, 2) + Math.Pow(s.Z, 2), 0.5);
+            double d = Math.Pow(Math.Pow(s.X, 2) + Math.Pow(s.Y, 2), 0.5);
+
+            //úhly otočení
+            double alpha = Math.Atan2(0, 1) - Math.Atan2(s.Y, s.X); 
+            double gama = (Math.Atan2(0, 1) - Math.Atan2(s.Z, d)); 
+            double beta = Math.PI / 5.2;
+
+            if (gama % Math.PI == 0)
+                gama = 0;
 
             Count = (int)distance;
             data = new List<Point>(Count);
@@ -55,10 +59,14 @@ namespace TBSGame.Screens.MapScreenControls
                 //parametrická rovnice paraboly
                 double px = t + vx;
                 double py = Math.Pow(t, 2) / (2 * p) + vy;
-                
+
+                //otočení podle osy z
+                double rx = px * Math.Cos(gama) + py * Math.Sin(gama);
+                double ry = py * Math.Cos(gama) - px * Math.Sin(gama);
+
                 //otočení paraboly do správne pozice
-                double x = cx(px, 0, py, Math.PI / 4 - alpha, beta, gama);
-                double y = cy(px, 0, py, Math.PI / 4 - alpha, beta, gama);
+                double x = cx(rx, 0, ry, Math.PI / 4 - alpha, beta);
+                double y = cy(rx, 0, ry, Math.PI / 4 - alpha, beta);
 
                 data.Add(new Point((int)x, (int)y));
             }
