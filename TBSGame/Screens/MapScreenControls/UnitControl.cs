@@ -20,6 +20,7 @@ namespace TBSGame.Screens.MapScreenControls
         private Texture2D tx;
         private int type = 0, index = -1, lindex = -1;
         private double size;
+        private bool start_shooting = false;
         private Map map;
         private Engine engine;
         private TimeSpan start_attacking = TimeSpan.Zero;
@@ -70,8 +71,11 @@ namespace TBSGame.Screens.MapScreenControls
                         this.Unit.Direction = (byte)MoveUnit.GetDirection(X - enemy.X, Y - enemy.Y);
                         attack.Play();
 
-                        BallisticTrajectory = new BallisticTrajectoryControl(map, engine, new Point(X, Y), new Point(enemy.X, enemy.Y));
-                        BallisticTrajectory.Load(graphics, content, sprite, driver, font);
+                        if (this.Unit.IsRanged)
+                        {
+                            BallisticTrajectory = new BallisticTrajectoryControl(map, engine, new Point(X, Y), new Point(enemy.X, enemy.Y));
+                            BallisticTrajectory.Load(graphics, content, sprite, driver, font);
+                        }
 
                         enemy.Unit.Health -= (ushort)(Unit.Attack - enemy.Unit.Armor);
                         if (enemy.Unit.Health <= 0)
@@ -97,7 +101,15 @@ namespace TBSGame.Screens.MapScreenControls
             this.map = map;
             this.engine = engine;
 
-            BallisticTrajectory?.Update(engine, time);
+            if (start_shooting)
+            {
+                bool? done = BallisticTrajectory?.Update(engine, time);
+                if (done != null && done.Value)
+                {
+                    this.BallisticTrajectory = null;
+                    start_shooting = false;
+                }
+            }
 
             Rectangle get_unit_bounds(Rectangle bounds)
             {
@@ -129,7 +141,11 @@ namespace TBSGame.Screens.MapScreenControls
                         clip();
                     }
                     else
+                    {
+                        if (type == 3)
+                            start_shooting = true;
                         start_attacking = time.TotalGameTime;
+                    }
                 }
             }
         }

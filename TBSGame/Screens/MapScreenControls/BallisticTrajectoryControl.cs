@@ -13,15 +13,15 @@ namespace TBSGame.Screens.MapScreenControls
     {
         private BallisticTrajectory trajetory;
         private Texture2D arrow;
-        private int index = 0;
-        private Point[] p;
-
+        private int index = 0, next = 10;
+        private Point ap, op;
+        private float rotation = 0;
         private TimeSpan start = TimeSpan.Zero;
 
         public BallisticTrajectoryControl(Map map, Engine engine, Point a, Point b)
         {
             trajetory = new BallisticTrajectory(map, engine, a, b);
-            p = new Point[trajetory.Count];
+            index = next;
         }
 
         protected override void load()
@@ -29,23 +29,41 @@ namespace TBSGame.Screens.MapScreenControls
             arrow = sprite.GetColorFill(Color.Red);
         }
 
-        public void Update(Engine engine, GameTime time)
+        public bool Update(Engine engine, GameTime time)
         {
             if (index < trajetory.Count)
             {
-                for (int i = 0; i < trajetory.Count; i++)
-                    p[i] = trajetory.GetPoint(engine, i);
-                index = trajetory.Count;
+                if (start == TimeSpan.Zero)
+                    start = time.TotalGameTime;
+
+                if (time.TotalGameTime - start >= TimeSpan.FromMilliseconds(10))
+                {
+                    Point p1 = trajetory.GetPoint(engine, index);
+                    Point p2 = trajetory.GetPoint(engine, index - next);
+                    index += next;
+
+                    ap = parse(p1.ToVector2()).ToPoint();
+                    op = parse(p2.ToVector2()).ToPoint();
+                    rotation = (float)Math.Atan2((ap.Y - op.Y), (ap.X - op.X));
+
+                    start = time.TotalGameTime;
+                }
+                return false;
             }
+            else
+                return true;
         }
 
         public void Draw()
         {
-            for (int i = 0; i < trajetory.Count; i++)
-            {
-                Vector2 point = parse(p[i].ToVector2());
-                sprite.Draw(arrow, new Rectangle((int)point.X - 1, (int)point.Y - 1, 2, 2), Color.White);
-            }
+            #pragma warning disable CS0618 // Typ nebo člen je zastaralý.
+            sprite.Draw(
+                texture: arrow,
+                destinationRectangle: new Rectangle(ap, new Point(10, 2)), 
+                rotation: rotation, 
+                color: Color.White
+                );
+            #pragma warning restore CS0618 // Typ nebo člen je zastaralý.
         }
     }
 }
