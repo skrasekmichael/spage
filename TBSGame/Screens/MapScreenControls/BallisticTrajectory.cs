@@ -11,20 +11,22 @@ namespace TBSGame.Screens.MapScreenControls
     public class BallisticTrajectory
     {
         private List<Point> data;
+        private double h1 = 0;
 
         public int Count { get; private set; }
         public Point A { get; private set; }
 
-        public BallisticTrajectory(Map map, Engine engine, Point a, Point b)
+        public BallisticTrajectory(Map map, Engine engine, Point a, Point b, double c1, double c2)
         {
             A = a;
+            h1 = c1;
 
             //reálná velikost čtverce
             double size = engine.Size * 1.235;
             double height = (engine.Size / 2.5) * 1.235;
 
-            double elev1 = map.GetTerrain(a.X, a.Y).Elevation;
-            double elev2 = map.GetTerrain(b.X, b.Y).Elevation;
+            double elev1 = map.GetTerrain(a.X, a.Y).Elevation + c1;
+            double elev2 = map.GetTerrain(b.X, b.Y).Elevation + c2;
 
             //posunutí ze startu na cíl
             Vector3 s = new Vector3((float)((b.X - a.X) * size), (float)((b.Y - a.Y) * size), (float)((elev2 - elev1) * height));
@@ -77,7 +79,7 @@ namespace TBSGame.Screens.MapScreenControls
             System.Drawing.PointF s = engine.GetCenter(A.X, A.Y);
             int x = data[index].X;
             int y = data[index].Y;
-            return new Point((int)(s.X + x), (int)(s.Y + y));
+            return new Point((int)(s.X + x), (int)(s.Y + y + h1));
         }
 
         private double cxx(double a, double b, double c) => Math.Cos(c) * Math.Cos(a) - Math.Sin(c) * Math.Sin(a) * Math.Sin(b);

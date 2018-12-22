@@ -16,6 +16,8 @@ namespace TBSGame.Screens.MapScreenControls
     {
         public Unit Unit { get; set; }
         public int BaseIndex { get; set; } = -1;
+        public BallisticTrajectoryControl BallisticTrajectory { get; set; } = null;
+
         private Rectangle bounds;
         private Texture2D tx;
         private int type = 0, index = -1, lindex = -1, max = 0;
@@ -26,8 +28,6 @@ namespace TBSGame.Screens.MapScreenControls
         private TimeSpan start_attacking = TimeSpan.Zero;
         private GameTime time;
         private List<SoundEffect> attack = new List<SoundEffect>();
-
-        public BallisticTrajectoryControl BallisticTrajectory { get; set; } = null;
 
         public UnitControl(Unit unit, int x, int y)
         {
@@ -50,12 +50,12 @@ namespace TBSGame.Screens.MapScreenControls
                 driver.LoadTexture("pointer", pointer);
             }
 
-            string path = "normal";
             max = 5;
+            string path = "normal";
             if (Unit.IsRanged)
             {
-                path = "archer";
                 max = 3;
+                path = "archer";
             }
 
             for (int i = 0; i < max; i++)
@@ -82,7 +82,7 @@ namespace TBSGame.Screens.MapScreenControls
 
                         if (this.Unit.IsRanged)
                         {
-                            BallisticTrajectory = new BallisticTrajectoryControl(map, engine, new Point(X, Y), new Point(enemy.X, enemy.Y));
+                            BallisticTrajectory = new BallisticTrajectoryControl(map, engine, new Point(X, Y), new Point(enemy.X, enemy.Y), this.bounds.Height / 3, enemy.bounds.Height / 3);
                             BallisticTrajectory.Load(graphics, content, sprite, driver, font);
                         }
 

@@ -18,15 +18,15 @@ namespace TBSGame.Screens.MapScreenControls
         private float rotation = 0;
         private TimeSpan start = TimeSpan.Zero;
 
-        public BallisticTrajectoryControl(Map map, Engine engine, Point a, Point b)
+        public BallisticTrajectoryControl(Map map, Engine engine, Point a, Point b, double c1, double c2)
         {
-            trajetory = new BallisticTrajectory(map, engine, a, b);
+            trajetory = new BallisticTrajectory(map, engine, a, b, c1, c2);
             index = next;
         }
 
         protected override void load()
         {
-            arrow = sprite.GetColorFill(Color.Red);
+            arrow = sprite.GetColorFill(Color.Silver);
         }
 
         public bool Update(Engine engine, GameTime time)
