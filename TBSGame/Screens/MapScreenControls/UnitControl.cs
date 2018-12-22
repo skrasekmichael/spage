@@ -18,14 +18,14 @@ namespace TBSGame.Screens.MapScreenControls
         public int BaseIndex { get; set; } = -1;
         private Rectangle bounds;
         private Texture2D tx;
-        private int type = 0, index = -1, lindex = -1;
+        private int type = 0, index = -1, lindex = -1, max = 0;
         private double size;
         private bool start_shooting = false;
         private Map map;
         private Engine engine;
         private TimeSpan start_attacking = TimeSpan.Zero;
         private GameTime time;
-        private SoundEffect attack;
+        private List<SoundEffect> attack = new List<SoundEffect>();
 
         public BallisticTrajectoryControl BallisticTrajectory { get; set; } = null;
 
@@ -50,7 +50,17 @@ namespace TBSGame.Screens.MapScreenControls
                 driver.LoadTexture("pointer", pointer);
             }
 
-            attack = content.Load<SoundEffect>("sounds/fight");
+            string path = "normal";
+            max = 5;
+            if (Unit.IsRanged)
+            {
+                path = "archer";
+                max = 3;
+            }
+
+            for (int i = 0; i < max; i++)
+                attack.Add(content.Load<SoundEffect>($"sounds/attack/{path}/{i}"));
+
             size = driver[Unit.Texture].Height / 5;
             tx = new Texture2D(graphics.GraphicsDevice, (int)size, (int)size);
 
@@ -69,7 +79,6 @@ namespace TBSGame.Screens.MapScreenControls
                     {
                         start_attacking = time.TotalGameTime;
                         this.Unit.Direction = (byte)MoveUnit.GetDirection(X - enemy.X, Y - enemy.Y);
-                        attack.Play();
 
                         if (this.Unit.IsRanged)
                         {
@@ -131,7 +140,7 @@ namespace TBSGame.Screens.MapScreenControls
             if (start_attacking != TimeSpan.Zero)
             {
                 clip();
-                if (time.TotalGameTime - start_attacking > TimeSpan.FromMilliseconds(150))
+                if (time.TotalGameTime - start_attacking > TimeSpan.FromMilliseconds(100))
                 {
                     type++;
                     if (type > 5)
@@ -143,7 +152,11 @@ namespace TBSGame.Screens.MapScreenControls
                     else
                     {
                         if (type == 3)
+                        {
                             start_shooting = true;
+                            Random random = new Random(DateTime.Now.Millisecond);
+                            attack[random.Next(max)].Play();
+                        }
                         start_attacking = time.TotalGameTime;
                     }
                 }
