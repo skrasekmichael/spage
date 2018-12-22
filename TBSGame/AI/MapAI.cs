@@ -121,7 +121,7 @@ namespace TBSGame.AI
                     break;
                 case AIStrategy.Rush: //útok
                     break;
-                case AIStrategy.Static: //no move, only attack
+                case AIStrategy.Static: //jednotka se nehýbe
                     break;
                 case AIStrategy.Scout: //hledání nepřítele
                     break;
@@ -134,14 +134,14 @@ namespace TBSGame.AI
 
             List<Point> targets = new List<Point>();
 
-            //pozice, ze kterých na ně dostřelí jednotka
+            //pozice, na kterých dostřelí na jednotku
             HashSet<System.Drawing.Point> in_range = new HashSet<System.Drawing.Point>();
             foreach (KeyValuePair<Point, Unit> kvp in enemies)
             {
-                foreach (System.Drawing.Point p in engine.GetAttackRange(kvp.Key.X, kvp.Key.Y, kvp.Value, unit.Range))
+                foreach (System.Drawing.Point p in engine.GetAttackRange(point.X, point.Y, unit, unit.Range))
                 {
                     in_range.Add(p);
-                    if (p.X == point.X && p.Y == point.Y)
+                    if (p.X == kvp.Key.X && p.Y == kvp.Key.Y)
                     {
                         targets.Add(kvp.Key);
                         phase = 2;
