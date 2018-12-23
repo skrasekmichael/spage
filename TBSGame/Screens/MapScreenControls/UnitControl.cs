@@ -29,12 +29,15 @@ namespace TBSGame.Screens.MapScreenControls
         private GameTime time;
         private List<SoundEffect> attack = new List<SoundEffect>();
         private UnitControl enemy = null;
+        private UnitInfoControl info;
 
         public UnitControl(Unit unit, int x, int y)
         {
             this.Unit = unit;
             this.X = x;
             this.Y = y;
+
+            info = new UnitInfoControl(unit, x, y);
         }
 
         protected override void load()
@@ -43,6 +46,8 @@ namespace TBSGame.Screens.MapScreenControls
             {
                 driver.LoadUnit(Unit.Texture);
             }
+
+            info.Load(graphics, content, sprite, driver, font);
 
             if (driver["pointer"] == null)
             {
@@ -81,13 +86,13 @@ namespace TBSGame.Screens.MapScreenControls
                         start_attacking = time.TotalGameTime;
                         this.Unit.Direction = (byte)MoveUnit.GetDirection(X - enemy.X, Y - enemy.Y);
 
+                        this.enemy = enemy;
+
                         if (this.Unit.IsRanged)
                         {
                             BallisticTrajectory = new BallisticTrajectoryControl(map, engine, new Point(X, Y), new Point(enemy.X, enemy.Y), this.bounds.Height / 3, enemy.bounds.Height / 3);
                             BallisticTrajectory.Load(graphics, content, sprite, driver, font);
                         }
-
-                        this.enemy = enemy;
 
                         Unit.Stamina -= Unit.StaminaPerAttack;
 
@@ -105,9 +110,11 @@ namespace TBSGame.Screens.MapScreenControls
 
         private void _attack()
         {
-            enemy.Unit.Health -= (ushort)(Unit.Attack - enemy.Unit.Armor);
-            if (enemy.Unit.Health <= 0)
+            int hp = enemy.Unit.Health - (Unit.Attack - enemy.Unit.Armor);
+            if (hp <= 0)
                 map.SetUnit(enemy.X, enemy.Y, null);
+            else
+                enemy.Unit.Health = (ushort)hp;
             enemy = null;
         }
 
@@ -117,14 +124,23 @@ namespace TBSGame.Screens.MapScreenControls
             this.map = map;
             this.engine = engine;
 
+            info.Update(engine);
+
             if (start_shooting)
             {
-                bool? done = BallisticTrajectory?.Update(engine, time);
-                if (done != null && done.Value)
+                if (BallisticTrajectory == null)
                 {
-                    _attack();
-                    this.BallisticTrajectory = null;
                     start_shooting = false;
+                    _attack();
+                }
+                else
+                {
+                    if (BallisticTrajectory.Update(engine, time))
+                    {
+                        _attack();
+                        this.BallisticTrajectory = null;
+                        start_shooting = false;
+                    }
                 }
             }
 
@@ -139,6 +155,7 @@ namespace TBSGame.Screens.MapScreenControls
             }
 
             bounds = get_unit_bounds(new Rectangle(X, Y, (int)size, (int)size));
+
 
             set_dir();
 
@@ -194,6 +211,7 @@ namespace TBSGame.Screens.MapScreenControls
 
             sprite.FillArea(vertex, tx);
             BallisticTrajectory?.Draw();
+            info.Draw(bounds.Height);
         }
         
         public void DrawPointer(GameTime time)
