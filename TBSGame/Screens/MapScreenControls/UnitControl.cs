@@ -28,6 +28,7 @@ namespace TBSGame.Screens.MapScreenControls
         private TimeSpan start_attacking = TimeSpan.Zero;
         private GameTime time;
         private List<SoundEffect> attack = new List<SoundEffect>();
+        private UnitControl enemy = null;
 
         public UnitControl(Unit unit, int x, int y)
         {
@@ -86,9 +87,7 @@ namespace TBSGame.Screens.MapScreenControls
                             BallisticTrajectory.Load(graphics, content, sprite, driver, font);
                         }
 
-                        enemy.Unit.Health -= (ushort)(Unit.Attack - enemy.Unit.Armor);
-                        if (enemy.Unit.Health <= 0)
-                            map.SetUnit(enemy.X, enemy.Y, null);
+                        this.enemy = enemy;
 
                         Unit.Stamina -= Unit.StaminaPerAttack;
 
@@ -104,6 +103,14 @@ namespace TBSGame.Screens.MapScreenControls
             return 0;
         }
 
+        private void _attack()
+        {
+            enemy.Unit.Health -= (ushort)(Unit.Attack - enemy.Unit.Armor);
+            if (enemy.Unit.Health <= 0)
+                map.SetUnit(enemy.X, enemy.Y, null);
+            enemy = null;
+        }
+
         public void Update(Map map, Engine engine, GameTime time)
         {
             this.time = time;
@@ -115,6 +122,7 @@ namespace TBSGame.Screens.MapScreenControls
                 bool? done = BallisticTrajectory?.Update(engine, time);
                 if (done != null && done.Value)
                 {
+                    _attack();
                     this.BallisticTrajectory = null;
                     start_shooting = false;
                 }
