@@ -80,6 +80,7 @@
     <Compile Include="Screens\MapScreenControls\MoveUnit.cs" />
     <Compile Include="Screens\MapScreenControls\UnitControl.cs" />
     <Compile Include="Screens\MapScreenControls\UnitDetailControl.cs" />
+    <Compile Include="Screens\MapScreenControls\UnitInfoControl.cs" />
     <Compile Include="Screens\Screen.cs" />
     <Compile Include="Screens\ScreenTabPanels\MapScreenTabPanel.cs" />
     <Compile Include="Screens\ScreenTabPanels\ScreenTabPanel.cs" />

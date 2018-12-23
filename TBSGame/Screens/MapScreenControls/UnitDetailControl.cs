@@ -27,12 +27,9 @@ namespace TBSGame.Screens.MapScreenControls
             if (driver[Unit.Texture] == null)
                 driver.LoadUnit(Unit.Texture);
 
-            if (driver["stamina"] == null)
+            if (driver["attack"] == null)
             {
-                driver.LoadTexture("stamina", sprite.GetColorFill(Color.Blue));
                 driver.LoadTexture("staminashadow", sprite.Shadow(driver["stamina"], Color.Black, 0.4f));
-
-                driver.LoadTexture("health", sprite.GetColorFill(Color.Red));
                 driver.LoadTexture("healthshadow", sprite.Shadow(driver["health"], Color.Black, 0.4f));
 
                 driver.LoadTexture("star", sprite.Tint(driver.LoadContent("icons/unitdetail/star"), Color.Gold));
