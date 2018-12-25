@@ -283,15 +283,20 @@ namespace TBSGame.Screens
 
             if (turn == 1)
             {
+                //pokud všechny jednotky umřou
                 if (map.Units.Where(kvp => kvp.Value.Player == 1).Count() == 0)
                 {
                     Dispose(new MainMenuScreen());
                 }
 
+                //pokud budou splněny všechny úkoly
                 List<Quest> task = map.QuestList.ToList();
                 if (task.Where(t => t.Check(map, engine)).Count() == task.Count)
                 {
-                    show_window(win_message);
+                    if (win_message.Visible)
+                        Dispose(new MainMenuScreen());
+                    else
+                        show_window(win_message);
                 }
 
                 buttons.ForEach(btn => btn.Update(mouse));

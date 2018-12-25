@@ -216,7 +216,7 @@ namespace TBSGame.Screens.MapScreenControls
         
         public void DrawPointer(GameTime time)
         {
-            Rectangle bounds = new Rectangle(this.bounds.X, this.bounds.Y + this.bounds.Height + (time.TotalGameTime.Seconds % 2 == 0 ? 10 : 5), 10, 20);
+            Rectangle bounds = new Rectangle(this.bounds.X, this.bounds.Y + this.bounds.Height + 20 + (time.TotalGameTime.Seconds % 2 == 0 ? 10 : 5), 10, 20);
             VertexPositionTexture[] vertex = new VertexPositionTexture[5]
             {
                 new VertexPositionTexture(new Vector3(bounds.X - bounds.Width, bounds.Y + bounds.Height, 0), new Vector2(1, 0)),
