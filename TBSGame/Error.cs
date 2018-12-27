@@ -19,7 +19,7 @@ namespace TBSGame
         public static void Initalize(string logfile)
         {
             if (!File.Exists(logfile))
-                using (StreamWriter stream = File.CreateText(logfile)) stream.Close();
+                File.CreateText(logfile).Close();
 
             path = logfile;
         }
@@ -27,15 +27,14 @@ namespace TBSGame
         private static void write(string log)
         {
             using (StreamWriter stream = File.AppendText(path))
-                stream.WriteLine($"Error [{DateTime.Now.ToShortDateString()} {DateTime.Now.ToLongTimeString()}]: {log}");
+                stream.WriteLine($"{DateTime.Now.ToShortDateString()} {DateTime.Now.ToLongTimeString()}-{log}");
         }
 
         public static void Log(string log)
         {
-            TimeSpan duration = Error.time - Error.last_log_time;
-            if (duration.TotalSeconds >= 1 || last_log != log)
+            if (time - last_log_time >= TimeSpan.FromSeconds(1) || last_log != log)
             {
-                Error.last_log_time = Error.time;
+                last_log_time = time;
                 last_log = log;
                 Console.WriteLine($"Error: {log}");
                 write(log);

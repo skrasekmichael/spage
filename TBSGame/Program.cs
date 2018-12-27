@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MapDriver;
+using System;
+using System.IO;
 
 namespace TBSGame
 {
@@ -8,9 +10,30 @@ namespace TBSGame
         [STAThread]
         static void Main()
         {
-            Settings settings = new Settings("config.ini");
+            string app = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\spage";
+            string common = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\spage";
+
+            if (!Directory.Exists(app))
+            {
+                Directory.CreateDirectory(app);
+                File.Copy("default.ini", app + "\\config.ini");
+            }
+
+            if (!Directory.Exists(app + "\\saves"))
+                Directory.CreateDirectory(app + "\\saves");
+
+            if (!Directory.Exists(common))
+                Directory.CreateDirectory(common);
+
+            if (!Directory.Exists(common + "\\scenario"))
+                Directory.CreateDirectory(common + "\\scenario");
+
+            Settings settings = new Settings($"{app}\\config.ini");
+            settings.App = app;
+            settings.CommonApp = common;
             Error.Initalize(settings.LogFile);
             Resources.Load(settings.Language);
+
             using (var game = new Game1(settings))
                 game.Run();
         }

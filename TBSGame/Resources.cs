@@ -47,7 +47,7 @@ namespace TBSGame
                 return data[key].Trim();
             else
             {
-                Error.Log("klíč k textu nebyl nalezen, soubor s texty je pravděpodobně poškozen.");
+                Error.Log("Klíč k textu nebyl nalezen ve slovníku překladu. ");
                 return key;
             }
         }

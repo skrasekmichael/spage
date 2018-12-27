@@ -28,6 +28,8 @@ namespace TBSGame
         public int ResolutionWidth => int.Parse(this["resolution"].Split('x')[0].Trim());
         public int ResolutionHeight => int.Parse(this["resolution"].Split('x')[1].Trim());
         public string LogFile => this["logfile"];
+        public string CommonApp { get; set; }
+        public string App { get; set; }
 
         public string this[string key]
         {
@@ -37,7 +39,7 @@ namespace TBSGame
                     return data[key];
                 else
                 {
-                    Error.Log("nastavení nebylo nalezeno, soubor s nastavením byl pravděpodobně poškozen.");
+                    Error.Log("Nastavení nebylo nalezeno, soubor s nastavením byl pravděpodobně poškozen.");
                     return "";
                 }
             }

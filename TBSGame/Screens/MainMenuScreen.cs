@@ -19,8 +19,8 @@ namespace TBSGame.Screens
         public MainMenuScreen() : base()
         {
             buttons.AddRange(new Button[] {
-                new MenuButton(Resources.GetString("newgame")),
-                new MenuButton(Resources.GetString("loadgame")),
+                new MenuButton(Resources.GetString("campaign")),
+                new MenuButton($"{Resources.GetString("custom")} {Resources.GetString("scenario")}"),
                 new MenuButton(Resources.GetString("about")),
                 new MenuButton(Resources.GetString("settings")),
                 new MenuButton(Resources.GetString("exit"))
