@@ -86,9 +86,13 @@ namespace TBSGame
             base.OnExiting(sender, args);
             
             //deleting temp files
-            string[] files = Directory.GetFiles($"{settings.AppData}\\temp"); 
+            string[] files = Directory.GetFiles(settings.Temp); 
             foreach (string file in files)
                 File.Delete(file);
+
+            string[] dirs = Directory.GetDirectories(settings.Temp);
+            foreach (string dir in dirs)
+                Directory.Delete(dir, true);
 
             //loging missing keys in dictionary
             List<string> missing = Resources.GetMissing();

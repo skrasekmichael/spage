@@ -30,7 +30,7 @@ namespace TBSGame.Screens
         private List<AreaControl> areas;
         private int selected_index = -1, turn = 1;
         private UnitDetailControl sunit = null, hunit = null;
-        private GameMapSaver saver = new GameMapSaver();
+        private GameMapSaver saver;
         private MoveControl move = new MoveControl();
         private SoundEffect enemysighted;
         private MapAI[] ai = new MapAI[7];
@@ -49,6 +49,8 @@ namespace TBSGame.Screens
             this.game = game;
             this.map = map;
 
+            saver = new GameMapSaver(game.Settings);
+
             areas = new List<AreaControl>(map.Width * map.Height);
 
             menu = new MenuWindow(saver, map);
@@ -56,6 +58,13 @@ namespace TBSGame.Screens
             start_message = new TextWindow(map.Scout);
             start_message.Visible = true;
             win_message = new TextWindow(map.Win);
+
+            menu.OnLoadMapSaveEventHandler += new LoadMapSaveEventHandler((sender, loaded_map) =>
+            {
+                MapScreen map_screen = new MapScreen(game, loaded_map);
+                map_screen.start_message.Visible = false;
+                this.Dispose(map_screen);
+            });
 
             windows.AddRange(new MapWindow[] { menu, minimap, start_message, win_message });
 

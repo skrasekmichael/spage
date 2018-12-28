@@ -44,6 +44,8 @@ namespace TBSGame
         public string AppData { get; set; }
         public string Temp { get; set; }
         public string Scenario => Temp + "scenario\\";
+        public string MapSaves => Temp + "tempsaves\\";
+        public string GameSaves => AppData + "saves\\";
 
         public void Save()
         {

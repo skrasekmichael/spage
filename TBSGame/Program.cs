@@ -21,9 +21,6 @@ namespace TBSGame
             if (!Directory.Exists(appdata + "saves\\"))
                 Directory.CreateDirectory(appdata + "saves\\");
 
-            if (!Directory.Exists(appdata + "temp\\"))
-                Directory.CreateDirectory(appdata + "temp\\");
-
             if (!Directory.Exists(temp))
                 Directory.CreateDirectory(temp);
 

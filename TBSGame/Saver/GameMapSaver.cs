@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace TBSGame.Saver
 {
@@ -11,12 +12,22 @@ namespace TBSGame.Saver
     {
         public int Saves { get; private set; } = 0;
 
+        private Settings settings;
+
+        public GameMapSaver(Settings settings)
+        {
+            this.settings = settings;
+        }
+
         public void Save(Map map)
         {
-            map.Save($"temp\\{Saves}.dat");
+            if (!Directory.Exists(settings.MapSaves))
+                Directory.CreateDirectory(settings.MapSaves);
+
+            map.Save($"{settings.MapSaves}{Saves}.dat");
             Saves++;
         }
 
-        public Map Load(int index) => Map.Load("index.dat");
+        public Map Load(int index) => Map.Load($"{settings.MapSaves}{index.ToString()}.dat");
     }
 }

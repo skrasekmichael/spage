@@ -12,9 +12,12 @@ using TBSGame.Saver;
 
 namespace TBSGame.Screens.MapScreenControls.MapWindows
 {
+    public delegate void LoadMapSaveEventHandler(object sender, Map map);
+
     public class MenuWindow : MapWindow
     {
         public event EventHandler OnExit;
+        public event LoadMapSaveEventHandler OnLoadMapSaveEventHandler;
 
         private void Exit()
         {
@@ -136,9 +139,11 @@ namespace TBSGame.Screens.MapScreenControls.MapWindows
                     Label name = new Label($"{i}. save");
                     name.TextColor = Color.White;
                     MenuButton load = new MenuButton(Resources.GetString("load"));
+                    load.Tag = i - 1;
                     load.OnButtonClicked += new ButtonClickedEventHandler(sender =>
                     {
-
+                        Map loaded_map = saver.Load((int)load.Tag);
+                        OnLoadMapSaveEventHandler?.Invoke(this, loaded_map);
                     });
 
                     int row = Bounds.Width - w - 2 * 5;
