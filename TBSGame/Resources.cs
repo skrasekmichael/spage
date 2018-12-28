@@ -51,7 +51,8 @@ namespace TBSGame
             else
             {
                 Error.Log($"Klíč [{key}] nebyl nalezen ve slovníku. ");
-                missing.Add(key);
+                if (!missing.Contains(key))
+                    missing.Add(key);
                 return key;
             }
         }
