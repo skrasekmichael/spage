@@ -22,7 +22,7 @@ namespace TBSGame.Screens.MapScreenControls
         private Texture2D tx;
         private int type = 0, index = -1, lindex = -1, max = 0;
         private double size;
-        private bool start_shooting = false;
+        private bool start_shooting = false, attacking = false;
         private Map map;
         private Engine engine;
         private TimeSpan start_attacking = TimeSpan.Zero;
@@ -76,7 +76,7 @@ namespace TBSGame.Screens.MapScreenControls
 
         public int Attack(UnitControl enemy)
         {
-            if (start_attacking == TimeSpan.Zero)
+            if (!attacking)
             {
                 if (Unit.Stamina >= Unit.StaminaPerAttack)
                 {
@@ -84,6 +84,8 @@ namespace TBSGame.Screens.MapScreenControls
                     if (range.Contains(new System.Drawing.Point(enemy.X, enemy.Y)))
                     {
                         start_attacking = time.TotalGameTime;
+                        attacking = true;
+
                         this.Unit.Direction = (byte)MoveUnit.GetDirection(X - enemy.X, Y - enemy.Y);
 
                         this.enemy = enemy;
@@ -116,6 +118,7 @@ namespace TBSGame.Screens.MapScreenControls
             else
                 enemy.Unit.Health = (ushort)hp;
             enemy = null;
+            attacking = false;
         }
 
         public void Update(Map map, Engine engine, GameTime time)

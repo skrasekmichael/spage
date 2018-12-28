@@ -41,7 +41,7 @@ namespace TBSGame.Screens.MapScreenControls
         private Terrain terrain;
         private Vector2 p1, p2, p3, p4, center;
         private string texture;
-        private bool draw_unit = false;
+        private bool draw_unit = false, is_mouse_down = false;
 
         private string get(string key)
         {
@@ -181,11 +181,17 @@ namespace TBSGame.Screens.MapScreenControls
             {
                 OnHoverArea(new EventArgs());
                 texture += "hover";
-                if (mouse.LeftButton == ButtonState.Pressed)
+                if (mouse.LeftButton != ButtonState.Pressed && is_mouse_down)
+                {
                     OnAreaClicked(new EventArgs());
+                    is_mouse_down = false;
+                }
+                else
+                    is_mouse_down = mouse.LeftButton == ButtonState.Pressed;
             }
             else
             {
+                is_mouse_down = false;
                 if (old_over)
                     OnLeaveArea(new EventArgs());
             }

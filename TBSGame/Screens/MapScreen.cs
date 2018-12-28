@@ -296,10 +296,9 @@ namespace TBSGame.Screens
                 List<Quest> task = map.QuestList.ToList();
                 if (task.Where(t => t.Check(map, engine)).Count() == task.Count)
                 {
-                    if (win_message.Visible)
+                    if (!win_message.Visible)
                         Dispose(new GameScreen(game));
-                    else
-                        show_window(win_message);
+                    show_window(win_message);
                 }
 
                 buttons.ForEach(btn => btn.Update(mouse));
@@ -308,7 +307,7 @@ namespace TBSGame.Screens
                 menu.Update(time, map, mouse);
                 start_message.Update(mouse);
                 win_message.Update(mouse);
-                
+
                 active_map = windows.Where(w => w.Visible).Count() == 0;
 
                 //posouvání jednotek po mapě

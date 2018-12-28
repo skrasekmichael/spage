@@ -109,7 +109,7 @@ namespace TBSGame.Screens
                     end();
                 }
                 //animace rozvicování                
-                else if (starting && !QuickStart)
+                else if (starting)
                 {
                     if (start_starting == TimeSpan.Zero)
                         start_starting = time.TotalGameTime;
