@@ -37,7 +37,7 @@ namespace TBSGame.Screens
                 Reload();
             }));
 
-            MenuButton back = new MenuButton("zpět");
+            MenuButton back = new MenuButton(Resources.GetString("back"));
             back.OnButtonClicked += new ButtonClickedEventHandler(sender => this.Dispose(new MainMenuScreen()));
             buttons.Add(back);
         }

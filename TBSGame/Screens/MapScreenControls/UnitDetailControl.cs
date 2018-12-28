@@ -68,7 +68,7 @@ namespace TBSGame.Screens.MapScreenControls
             sprite.Draw(driver["healthshadow"], new Rectangle(p.X + height, p.Y + padding + 15 + space, max, 15), Color.White);
 
             //název jednotky
-            sprite.DrawMultiLineText(font, new string[] { Unit.GetType().Name }, new Rectangle(p.X + height, p.Y + padding, max, 15), HorizontalAligment.Left, VerticalAligment.Center, 2, Color.Black);
+            sprite.DrawMultiLineText(font, new string[] { Resources.GetString(Unit.GetType().Name) }, new Rectangle(p.X + height, p.Y + padding, max, 15), HorizontalAligment.Left, VerticalAligment.Center, 2, Color.Black);
 
             //aktuální stamina
             double percent = (100 * Unit.Stamina) / Unit.MaxStamina;

@@ -47,7 +47,7 @@ namespace TBSGame.Screens.MapScreenControls.MapWindows
             save_counter.TextColor = Color.Red;
             save_counter.Bounds = new Rectangle(0, Bounds.Height - h, h, h);
 
-            MenuButton save = new MenuButton("save");
+            MenuButton save = new MenuButton(Resources.GetString("save"));
             save.Bounds = new Rectangle(h, Bounds.Height - h, w, h);
             save.OnButtonClicked += new ButtonClickedEventHandler(sender =>
             {
@@ -55,14 +55,14 @@ namespace TBSGame.Screens.MapScreenControls.MapWindows
                     saver.Save(map);
             });
 
-            MenuButton back = new MenuButton("go back");
+            MenuButton back = new MenuButton(Resources.GetString("go_back"));
             back.Bounds = new Rectangle(h + w, Bounds.Height - h, w, h);
             back.OnButtonClicked += new ButtonClickedEventHandler(sender =>
             {
                 
             });
 
-            MenuButton exit = new MenuButton("exit");
+            MenuButton exit = new MenuButton(Resources.GetString("exit"));
             exit.Bounds = new Rectangle(h + 2 * w, Bounds.Height - h, w, h);
             exit.OnButtonClicked += new ButtonClickedEventHandler(sender =>
             {
@@ -74,7 +74,7 @@ namespace TBSGame.Screens.MapScreenControls.MapWindows
             system.Add(back);
             system.Add(save_counter);
 
-            TabPanelButton btn_saves = new TabPanelButton("System");
+            TabPanelButton btn_saves = new TabPanelButton(Resources.GetString("system"));
             tab.Add("system", system, btn_saves);
             #endregion
             #region tasks_panel
@@ -84,14 +84,14 @@ namespace TBSGame.Screens.MapScreenControls.MapWindows
             tasks_labels = new Label[task_list.Length];
             for (int i = 0; i < task_list.Length; i++)
             {
-                Label label = new Label(task_list[i].Name);
+                Label label = new Label(Resources.GetString(task_list[i].Name));
                 label.Bounds = new Rectangle(5, 5 + i * (h + 2), Bounds.Width - w - 10, h);
                 label.TextColor = Color.Red;
                 tasks_labels[i] = label;
                 tasks.Add(label);
             }
 
-            TabPanelButton btn_tasks = new TabPanelButton("Tasks");
+            TabPanelButton btn_tasks = new TabPanelButton(Resources.GetString("tasks"));
             tab.Add("tasks", tasks, btn_tasks);
             #endregion
 
@@ -135,7 +135,7 @@ namespace TBSGame.Screens.MapScreenControls.MapWindows
                     Panel save_row = new Panel();
                     Label name = new Label($"{i}. save");
                     name.TextColor = Color.White;
-                    MenuButton load = new MenuButton("Load");
+                    MenuButton load = new MenuButton(Resources.GetString("load"));
                     load.OnButtonClicked += new ButtonClickedEventHandler(sender =>
                     {
 

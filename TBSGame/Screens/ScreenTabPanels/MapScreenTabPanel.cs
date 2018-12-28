@@ -40,9 +40,9 @@ namespace TBSGame.Screens.ScreenTabPanels
             this.path = path;
 
             hover = new Dictionary<string, Texture2D>(level.Count);
-            play = new MenuButton("play");
+            play = new MenuButton(Resources.GetString("play"));
             play.OnButtonClicked += new ButtonClickedEventHandler(sender => PlayGame(selected));
-            cancel = new MenuButton("cancel");
+            cancel = new MenuButton(Resources.GetString("cancel"));
             cancel.OnButtonClicked += new ButtonClickedEventHandler(sener => deselect());
         }
 
@@ -268,7 +268,7 @@ namespace TBSGame.Screens.ScreenTabPanels
                 }
                 else
                 {
-                    desc.Text = "mapa není k dispozici ...";
+                    desc.Text = Resources.GetString("missing_map");
                 }
             }
         }
