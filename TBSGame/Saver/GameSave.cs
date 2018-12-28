@@ -46,7 +46,7 @@ namespace TBSGame.Saver
                 Info = null;
             else
             {
-                Error.Log("Nepodařilo se načíst soubor: " + Level);
+                Error.Log("Loading file failed: " + Level);
                 MapLevel--;
             }
         }

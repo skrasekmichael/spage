@@ -34,7 +34,7 @@ namespace TBSGame
             }
             catch (Exception ex)
             {
-                Error.Log("Chyba rozlišení, soubor s nastavením je pravděpodobně poškozen.");
+                Error.Log("Resolution error. ");
                 Error.Log(ex.Message);
             }
 

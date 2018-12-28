@@ -64,7 +64,7 @@ namespace TBSGame
                     return data[key];
                 else
                 {
-                    Error.Log("Nastavení nebylo nalezeno, soubor s nastavením byl pravděpodobně poškozen.");
+                    Error.Log("Settings was not found, config.ini is probably corrupted. ");
                     return "";
                 }
             }
@@ -74,7 +74,7 @@ namespace TBSGame
                     data[key] = value;
                 else
                 {
-                    Error.Log("Nastavení nebylo nalezeno, soubor s nastavením byl pravděpodobně poškozen.");
+                    Error.Log("Settings was not found, config.ini is probably corrupted. ");
                 }
             }
         }

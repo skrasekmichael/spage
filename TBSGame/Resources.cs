@@ -50,7 +50,7 @@ namespace TBSGame
                 return data[key].Trim();
             else
             {
-                Error.Log($"Klíč [{key}] nebyl nalezen ve slovníku. ");
+                Error.Log($"Key [{key}] was not found in dictionary. ");
                 if (!missing.Contains(key))
                     missing.Add(key);
                 return key;
