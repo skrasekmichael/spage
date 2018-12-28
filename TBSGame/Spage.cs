@@ -2,12 +2,13 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using TBSGame.Screens;
 
 namespace TBSGame
 {
-    public class Game1 : Game
+    public class Spage : Game
     {
         GraphicsDeviceManager graphics;
         CustomSpriteBatch sprite;
@@ -17,7 +18,7 @@ namespace TBSGame
         Texture2D cursor;
         FPSCounter fps = new FPSCounter();
 
-        public Game1(Settings settings)
+        public Spage(Settings settings)
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -44,13 +45,9 @@ namespace TBSGame
             form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             form.WindowState = System.Windows.Forms.FormWindowState.Maximized;
 
-            /*
-            var ms = System.Windows.Forms.Screen.AllScreens[0];
-            form.Left = ms.WorkingArea.Left;
-            form.Top = ms.WorkingArea.Top;
-            */
             driver = new TextureDriver(Content, sprite);
             screen = new MainMenuScreen();
+            screen.Settings = settings;
 
             base.Initialize();
         }
@@ -65,7 +62,6 @@ namespace TBSGame
 
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
             GC.Collect();
         }
 
@@ -73,7 +69,7 @@ namespace TBSGame
         {
             if (this.IsActive)
             {
-                if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+                if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                     Exit();
 
                 screen = screen.Update(gameTime);
@@ -88,10 +84,22 @@ namespace TBSGame
         protected override void OnExiting(Object sender, EventArgs args)
         {
             base.OnExiting(sender, args);
-
-            string[] files = Directory.GetFiles($"{Environment.CurrentDirectory}\\temp"); 
+            
+            //deleting temp files
+            string[] files = Directory.GetFiles($"{settings.AppData}\\temp"); 
             foreach (string file in files)
                 File.Delete(file);
+
+            //loging missing keys in dictionary
+            List<string> missing = Resources.GetMissing();
+            if (missing.Count > 0)
+            {
+                using (StreamWriter sw = new StreamWriter(settings.MissingFile))
+                {
+                    foreach (string key in missing)
+                        sw.WriteLine(key);
+                }
+            }
         }
 
         protected override void Draw(GameTime gameTime)

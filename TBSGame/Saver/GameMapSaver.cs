@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace TBSGame.Saver
 {
-    [Serializable]
     public class GameMapSaver
     {
         public int Saves { get; private set; } = 0;

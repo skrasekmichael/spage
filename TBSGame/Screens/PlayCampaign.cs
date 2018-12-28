@@ -1,37 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MapDriver;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
 using TBSGame.Controls;
 using TBSGame.Controls.Buttons;
+using TBSGame.Saver;
 
 namespace TBSGame.Screens
 {
-    public class MainMenuScreen : Screen
+    public class PlayCampaign : Screen
     {
         private List<Button> buttons = new List<Button>();
 
-        public MainMenuScreen() : base()
+        public PlayCampaign() : base()
         {
             buttons.AddRange(new Button[] {
-                new MenuButton(Resources.GetString("campaign")),
-                new MenuButton($"{Resources.GetString("custom")} {Resources.GetString("scenario")}"),
-                new MenuButton(Resources.GetString("about")),
-                new MenuButton(Resources.GetString("settings")),
-                new MenuButton(Resources.GetString("exit"))
+                new MenuButton(Resources.GetString("newgame")),
+                new MenuButton(Resources.GetString("loadgame")),
+                new MenuButton(Resources.GetString("cancel"))
             });
 
             ButtonClickedEventHandler[] handlers = new ButtonClickedEventHandler[] {
-                sender => Dispose(new PlayCampaign()),
+                sender => {
+                    Scenario scenario = Scenario.Load("scenario\\campaign.dat", Settings.Scenario + "campaign\\");
+                    GameSave game = new GameSave(scenario, Settings);
+                    Dispose(new GameScreen(game));
+                },
                 sender => Dispose(null),
-                sender => Dispose(null),
-                sender => Dispose(new SettingsScreen()),
-                sender => Dispose(null)
+                sender => Dispose(new MainMenuScreen())
             };
 
             for (int i = 0; i < buttons.Count; i++)

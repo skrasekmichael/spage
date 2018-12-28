@@ -42,10 +42,13 @@ namespace TBSGame.Screens
         private List<MapWindow> windows = new List<MapWindow>();
 
         private bool active_map = true;
+        private GameSave game;
 
-        public MapScreen(Map map) : base()
+        public MapScreen(GameSave game, Map map) : base()
         {
+            this.game = game;
             this.map = map;
+
             areas = new List<AreaControl>(map.Width * map.Height);
 
             menu = new MenuWindow(saver, map);
@@ -286,7 +289,7 @@ namespace TBSGame.Screens
                 //pokud všechny jednotky umřou
                 if (map.Units.Where(kvp => kvp.Value.Player == 1).Count() == 0)
                 {
-                    Dispose(new MainMenuScreen());
+                    Dispose(new GameScreen(game));
                 }
 
                 //pokud budou splněny všechny úkoly
@@ -294,7 +297,7 @@ namespace TBSGame.Screens
                 if (task.Where(t => t.Check(map, engine)).Count() == task.Count)
                 {
                     if (win_message.Visible)
-                        Dispose(new MainMenuScreen());
+                        Dispose(new GameScreen(game));
                     else
                         show_window(win_message);
                 }

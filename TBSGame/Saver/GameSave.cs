@@ -10,14 +10,47 @@ using MapDriver;
 namespace TBSGame.Saver
 {
     [Serializable]
-    public class GameSaver
+    public class GameSave
     {
-        public int MapLevel { get; set; }
-        public Dictionary<string, MapInfo> Info { get; set; }
+        public int MapLevel { get; set; } = 0;
+        public Dictionary<string, MapInfo> Info { get; set; } = null;
         public List<Unit> Units { get; set; } = null;
         public string Name { get; set; } = "default";
         public int Sources { get; set; } = 0;
-        public string Map = null;
+        public int Round { get; set; } = 0;
+        public Map Map { get; set; } = null;
+        public Scenario Scenario { get; private set; }
+        public string Level { get; private set; }
+
+        private Settings settings;
+
+        public GameSave(Scenario scenario, Settings settings)
+        {
+            this.Scenario = scenario;
+            this.Units = scenario.StarterPack;
+            this.settings = settings;
+            NextLevel();
+        }
+
+        private string getpath()
+        {
+            string number = "level" + MapLevel.ToString();
+            string level = $@"{settings.Scenario}{Scenario.Name}\{number}\{number}.dat";
+            return level;
+        }
+
+        public void NextLevel()
+        {
+            MapLevel++;
+            Level = getpath();
+            if (File.Exists(Level))
+                Info = null;
+            else
+            {
+                Error.Log("Nepodařilo se načíst soubor: " + Level);
+                MapLevel--;
+            }
+        }
 
         public void Save(string path)
         {
@@ -39,7 +72,7 @@ namespace TBSGame.Saver
             }
         }
 
-        public static GameSaver Load(string path)
+        public static GameSave Load(string path)
         {
             if (File.Exists(path))
             {
@@ -48,7 +81,7 @@ namespace TBSGame.Saver
                     using (FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read))
                     {
                         BinaryFormatter formatter = new BinaryFormatter();
-                        GameSaver game = (GameSaver)formatter.Deserialize(stream);
+                        GameSave game = (GameSave)formatter.Deserialize(stream);
                         stream.Close();
                         return game;
                     }

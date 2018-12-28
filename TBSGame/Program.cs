@@ -1,5 +1,4 @@
-﻿using MapDriver;
-using System;
+﻿using System;
 using System.IO;
 
 namespace TBSGame
@@ -10,31 +9,32 @@ namespace TBSGame
         [STAThread]
         static void Main()
         {
-            string app = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\spage";
-            string common = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\spage";
+            string appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "spage\\";
+            string temp = Path.GetTempPath() + "spage\\";
 
-            if (!Directory.Exists(app))
+            if (!Directory.Exists(appdata))
             {
-                Directory.CreateDirectory(app);
-                File.Copy("default.ini", app + "\\config.ini");
+                Directory.CreateDirectory(appdata);
+                File.Copy("default.ini", appdata + "config.ini");
             }
 
-            if (!Directory.Exists(app + "\\saves"))
-                Directory.CreateDirectory(app + "\\saves");
+            if (!Directory.Exists(appdata + "saves\\"))
+                Directory.CreateDirectory(appdata + "saves\\");
 
-            if (!Directory.Exists(common))
-                Directory.CreateDirectory(common);
+            if (!Directory.Exists(appdata + "temp\\"))
+                Directory.CreateDirectory(appdata + "temp\\");
 
-            if (!Directory.Exists(common + "\\scenario"))
-                Directory.CreateDirectory(common + "\\scenario");
+            if (!Directory.Exists(temp))
+                Directory.CreateDirectory(temp);
 
-            Settings settings = new Settings($"{app}\\config.ini");
-            settings.App = app;
-            settings.CommonApp = common;
+            Settings settings = new Settings(appdata + "config.ini");
+            settings.AppData = appdata;
+            settings.Temp = temp;
+
             Error.Initalize(settings.LogFile);
             Resources.Load(settings.Language);
 
-            using (var game = new Game1(settings))
+            using (var game = new Spage(settings))
                 game.Run();
         }
     }

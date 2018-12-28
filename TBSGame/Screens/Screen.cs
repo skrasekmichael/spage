@@ -13,8 +13,8 @@ namespace TBSGame.Screens
     { 
         public int Width { get; private set; }
         public int Height { get; private set; }
-        public bool QuickStart { get; set; } = false;
         public bool IsMouseVisible { get; set; } = true;
+        public Settings Settings { get; set; }
 
         protected bool starting = true, ending = false;
         protected float end_coef = 0f, start_coef = 1f, display_coef = 0f;
@@ -203,8 +203,7 @@ namespace TBSGame.Screens
                 draw();
 
                 sprite.Draw(black, new Rectangle(0, 0, Width, Height), Color.White * end_coef);
-                if (!QuickStart)
-                    sprite.Draw(black, new Rectangle(0, 0, Width, Height), Color.White * start_coef);
+                sprite.Draw(black, new Rectangle(0, 0, Width, Height), Color.White * start_coef);
             }
         }
 
@@ -212,8 +211,8 @@ namespace TBSGame.Screens
         {
             ending = true;
             next_screen = next;
+            if (next != null)
+                next_screen.Settings = this.Settings;
         }
-
-        public void QuickDispose(Screen next) => next_screen = next;
     }
 }

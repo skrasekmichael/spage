@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using TBSGame.Controls;
+using TBSGame.Saver;
 using TBSGame.Screens.ScreenTabPanels;
 
 namespace TBSGame.Screens
@@ -19,10 +20,12 @@ namespace TBSGame.Screens
         private Level level;
         private string path;
         private bool loaded = false;
+        private GameSave game;
 
-        public GameScreen(string path)
+        public GameScreen(GameSave game)
         {
-            this.path = path;
+            this.game = game;
+            this.path = game.Level;
         }
 
         protected override void draw()
@@ -39,7 +42,7 @@ namespace TBSGame.Screens
             {
                 string path = $"{Path.GetDirectoryName(this.path)}/maps/{level_map.Name}.dat";
                 if (File.Exists(path))
-                    this.Dispose(new MapScreen(Map.Load(path)));
+                    this.Dispose(new MapScreen(game, Map.Load(path)));
             });
 
             map.Load(graphics, content, sprite);

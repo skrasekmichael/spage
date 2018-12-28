@@ -10,10 +10,12 @@ namespace TBSGame
     public class Settings
     {
         private Dictionary<string, string> data = new Dictionary<string, string>();
+        private string path;
 
-        public Settings(string file)
+        public Settings(string path)
         {
-            using (StreamReader sr = new StreamReader(file))
+            this.path = path;
+            using (StreamReader sr = new StreamReader(path))
             {
                 string line = null;
                 while ((line = sr.ReadLine()) != null)
@@ -24,12 +26,33 @@ namespace TBSGame
             }
         }
 
-        public string Language => this["lang"];
-        public int ResolutionWidth => int.Parse(this["resolution"].Split('x')[0].Trim());
-        public int ResolutionHeight => int.Parse(this["resolution"].Split('x')[1].Trim());
-        public string LogFile => this["logfile"];
-        public string CommonApp { get; set; }
-        public string App { get; set; }
+        public string Language { get => this["lang"]; set => this["lang"] = value; }
+        public int ResolutionWidth
+        {
+            get => int.Parse(this["resolution"].Split('x')[0].Trim());
+            set => this["resolution"] = value.ToString() + "x" + ResolutionHeight.ToString();
+        }
+        public int ResolutionHeight
+        {
+            get => int.Parse(this["resolution"].Split('x')[1].Trim());
+            set => this["resolution"] = ResolutionWidth.ToString() + "x" + value.ToString();
+        }
+        public string LogFile { get => this["logfile"]; set => this["logfile"] = value; }
+        public string MissingFile { get => this["missfile"]; set => this["missfile"] = value; }
+
+        //nenačítající se data
+        public string AppData { get; set; }
+        public string Temp { get; set; }
+        public string Scenario => Temp + "scenario\\";
+
+        public void Save()
+        {
+            using (StreamWriter sw = new StreamWriter(path))
+            {
+                foreach (KeyValuePair<string, string> kvp in data)
+                    sw.WriteLine(kvp.Key + ":" + kvp.Value);
+            }
+        }
 
         public string this[string key]
         {
@@ -41,6 +64,15 @@ namespace TBSGame
                 {
                     Error.Log("Nastavení nebylo nalezeno, soubor s nastavením byl pravděpodobně poškozen.");
                     return "";
+                }
+            }
+            private set
+            {
+                if (data.ContainsKey(key))
+                    data[key] = value;
+                else
+                {
+                    Error.Log("Nastavení nebylo nalezeno, soubor s nastavením byl pravděpodobně poškozen.");
                 }
             }
         }
