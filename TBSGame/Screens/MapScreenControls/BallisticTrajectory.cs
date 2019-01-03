@@ -10,8 +10,7 @@ namespace TBSGame.Screens.MapScreenControls
 {
     public class BallisticTrajectory
     {
-        private List<Point> data;
-        private double h1 = 0;
+        private double h1 = 0, alpha, beta, gama, vx, vy, p;
 
         public int Count { get; private set; }
         public Point A { get; private set; }
@@ -36,49 +35,42 @@ namespace TBSGame.Screens.MapScreenControls
             double d = Math.Pow(Math.Pow(s.X, 2) + Math.Pow(s.Y, 2), 0.5);
 
             //úhly otočení
-            double alpha = Math.Atan2(0, 1) - Math.Atan2(s.Y, s.X); 
-            double gama = (Math.Atan2(0, 1) - Math.Atan2(s.Z, d)); 
-            double beta = Math.PI / 5.2;
+            alpha = Math.Atan2(0, 1) - Math.Atan2(s.Y, s.X); 
+            gama = (Math.Atan2(0, 1) - Math.Atan2(s.Z, d)); 
+            beta = Math.PI / 5.2;
 
             if (gama % Math.PI == 0)
                 gama = 0;
 
             Count = (int)distance;
-            data = new List<Point>(Count);
 
             //vrchol paraboly
-            double vx = distance / 2;
-            double vy = distance / 4;
+            vx = distance / 2;
+            vy = distance / 4;
 
             if (Math.Abs(a.X - b.X) <= 1 && Math.Abs(a.Y - b.Y) <= 1)
                 vy = 10;
 
             //parametr
-            double p = Math.Pow(vx, 2) / (-2 * vy);
-
-            for (int t = -Count / 2; t <= Count / 2; t++)
-            {
-                //parametrická rovnice paraboly
-                double px = t + vx;
-                double py = Math.Pow(t, 2) / (2 * p) + vy;
-
-                //otočení podle osy z
-                double rx = px * Math.Cos(gama) + py * Math.Sin(gama);
-                double ry = py * Math.Cos(gama) - px * Math.Sin(gama);
-
-                //otočení paraboly do správne pozice
-                double x = cx(rx, 0, ry, Math.PI / 4 - alpha, beta);
-                double y = cy(rx, 0, ry, Math.PI / 4 - alpha, beta);
-
-                data.Add(new Point((int)x, (int)y));
-            }
+            p = Math.Pow(vx, 2) / (-2 * vy);
         }
 
         public Point GetPoint(Engine engine, int index)
         {
+            int t = index - Count / 2;
+            //parametrická rovnice paraboly
+            double px = t + vx;
+            double py = Math.Pow(t, 2) / (2 * p) + vy;
+
+            //otočení podle osy z
+            double rx = px * Math.Cos(gama) + py * Math.Sin(gama);
+            double ry = py * Math.Cos(gama) - px * Math.Sin(gama);
+
+            //otočení paraboly do správne pozice
+            double x = cx(rx, 0, ry, Math.PI / 4 - alpha, beta);
+            double y = cy(rx, 0, ry, Math.PI / 4 - alpha, beta);
+
             System.Drawing.PointF s = engine.GetCenter(A.X, A.Y);
-            int x = data[index].X;
-            int y = data[index].Y;
             return new Point((int)(s.X + x), (int)(s.Y + y + h1));
         }
 
