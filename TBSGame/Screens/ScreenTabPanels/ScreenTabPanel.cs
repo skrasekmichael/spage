@@ -11,24 +11,32 @@ using Microsoft.Xna.Framework.Input;
 
 namespace TBSGame.Screens.ScreenTabPanels
 {
+    public delegate void SelectedTabEventHandler(object sender);
+
     public abstract class ScreenTabPanel
     {
+        public event SelectedTabEventHandler OnSelectedTab;
+        private void SelectTab()
+        {
+            OnSelectedTab?.Invoke(this);
+        }
+
         protected GraphicsDeviceManager graphics;
         protected ContentManager content;
         protected CustomSpriteBatch sprite;
         protected GameButton button;
+        protected Settings settings;
 
         public int Width => graphics.PreferredBackBufferWidth;
         public int Height => graphics.PreferredBackBufferHeight;
 
         public SpriteFont Font { get; set; }
-        public bool Selected { get; set; } = false;
-        public int Index { get; private set; }
+        public int Index { get; set; }
 
-        public ScreenTabPanel(string icon, int index)
+        public ScreenTabPanel(Settings settings, string icon)
         {
             button = new GameButton(icon, icon);
-            Index = index;
+            this.settings = settings;
         }
 
         public void Load(GraphicsDeviceManager graphics, ContentManager content, CustomSpriteBatch sprite)
@@ -40,25 +48,22 @@ namespace TBSGame.Screens.ScreenTabPanels
 
             button.Load(graphics, content, sprite);
             button.Bounds = new Rectangle(graphics.PreferredBackBufferWidth - 100, 100 * Index, 100, 100);
+            button.OnButtonClicked += new Controls.ButtonClickedEventHandler(sender => SelectTab());
 
             load();
         }
 
         protected abstract void load();
 
-        public void Update(GameTime time, KeyboardState keybord, MouseState mouse)
-        {
-            button.Update(time, keybord, mouse);
-            update(time, keybord, mouse);
-        }
+        public void UpdateButton(GameTime time, KeyboardState keyboard, MouseState mouse) => button.Update(time, keyboard, mouse);
+        
+        public void Update(GameTime time, KeyboardState keyboard, MouseState mouse) => update(time, keyboard, mouse);
 
-        protected abstract void update(GameTime time, KeyboardState keybord, MouseState mouse);
+        protected abstract void update(GameTime time, KeyboardState keyboard, MouseState mouse);
 
-        public void Draw()
-        {
-            button.Draw();
-            draw();
-        }
+        public void DrawButton() => button.Draw();
+
+        public void Draw() => draw();
 
         protected abstract void draw();
     }

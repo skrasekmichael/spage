@@ -34,7 +34,7 @@ namespace TBSGame.Screens.ScreenTabPanels
         private Rectangle resize;
         private string key = null, path = null;
 
-        public MapScreenTabPanel(string path, Level level, string icon, int index) : base(icon, index)
+        public MapScreenTabPanel(string path, Settings settings, Level level, string icon) : base(settings, icon)
         {
             this.level = level;
             this.path = path;
@@ -221,7 +221,7 @@ namespace TBSGame.Screens.ScreenTabPanels
             texture.SetData(colors);
         }
 
-        protected override void update(GameTime time, KeyboardState keybord, MouseState mouse)
+        protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
             key = null;
             desc.Update();
