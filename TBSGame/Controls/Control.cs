@@ -18,7 +18,7 @@ namespace TBSGame.Controls
         protected Vector2 start = new Vector2(0, 0);
 
         public Rectangle Bounds { get; set; } = Rectangle.Empty;
-        public SpriteFont Font { get; set; }
+        public virtual SpriteFont Font { get; set; }
 
         public void SetPos(Vector2 p) => start = p;
 
@@ -27,10 +27,12 @@ namespace TBSGame.Controls
             this.graphics = graphics;
             this.content = content;
             this.sprite = sprite;
-            this.Font = content.Load<SpriteFont>("fonts/text");
 
+            this.Font = load_font();
             load();
         }
+
+        protected virtual SpriteFont load_font() => content.Load<SpriteFont>("fonts/text");
 
         protected abstract void load();
 

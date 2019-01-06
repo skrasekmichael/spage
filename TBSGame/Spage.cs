@@ -69,9 +69,6 @@ namespace TBSGame
         {
             if (this.IsActive)
             {
-                if (Keyboard.GetState().IsKeyDown(Keys.Escape))
-                    Exit();
-
                 screen = screen.Update(gameTime);
                 if (screen == null)
                     Exit();
@@ -94,7 +91,7 @@ namespace TBSGame
             foreach (string dir in dirs)
                 Directory.Delete(dir, true);
 
-            //loging missing keys in dictionary
+            //logging missing keys in dictionary
             List<string> missing = Resources.GetMissing();
             if (missing.Count > 0)
             {

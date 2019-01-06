@@ -54,7 +54,9 @@
     <Compile Include="Controls\Label.cs" />
     <Compile Include="Controls\Panel.cs" />
     <Compile Include="Controls\TabPanel.cs" />
-    <Compile Include="Controls\TextInput.cs" />
+    <Compile Include="Controls\TextBoxes\EpicTextBox.cs" />
+    <Compile Include="Controls\TextBoxes\NormalTextBox.cs" />
+    <Compile Include="Controls\TextBoxes\TextBox.cs" />
     <Compile Include="CustomSpriteBatch.cs" />
     <Compile Include="Error.cs" />
     <Compile Include="FPSCounter.cs" />
@@ -90,6 +92,7 @@
     <Compile Include="Screens\SettingsScreen.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Resources.cs" />
+    <Compile Include="TextInput.cs" />
     <Compile Include="TextureDriver.cs" />
   </ItemGroup>
   <ItemGroup>
