@@ -39,11 +39,14 @@ namespace TBSGame.Controls
         public abstract Color BorderColor { get; set; }
         public abstract Color BorderHoverColor { get; set; }
         public abstract Color TextColor { get; set; }
+        public abstract Color PlaceHolderColor { get; set; }
         public byte Border { get; set; } = 1;
 
+        public object Tag { get; set; }
         public bool IsLocked { get; set; } = false;
         public bool IsVisibled { get; set; } = true;
         public bool IsFocused { get; protected set; } = false;
+        public string PlaceHolder { get; set; } = "";
         public string Text
         {
             get { return text; }
@@ -146,8 +149,15 @@ namespace TBSGame.Controls
                 if (IsFocused)
                     text = Text.Substring(0, pos) + " " + Text.Substring(pos);
 
+                Color tc = TextColor;
+                if (text.Length == 0)
+                {
+                    text = PlaceHolder;
+                    tc = PlaceHolderColor;
+                }
+
                 Vector2 middle = new Vector2(bounds.X + (Bounds.Width - Font.MeasureString(text).X) / 2, bounds.Y + (Bounds.Height - Font.LineSpacing) / 2 + 1);
-                sprite.DrawString(Font, text, middle, TextColor);
+                sprite.DrawString(Font, text, middle, tc);
 
                 if (is_cursor_visible && IsFocused)
                 {
@@ -198,7 +208,8 @@ namespace TBSGame.Controls
                 //kliknutí mimo textbox
                 if (mouse.LeftButton != ButtonState.Pressed && is_mouse_down_outside)
                 {
-                    confirm();
+                    if (IsFocused)
+                        cancel();
                     this.is_mouse_down_outside = false;
                 }
                 else

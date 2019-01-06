@@ -15,6 +15,7 @@ namespace TBSGame.Controls.TextBoxes
         public override Color BorderColor { get; set; } = Color.DarkGray;
         public override Color BorderHoverColor { get; set; } = Color.Silver;
         public override Color TextColor { get; set; } = Color.White;
+        public override Color PlaceHolderColor { get; set; } = new Color(Color.White, 0.3f);
 
         private string underline = "";
 
