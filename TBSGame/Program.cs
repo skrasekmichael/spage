@@ -9,7 +9,7 @@ namespace TBSGame
         [STAThread]
         static void Main()
         {
-            string appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "spage\\";
+            string appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\spage\\";
             string temp = Path.GetTempPath() + "spage\\";
 
             if (!Directory.Exists(appdata))
