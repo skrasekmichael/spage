@@ -19,22 +19,22 @@ namespace TBSGame.Saver
         public int Sources { get; set; } = 0;
         public int Round { get; set; } = 0;
         public Map Map { get; set; } = null;
-        public Scenario Scenario { get; private set; }
+        public string ScenarioName { get; private set; }
         public string Level { get; private set; }
-        public Settings Settings { get; private set; }
+        public string Scenario { get; private set; }
 
         public GameSave(Scenario scenario, Settings settings)
         {
-            this.Scenario = scenario;
+            this.ScenarioName = scenario.Name;
             this.Units = scenario.StarterPack;
-            this.Settings = settings;
+            this.Scenario = settings.Scenario;
             NextLevel();
         }
 
         private string getpath()
         {
             string number = "level" + MapLevel.ToString();
-            string level = $@"{Settings.Scenario}{Scenario.Name}\{number}\{number}.dat";
+            string level = $@"{Scenario}{ScenarioName}\{number}\{number}.dat";
             return level;
         }
 
