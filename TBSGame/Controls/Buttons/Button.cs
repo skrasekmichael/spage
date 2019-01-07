@@ -27,19 +27,21 @@ namespace TBSGame.Controls
         public Color MouseOverFill { get; set; } = Color.Transparent;
         public Color Frame { get; set; } = Color.Transparent;
         public Color MouseOverFrame { get; set; } = Color.Transparent;
+        public Color LockedColor { get; set; } = Color.Gray;
 
-        protected Rectangle bounds => new Rectangle(Bounds.X + (int)start.X, Bounds.Y + (int)start.Y, Bounds.Width, Bounds.Height);
         public int FrameWidth { get; set; } = 1;
         public int Key { get; set; } = 0;
         public string Title { get; set; }
         public float Opacity { get; set; } = 1f;
         public object Tag { get; set; }
+        public bool IsLocked { get; set; } = false;
 
         public bool BorderTop { get; set; } = true;
         public bool BorderLeft { get; set; } = true;
         public bool BorderRight { get; set; } = true;
         public bool BorderBottom { get; set; } = true;
 
+        protected Rectangle bounds => new Rectangle(Bounds.X + (int)start.X, Bounds.Y + (int)start.Y, Bounds.Width, Bounds.Height);
         protected bool is_mouse_hover = false, is_mouse_down = false;
         protected Texture2D frame, frame_over, background_fill, background_over_fill;
 
@@ -63,7 +65,7 @@ namespace TBSGame.Controls
             sprite.Draw(is_mouse_hover ? background_over_fill : background_fill, bounds, Color.White);
             draw();
             Vector2 middle = new Vector2(bounds.X + (Bounds.Width - Font.MeasureString(Title).X) / 2, bounds.Y + (Bounds.Height - Font.LineSpacing) / 2 + 1);
-            sprite.DrawString(Font, Title, middle, (is_mouse_hover ? MouseOverTextColor : TextColor) * Opacity);
+            sprite.DrawString(Font, Title, middle, IsLocked ? LockedColor : (is_mouse_hover ? MouseOverTextColor : TextColor) * Opacity);
 
             if (BorderTop)
                 sprite.Draw(is_mouse_hover ? frame_over : frame, new Rectangle(bounds.X, bounds.Y, Bounds.Width, FrameWidth), Color.White);
@@ -79,7 +81,7 @@ namespace TBSGame.Controls
         {
             check_mouse(mouse);
 
-            sprite.SetColorFill(ref frame, Frame);
+            sprite.SetColorFill(ref frame, IsLocked ? LockedColor : Frame);
             sprite.SetColorFill(ref frame_over, MouseOverFrame);
             sprite.SetColorFill(ref background_fill, Fill);
             sprite.SetColorFill(ref background_over_fill, MouseOverFill);
@@ -89,7 +91,7 @@ namespace TBSGame.Controls
 
         protected void check_mouse(MouseState mouse)
         {
-            if (this.bounds.Contains(mouse.X, mouse.Y))
+            if (!IsLocked && this.bounds.Contains(mouse.X, mouse.Y))
             {
                 this.is_mouse_hover = true;
                 if (mouse.LeftButton != ButtonState.Pressed && is_mouse_down)

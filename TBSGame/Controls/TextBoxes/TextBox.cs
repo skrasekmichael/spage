@@ -95,6 +95,7 @@ namespace TBSGame.Controls
         {
             IsFocused = !IsLocked;
             source = text;
+            cursor_pos = 0;
         }
 
         private void focus(MouseState state)
@@ -176,53 +177,51 @@ namespace TBSGame.Controls
         {
             MouseState mouse = ms.Value;
 
-            if (IsFocused)
+            if (!IsLocked)
             {
-                //blikání kurzoru
-                if (last_cursor_time == TimeSpan.Zero)
-                    last_cursor_time = time.TotalGameTime + TimeSpan.FromMilliseconds(500);
-
-                if (time.TotalGameTime - last_cursor_time > TimeSpan.FromMilliseconds(500))
+                if (IsFocused)
                 {
-                    is_cursor_visible = !is_cursor_visible;
-                    last_cursor_time = time.TotalGameTime;
+                    //blikání kurzoru
+                    if (last_cursor_time == TimeSpan.Zero)
+                        last_cursor_time = time.TotalGameTime + TimeSpan.FromMilliseconds(500);
+
+                    if (time.TotalGameTime - last_cursor_time > TimeSpan.FromMilliseconds(500))
+                    {
+                        is_cursor_visible = !is_cursor_visible;
+                        last_cursor_time = time.TotalGameTime;
+                    }
+
+                    input.Update(time, ks.Value);
                 }
 
-                if (IsFocused)
-                    input.Update(time, ks.Value);
-            }
-
-            if (this.bounds.Contains(mouse.X, mouse.Y))
-            {
-                this.is_mouse_hover = true;
-                if (mouse.LeftButton != ButtonState.Pressed && is_mouse_down)
+                if (this.bounds.Contains(mouse.X, mouse.Y))
                 {
-                    focus(mouse);
+                    this.is_mouse_hover = true;
+                    if (mouse.LeftButton != ButtonState.Pressed && is_mouse_down)
+                    {
+                        focus(mouse);
+                        this.is_mouse_down = false;
+                    }
+                    else
+                        this.is_mouse_down = (mouse.LeftButton == ButtonState.Pressed);
+                }
+                else
+                {
+                    //kliknutí mimo textbox
+                    if (mouse.LeftButton != ButtonState.Pressed && is_mouse_down_outside)
+                    {
+                        if (IsFocused)
+                            cancel();
+                        this.is_mouse_down_outside = false;
+                    }
+                    else
+                        this.is_mouse_down_outside = (mouse.LeftButton == ButtonState.Pressed);
+
+                    this.is_mouse_hover = false;
                     this.is_mouse_down = false;
                 }
-                else
-                    this.is_mouse_down = (mouse.LeftButton == ButtonState.Pressed);
             }
-            else
-            {
-                //kliknutí mimo textbox
-                if (mouse.LeftButton != ButtonState.Pressed && is_mouse_down_outside)
-                {
-                    if (IsFocused)
-                        cancel();
-                    this.is_mouse_down_outside = false;
-                }
-                else
-                    this.is_mouse_down_outside = (mouse.LeftButton == ButtonState.Pressed);
-
-                this.is_mouse_hover = false;
-                this.is_mouse_down = false;
-            }
-
-            update(time, ks, ms);
         }
-
-        protected abstract void update(GameTime time, KeyboardState? keyboard, MouseState? mouse);
 
         private void OnKeyDown(object sender, Keys key)
         {
@@ -255,5 +254,7 @@ namespace TBSGame.Controls
                 }
             }
         }
+
+        public void SetText(string text) => this.text = text;
     }
 }
