@@ -20,14 +20,14 @@ namespace TBSGame.Screens
         {
             buttons.AddRange(new Button[] {
                 new MenuButton(Resources.GetString("campaign")),
-                new MenuButton($"{Resources.GetString("custom")} {Resources.GetString("scenario")}"),
+                new MenuButton(Resources.GetString("custom_scenario")),
                 new MenuButton(Resources.GetString("about")),
                 new MenuButton(Resources.GetString("settings")),
                 new MenuButton(Resources.GetString("exit"))
             });
 
             ButtonClickedEventHandler[] handlers = new ButtonClickedEventHandler[] {
-                sender => Dispose(new PlayCampaign()),
+                sender => Dispose(new PlayCampaignScreen()),
                 sender => Dispose(null),
                 sender => Dispose(null),
                 sender => Dispose(new SettingsScreen()),

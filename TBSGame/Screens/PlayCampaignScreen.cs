@@ -13,16 +13,16 @@ using TBSGame.Saver;
 
 namespace TBSGame.Screens
 {
-    public class PlayCampaign : Screen
+    public class PlayCampaignScreen : Screen
     {
         private List<Button> buttons = new List<Button>();
 
-        public PlayCampaign() : base()
+        public PlayCampaignScreen() : base()
         {
             buttons.AddRange(new Button[] {
                 new MenuButton(Resources.GetString("newgame")),
                 new MenuButton(Resources.GetString("loadgame")),
-                new MenuButton(Resources.GetString("cancel"))
+                new MenuButton(Resources.GetString("back"))
             });
 
             ButtonClickedEventHandler[] handlers = new ButtonClickedEventHandler[] {
@@ -31,7 +31,7 @@ namespace TBSGame.Screens
                     GameSave game = new GameSave(scenario, Settings);
                     Dispose(new GameScreen(game));
                 },
-                sender => Dispose(null),
+                sender => Dispose(new GameSavesScreen()),
                 sender => Dispose(new MainMenuScreen())
             };
 
