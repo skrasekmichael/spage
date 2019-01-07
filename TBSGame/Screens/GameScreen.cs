@@ -16,10 +16,10 @@ namespace TBSGame.Screens
 {
     public class GameScreen : Screen
     {
-        private MapScreenTabPanel map;
+        private ScreenTabPanel[] tabs;
         private Level level;
         private string path;
-        private bool loaded = false;
+        private int selected = 0;
         private GameSave game;
 
         public GameScreen(GameSave game)
@@ -30,27 +30,53 @@ namespace TBSGame.Screens
 
         protected override void draw()
         {
-            map.Draw();
+            tabs.ToList().ForEach(t => t.DrawButton());
+            tabs[selected].Draw();
         }
 
         protected override void load(GraphicsDeviceManager graphics, ContentManager content, CustomSpriteBatch sprite)
         {
             this.level = Level.Load(path);
 
-            map = new MapScreenTabPanel(this.path, level, "gamemap", 0);
+            MapScreenTabPanel map = new MapScreenTabPanel(this.path, Settings, level, "gamemap");
             map.OnPlayGame += new PlayGameEventhandle((sender, level_map) =>
             {
                 string path = $"{Path.GetDirectoryName(this.path)}/maps/{level_map.Name}.dat";
                 if (File.Exists(path))
-                    this.Dispose(new MapScreen(game, Map.Load(path)));
+                    this.Dispose(new MapScreen(game, Settings, Map.Load(path)));
             });
 
-            map.Load(graphics, content, sprite);
+            SaveScreenTabPanel save = new SaveScreenTabPanel(Settings, "gamesave");
+            save.OnSaveGame += new SaveGameEventHandler((sender, i, name) =>
+            {
+                this.game.Name = name;
+                string path = Settings.GameSaves + i.ToString() + ".dat";
+                this.game.Save(path);
+            });
+            save.OnLoadGame += new LoadGameEventHandler((sender, i) =>
+            {
+                GameSave game = GameSave.Load(Settings.GameSaves + i.ToString() + ".dat");
+                Scenario.Load("scenario\\campaign.dat", game.Scenario + "campaign\\");
+                if (game != null)
+                    this.Dispose(new GameScreen(game));
+            });
+
+            tabs = new ScreenTabPanel[] { map, save };
+
+            int index = 0;
+            foreach (ScreenTabPanel tab in tabs)
+            {
+                tab.Index = index;
+                tab.OnSelectedTab += new SelectedTabEventHandler(sender => selected = ((ScreenTabPanel)sender).Index);
+                tab.Load(graphics, content, sprite);
+                tab.LoadPosition();
+                index++;
+            }
         }
 
         protected override void loadpos()
         {
-
+            tabs?.ToList().ForEach(t => t.LoadPosition());
         }
 
         protected override void update(GameTime time)
@@ -58,7 +84,8 @@ namespace TBSGame.Screens
             MouseState mouse = Mouse.GetState();
             KeyboardState keyboard = Keyboard.GetState();
 
-            map.Update(time, keyboard, mouse);
+            tabs.ToList().ForEach(t => t.UpdateButton(time, keyboard, mouse));
+            tabs[selected].Update(time, keyboard, mouse);
         }
     }
 }

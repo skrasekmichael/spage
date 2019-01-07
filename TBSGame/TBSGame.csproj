@@ -51,6 +51,7 @@
     <Compile Include="Controls\Buttons\MenuButton.cs" />
     <Compile Include="Controls\Buttons\TabPanelButton.cs" />
     <Compile Include="Controls\Control.cs" />
+    <Compile Include="Controls\GameSavePanel.cs" />
     <Compile Include="Controls\Label.cs" />
     <Compile Include="Controls\Panel.cs" />
     <Compile Include="Controls\TabPanel.cs" />
@@ -60,6 +61,7 @@
     <Compile Include="CustomSpriteBatch.cs" />
     <Compile Include="Error.cs" />
     <Compile Include="FPSCounter.cs" />
+    <Compile Include="Screens\GameSavesScreen.cs" />
     <Compile Include="Screens\ScreenTabPanels\SaveScreenTabPanel.cs" />
     <Compile Include="Spage.cs" />
     <Compile Include="KeyboardChecker.cs" />
@@ -85,7 +87,7 @@
     <Compile Include="Screens\MapScreenControls\UnitControl.cs" />
     <Compile Include="Screens\MapScreenControls\UnitDetailControl.cs" />
     <Compile Include="Screens\MapScreenControls\UnitInfoControl.cs" />
-    <Compile Include="Screens\PlayCampaign.cs" />
+    <Compile Include="Screens\PlayCampaignScreen.cs" />
     <Compile Include="Screens\Screen.cs" />
     <Compile Include="Screens\ScreenTabPanels\MapScreenTabPanel.cs" />
     <Compile Include="Screens\ScreenTabPanels\ScreenTabPanel.cs" />
