@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using TBSGame.Controls;
 using TBSGame.Controls.Buttons;
+using TBSGame.Saver;
 
 namespace TBSGame.Screens
 {
@@ -21,14 +22,20 @@ namespace TBSGame.Screens
             buttons.AddRange(new Button[] {
                 new MenuButton(Resources.GetString("campaign")),
                 new MenuButton(Resources.GetString("custom_scenario")),
+                new MenuButton(Resources.GetString("loadgame")),
                 new MenuButton(Resources.GetString("about")),
                 new MenuButton(Resources.GetString("settings")),
                 new MenuButton(Resources.GetString("exit"))
             });
 
             ButtonClickedEventHandler[] handlers = new ButtonClickedEventHandler[] {
-                sender => Dispose(new PlayCampaignScreen()),
+                sender => {
+                    Scenario scenario = Scenario.Load("scenario\\campaign.dat", Settings.Scenario + "campaign\\");
+                    GameSave game = new GameSave(scenario, Settings);
+                    Dispose(new GameScreen(game));
+                },
                 sender => Dispose(null),
+                sender => Dispose(new GameSavesScreen()),
                 sender => Dispose(null),
                 sender => Dispose(new SettingsScreen()),
                 sender => Dispose(null)
