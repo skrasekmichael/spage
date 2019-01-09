@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using TBSGame.Controls.Buttons;
 using TBSGame.Controls.TextBoxes;
@@ -30,6 +31,8 @@ namespace TBSGame.Controls
         private MenuButton[] delete_buttons = new MenuButton[10];
         private MenuButton[] save_buttons;
         private MenuButton[] load_buttons;
+        private Label[] dates = new Label[10];
+        private Label[] scenarios = new Label[10];
         private string path;
         private Display type;
 
@@ -55,6 +58,8 @@ namespace TBSGame.Controls
                 save_buttons?[i].Draw();
                 load_buttons?[i].Draw();
                 delete_buttons[i].Draw();
+                dates[i].Draw();
+                scenarios[i].Draw();
             }
         }
 
@@ -66,12 +71,14 @@ namespace TBSGame.Controls
                 save_buttons?[i].Update(time, keyboard, mouse);
                 load_buttons?[i].Update(time, keyboard, mouse);
                 delete_buttons[i].Update(time, keyboard, mouse);
+                dates[i].Update(time, keyboard, mouse);
+                scenarios[i].Update(time, keyboard, mouse);
             }
         }
 
         public void LoadPostiton()
         {
-            int w = 600;
+            int w = 500;
             for (int i = 0; i < 10; i++)
             {
                 Rectangle source = new Rectangle((Width - w) / 2, (Height - 50) / 2 + (i - 5) * 51, w, 50);
@@ -84,7 +91,12 @@ namespace TBSGame.Controls
                     r += 155;
                 }
                 if (ShowLoad)
+                {
                     load_buttons[i].Bounds = new Rectangle(r, source.Y, 150, 50);
+                    r += 155;
+                }
+                scenarios[i].Bounds = new Rectangle(r, source.Y, 220 + 5, 25);
+                dates[i].Bounds = new Rectangle(r, source.Y + 20, 220, 25);
             }
         }
 
@@ -106,6 +118,20 @@ namespace TBSGame.Controls
                 del_btn.Load(graphics, content, sprite);
                 del_btn.IsLocked = true;
                 delete_buttons[i] = del_btn;
+
+                Label date = new Label("");
+                date.Load(graphics, content, sprite);
+                date.Font = content.Load<SpriteFont>("fonts/small");
+                date.TextColor = Color.Silver;
+                date.HAligment = HorizontalAligment.Left;
+                dates[i] = date;
+
+                Label scenario = new Label("");
+                scenario.Load(graphics, content, sprite);
+                scenario.Font = content.Load<SpriteFont>("fonts/small");
+                scenario.TextColor = Color.Silver;
+                scenario.HAligment = HorizontalAligment.Left;
+                scenarios[i] = scenario;
 
                 if (ShowLoad)
                 {
@@ -138,6 +164,8 @@ namespace TBSGame.Controls
                     if (save != null)
                     {
                         textbox.SetText(save.Name);
+                        date.Text = save.SavedAt.ToString("dd.MM.yyyy HH:mm:ss");
+                        scenario.Text = save.ScenarioName;
                         delete_buttons[i].IsLocked = false;
                         if (ShowLoad)
                             load_buttons[i].IsLocked = false;

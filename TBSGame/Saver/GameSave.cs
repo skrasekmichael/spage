@@ -18,6 +18,7 @@ namespace TBSGame.Saver
         public string Name { get; set; } = "default";
         public int Sources { get; set; } = 0;
         public int Round { get; set; } = 0;
+        public DateTime SavedAt { get; private set; }
         public Map Map { get; set; } = null;
         public string ScenarioName { get; private set; }
         public string Level { get; private set; }
@@ -55,6 +56,8 @@ namespace TBSGame.Saver
         {
             try
             {
+                SavedAt = DateTime.Now;
+
                 if (File.Exists(path))
                     File.Delete(path);
 

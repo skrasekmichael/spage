@@ -13,6 +13,8 @@ namespace TBSGame.Controls
     public abstract class Control
     {
         protected GraphicsDeviceManager graphics;
+        protected int Width => graphics.PreferredBackBufferWidth;
+        protected int Height => graphics.PreferredBackBufferHeight;
         protected ContentManager content;
         protected CustomSpriteBatch sprite;
         protected Vector2 start = new Vector2(0, 0);
