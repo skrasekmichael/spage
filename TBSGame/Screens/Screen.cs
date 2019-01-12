@@ -1,11 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TBSGame.MessageBoxes;
+using MessageBox = TBSGame.MessageBoxes.MessageBox;
 
 namespace TBSGame.Screens
 {
@@ -33,9 +36,10 @@ namespace TBSGame.Screens
         private double move = -60;
         private Point[] loc = new Point[] { new Point(-1, -1), new Point(-1, 1), new Point(1, 1), new Point(1, -1) };
         private int dir = 0;
+        private MessageBox message = null;
 
         protected abstract void load(GraphicsDeviceManager graphics, ContentManager content, CustomSpriteBatch sprite);
-        protected abstract void update(GameTime time);
+        protected abstract void update(GameTime time, KeyboardState keyboard, MouseState mouse);
         protected abstract void draw();
         protected abstract void loadpos();
 
@@ -45,7 +49,10 @@ namespace TBSGame.Screens
             this.content = content;
             this.sprite = sprite;
             this.driver = driver;
-            Reload();
+
+            Width = graphics.GraphicsDevice.PresentationParameters.Bounds.Width;
+            Height = graphics.GraphicsDevice.PresentationParameters.Bounds.Height;
+            sprite.Load();
 
             black = sprite.GetColorFill(Color.Black, Width, Height);
             anim = sprite.GetColorFill(Color.Lime);
@@ -53,8 +60,8 @@ namespace TBSGame.Screens
             font = content.Load<SpriteFont>("fonts/text");
             small = content.Load<SpriteFont>("fonts/small");
 
-            loadpos();
             load(graphics, content, sprite);
+            loadpos();
         }
 
         protected void Reload()
@@ -66,7 +73,7 @@ namespace TBSGame.Screens
             loadpos();
         }
 
-        public Screen Update(GameTime time)
+        public Screen Update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
             //pokud se načítájí data 
             if (is_loading) //animace načítání
@@ -134,7 +141,16 @@ namespace TBSGame.Screens
                         end_coef = 1f;
                 }
 
-                update(time);
+                if (message == null)
+                    update(time, keyboard, mouse);
+                else
+                {
+                    if (!message.IsVisible)
+                        message.IsVisible = true;
+                    message.Update(time, keyboard, mouse);
+                    if (!message.IsVisible)
+                        message = null;
+                }
                 return this;
             }
         }
@@ -201,10 +217,18 @@ namespace TBSGame.Screens
             else
             {
                 draw();
+                if (message != null && message.IsVisible)
+                    message.Draw();
 
                 sprite.Draw(black, new Rectangle(0, 0, Width, Height), Color.White * end_coef);
                 sprite.Draw(black, new Rectangle(0, 0, Width, Height), Color.White * start_coef);
             }
+        }
+
+        public void ShowMessage(MessageBox message)
+        {
+            this.message = message;
+            message.Load(graphics, content, sprite);
         }
 
         public void Dispose(Screen next)
