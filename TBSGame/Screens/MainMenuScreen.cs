@@ -7,6 +7,7 @@ using MapDriver;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using TBSGame.Controls;
 using TBSGame.Controls.Buttons;
 using TBSGame.Saver;
@@ -36,7 +37,7 @@ namespace TBSGame.Screens
                 },
                 sender => Dispose(null),
                 sender => Dispose(new GameSavesScreen()),
-                sender => Dispose(null),
+                sender => Dispose(new AboutScreen()),
                 sender => Dispose(new SettingsScreen()),
                 sender => Dispose(null)
             };
@@ -62,7 +63,7 @@ namespace TBSGame.Screens
                 buttons[i].Bounds = new Rectangle((Width - 300) / 2, (Height - h - buttons.Count * h) / 2 + i * h, 300, h - 1);
         }
 
-        protected override void update(GameTime time)
+        protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
             buttons.ForEach(btn => btn.Update(time));
         }
