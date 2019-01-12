@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using TBSGame.Controls;
 using TBSGame.Controls.Buttons;
+using TBSGame.MessageBoxes;
 using TBSGame.Saver;
 
 namespace TBSGame.Screens
@@ -21,7 +22,7 @@ namespace TBSGame.Screens
         public GameSavesScreen()
         {
             back = new MenuButton(Resources.GetString("back"));
-            back.OnButtonClicked += new ButtonClickedEventHandler(sender => this.Dispose(new PlayCampaignScreen()));
+            back.OnButtonClicked += new ButtonClickedEventHandler(sender => this.Dispose(new MainMenuScreen()));
         }
 
         protected override void draw()
@@ -43,7 +44,16 @@ namespace TBSGame.Screens
                  if (game != null)
                      this.Dispose(new GameScreen(game));
              });
-            saves.LoadPostiton();
+            saves.OnDeleteGame += new DeleteGameEventHandler((sender, index) =>
+            {
+                YesNoMessageBox message = new YesNoMessageBox(Resources.GetString("delete?"));
+                message.OnMessageBox += new MessageBoxEventHandler((obj, result) =>
+                {
+                    if (result == DialogResult.Yes)
+                        saves.Delete(index);
+                });
+                this.ShowMessage(message);
+            });
         }
 
         protected override void loadpos()
@@ -52,11 +62,8 @@ namespace TBSGame.Screens
             back.Bounds = new Rectangle(Width - 210, Height - 55, 200, 50);
         }
 
-        protected override void update(GameTime time)
+        protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
-            MouseState mouse = Mouse.GetState();
-            KeyboardState keyboard = Keyboard.GetState();
-
             saves.Update(time, keyboard, mouse);
             back.Update(time, keyboard, mouse);
         }

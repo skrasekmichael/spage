@@ -44,12 +44,12 @@ namespace TBSGame.Screens
         private bool active_map = true;
         private GameSave game;
 
-        public MapScreen(GameSave game, Map map) : base()
+        public MapScreen(GameSave game, Settings settings, Map map) : base()
         {
             this.game = game;
             this.map = map;
 
-            saver = new GameMapSaver(game.Settings);
+            saver = new GameMapSaver(settings);
 
             areas = new List<AreaControl>(map.Width * map.Height);
 
@@ -61,7 +61,7 @@ namespace TBSGame.Screens
 
             menu.OnLoadMapSaveEventHandler += new LoadMapSaveEventHandler((sender, loaded_map) =>
             {
-                MapScreen map_screen = new MapScreen(game, loaded_map);
+                MapScreen map_screen = new MapScreen(game, settings, loaded_map);
                 map_screen.start_message.Visible = false;
                 this.Dispose(map_screen);
             });
@@ -243,6 +243,12 @@ namespace TBSGame.Screens
                 int y = areas[i].Y;
                 if (engine.GetVisibility(x, y) != Visibility.Gone)
                     areas[i].Draw();
+                else
+                {
+                    //vykreslení šípu
+                    if (areas[i].UnitControl?.IsAnimating == true)
+                        areas[i].UnitControl?.DrawBallisticTrajectory();
+                }
             }
 
             if (turn == 1)
@@ -333,16 +339,13 @@ namespace TBSGame.Screens
             areas.ForEach(area => area.Update(map, engine, time, keyboard, mouse, active_map));
         }
 
-        protected override void update(GameTime time)
+        protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
             this.time = time;
             int move = 15;
 
-            MouseState mouse = Mouse.GetState();
-            KeyboardState keyboard = Keyboard.GetState();
-
             //posouvání po mapě
-            if (!start_message.Visible)
+            if (!start_message.Visible && turn == 1)
             {
                 if (mouse.X > Width - 5)
                     engine.View = new System.Drawing.PointF(engine.View.X - move, engine.View.Y);

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using TBSGame.Controls;
 using TBSGame.Controls.Buttons;
 
@@ -61,7 +62,7 @@ namespace TBSGame.Screens
             buttons[btns].Bounds = new Rectangle(Width - 210, Height - h - 10, 200, h);
         }   
 
-        protected override void update(GameTime time)
+        protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
             buttons.ForEach(btn => btn.Update(time));
         }

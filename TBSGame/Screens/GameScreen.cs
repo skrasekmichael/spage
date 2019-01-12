@@ -69,7 +69,6 @@ namespace TBSGame.Screens
                 tab.Index = index;
                 tab.OnSelectedTab += new SelectedTabEventHandler(sender => selected = ((ScreenTabPanel)sender).Index);
                 tab.Load(graphics, content, sprite);
-                tab.LoadPosition();
                 index++;
             }
         }
@@ -79,11 +78,8 @@ namespace TBSGame.Screens
             tabs?.ToList().ForEach(t => t.LoadPosition());
         }
 
-        protected override void update(GameTime time)
+        protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
-            MouseState mouse = Mouse.GetState();
-            KeyboardState keyboard = Keyboard.GetState();
-
             tabs.ToList().ForEach(t => t.UpdateButton(time, keyboard, mouse));
             tabs[selected].Update(time, keyboard, mouse);
         }
