@@ -19,6 +19,7 @@ namespace TBSGame.Controls
         public HorizontalAligment HAligment { get; set; } = HorizontalAligment.Center;
         public VerticalAligment VAligment { get; set; } = VerticalAligment.Center;
         public int Space { get; set; } = 10;
+        public int LineHeight { get; set; } = 0;
         public float Opacity { get; set; } = 1f;
 
         private bool IsMultiLine => Text.Split('\n').Length > 1;
@@ -56,7 +57,7 @@ namespace TBSGame.Controls
 
         public override void Draw()
         {
-            sprite.DrawMultiLineText(Font, Text.Split('\n'), bounds, HAligment, VAligment, Space, TextColor * Opacity);
+            sprite.DrawMultiLineText(Font, Text.Split('\n'), bounds, HAligment, VAligment, Space, TextColor * Opacity, LineHeight);
         }
     }
 }
