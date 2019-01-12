@@ -14,10 +14,10 @@ namespace TBSGame.Controls.TextBoxes
         private Texture2D bg, frame, frame_over;
 
         public override Color BackColor { get; set; } = Color.Black;
-        public override Color BorderColor { get; set; } = Color.Aqua;
-        public override Color BorderHoverColor { get; set; } = Color.Silver;
+        public override Color BorderColor { get; set; } = Color.CornflowerBlue;
+        public override Color BorderHoverColor { get; set; } = Color.White;
         public override Color TextColor { get; set; } = Color.White;
-        public override Color PlaceHolderColor { get; set; } = new Color(80, 80, 80);
+        public override Color PlaceHolderColor { get; set; } = Color.Gray;
 
         protected override void draw_background()
         {
@@ -41,11 +41,6 @@ namespace TBSGame.Controls.TextBoxes
             bg = sprite.GetColorFill(BackColor);
             frame = sprite.GetColorFill(BorderColor);
             frame_over = sprite.GetColorFill(BorderHoverColor);
-        }
-
-        protected override void update(GameTime time, KeyboardState? keyboard, MouseState? mouse)
-        {
-            
         }
     }
 }

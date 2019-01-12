@@ -34,10 +34,5 @@ namespace TBSGame.Controls.TextBoxes
             for (int i = 0; i <= (int)(Bounds.Width / Font.MeasureString("_").X); i++)
                 underline += "_";
         }
-
-        protected override void update(GameTime time, KeyboardState? keyboard, MouseState? mouse)
-        {
-            
-        }
     }
 }
