@@ -9,17 +9,20 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using TBSGame.Controls.Buttons;
 using TBSGame.Controls.TextBoxes;
+using TBSGame.MessageBoxes;
 using TBSGame.Saver;
 
 namespace TBSGame.Controls
 {
     public delegate void SaveGameEventHandler(object sender, int index, string name);
     public delegate void LoadGameEventHandler(object sender, int index);
+    public delegate void DeleteGameEventHandler(object sender, int index);
 
     public class GameSavePanel : Control
     {
         public event SaveGameEventHandler OnSaveGame;
         public event LoadGameEventHandler OnLoadGame;
+        public event DeleteGameEventHandler OnDeleteGame;
 
         [Flags]
         public enum Display
@@ -48,6 +51,11 @@ namespace TBSGame.Controls
                 load_buttons = new MenuButton[10];
             if (ShowSave)
                 save_buttons = new MenuButton[10];
+        }
+
+        public void Delete(int index)
+        {
+
         }
 
         public override void Draw()
@@ -116,8 +124,10 @@ namespace TBSGame.Controls
 
                 MenuButton del_btn = new MenuButton(Resources.GetString("delete"));
                 del_btn.Load(graphics, content, sprite);
+                del_btn.Tag = i;
                 del_btn.IsLocked = true;
                 delete_buttons[i] = del_btn;
+                del_btn.OnButtonClicked += new ButtonClickedEventHandler(sender => OnDeleteGame?.Invoke(this, (int)((Button)sender).Tag));
 
                 Label date = new Label("");
                 date.Load(graphics, content, sprite);
