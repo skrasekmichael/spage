@@ -17,6 +17,7 @@ namespace TBSGame.AI
         private void EndTurn()
         {
             index = -1;
+            phase = ANALYZE;
             sighted_enemies = new HashSet<Unit>();
             OnEndTurn?.Invoke(this);
         }
@@ -32,7 +33,12 @@ namespace TBSGame.AI
         private Map map;
         private Engine engine;
         private TimeSpan last_time = TimeSpan.Zero;
-        private int index = -1, selected = -1, phase = 0;
+        private int index = -1, selected = -1, phase = ANALYZE;
+
+        private const int ANALYZE = 0;
+        private const int MOVE = 1;
+        private const int ATTACK = 2;
+        private const int NOTHING = 3;
 
         public MapAI(Map map, int player)
         {
@@ -60,6 +66,8 @@ namespace TBSGame.AI
             if (index != -1)
             {
                 this.enemies = map.Units.Where(kvp => sighted_enemies.Contains(kvp.Value)).ToDictionary(kvp => new Point(kvp.Key.X, kvp.Key.Y), kvp => kvp.Value);
+                //řazení podle priority strategie AI
+                //units = units.OrderByDescending(kvp => (int)kvp.Value.AIStrategy).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
                 if (index >= units.Count)
                     EndTurn();
@@ -70,39 +78,45 @@ namespace TBSGame.AI
                         selected = MoveControl.GetIndex(map, p.X, p.Y);
 
                     //analýza dalšího kroku
-                    if (phase == 0)
+                    if (phase == ANALYZE)
                     {
                         analyze(units[p], new Point(p.X, p.Y), areas);
                     }
 
                     //pohyb jednotky
-                    if (phase == 1)
+                    if (phase == MOVE)
                     {
                         move.Update(time, map, engine, areas, ref selected, Player);
                     }
 
                     //útok na jednotku
-                    if (phase == 2)
+                    if (phase == ATTACK)
                     {
-                        if (last_time == TimeSpan.Zero)
-                            last_time = time.TotalGameTime - TimeSpan.FromMilliseconds(600);
-
-                        if (time.TotalGameTime - last_time >= TimeSpan.FromMilliseconds(600))
+                        UnitControl unit = areas[selected].UnitControl;
+                        if (!unit.IsAttacking)
                         {
-                            UnitControl enemy = areas[MoveControl.GetIndex(map, target.X, target.Y)].UnitControl;
-                            if (enemy == null) //jednotk umřela
-                                phase = 0;
-                            else if (areas[selected].UnitControl.Attack(enemy) == -1) //došla stamina
-                                phase = 3;
+                            AreaControl area = areas[MoveControl.GetIndex(map, target.X, target.Y)];
+                            area.UpdateData(map, engine, time);
+                            UnitControl enemy = area.UnitControl;
+                            if (enemy == null) //jednotka umřela
+                                phase = ANALYZE;
+                            else
+                            {
+                                int attack = unit.Attack(enemy);
+                                if (attack == -1) //došla stamina
+                                    phase = NOTHING;
+                                else if (attack == -2) //jednotka nemá dostřel - chyba v reverzním algoritmu pro AttackRange
+                                    phase = NOTHING;
+                            }
 
                             last_time = time.TotalGameTime;
                         }
                     }
 
                     //jednotka už nebude nic dělat
-                    if (phase == 3)
+                    if (phase == NOTHING)
                     {
-                        phase = 0;
+                        phase = ANALYZE;
                         selected = -1;
                         index++;
                     }
@@ -138,23 +152,23 @@ namespace TBSGame.AI
             HashSet<System.Drawing.Point> in_range = new HashSet<System.Drawing.Point>();
             foreach (KeyValuePair<Point, Unit> kvp in enemies)
             {
-                foreach (System.Drawing.Point p in engine.GetAttackRange(point.X, point.Y, unit, unit.Range))
+                foreach (System.Drawing.Point p in engine.GetAttackRange(kvp.Key.X, kvp.Key.Y, unit, unit.Range))
                 {
                     in_range.Add(p);
-                    if (p.X == kvp.Key.X && p.Y == kvp.Key.Y)
+                    if (p.X == point.X && p.Y == point.Y)
                     {
                         targets.Add(kvp.Key);
-                        phase = 2;
+                        phase = ATTACK;
                     }
                 }
             }
 
-            if (phase == 0)
+            if (phase == ANALYZE)
             {
-                phase = 1;
+                phase = MOVE;
                 Point next = next_hop(real_mob, in_range, point, unit);
                 if (next == new Point(-1, -1) || next == point)
-                    phase = 3;
+                    phase = NOTHING;
                 else
                 {
                     engine.Mobility = real_mob;

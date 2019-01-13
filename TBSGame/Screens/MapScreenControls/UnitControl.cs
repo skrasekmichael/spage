@@ -16,13 +16,15 @@ namespace TBSGame.Screens.MapScreenControls
     {
         public Unit Unit { get; set; }
         public int BaseIndex { get; set; } = -1;
+        public bool IsAttacking => !((type == 0 && IsAnimating) && enemy == null);
+        public bool IsAnimating => start_attacking == TimeSpan.Zero;
         public BallisticTrajectoryControl BallisticTrajectory { get; set; } = null;
 
         private Rectangle bounds;
         private Texture2D tx;
         private int type = 0, index = -1, lindex = -1, max = 0;
         private double size;
-        private bool start_shooting = false, attacking = false;
+        private bool shooting = false;
         private Map map;
         private Engine engine;
         private TimeSpan start_attacking = TimeSpan.Zero;
@@ -76,7 +78,7 @@ namespace TBSGame.Screens.MapScreenControls
 
         public int Attack(UnitControl enemy)
         {
-            if (!attacking)
+            if (!IsAttacking)
             {
                 if (Unit.Stamina >= Unit.StaminaPerAttack)
                 {
@@ -84,7 +86,6 @@ namespace TBSGame.Screens.MapScreenControls
                     if (range.Contains(new System.Drawing.Point(enemy.X, enemy.Y)))
                     {
                         start_attacking = time.TotalGameTime;
-                        attacking = true;
 
                         this.Unit.Direction = (byte)MoveUnit.GetDirection(X - enemy.X, Y - enemy.Y);
 
@@ -97,17 +98,17 @@ namespace TBSGame.Screens.MapScreenControls
                         }
 
                         Unit.Stamina -= Unit.StaminaPerAttack;
-
-                        var mob = engine.GetMobility(X, Y);
-                        engine.Mobility = mob;
+                        engine.Mobility = engine.GetMobility(X, Y); ;
 
                         return 1;
                     }
+                    else
+                        return -2; //jednotka nemá dostřel na nepřítele
                 }
                 else
-                    return -1;
+                    return -1; //došla stamina
             }
-            return 0;
+            return 0; //jednotka právě útočí
         }
 
         private void _attack()
@@ -118,7 +119,7 @@ namespace TBSGame.Screens.MapScreenControls
             else
                 enemy.Unit.Health = (ushort)hp;
             enemy = null;
-            attacking = false;
+            shooting = false;
         }
 
         public void Update(Map map, Engine engine, GameTime time)
@@ -129,20 +130,16 @@ namespace TBSGame.Screens.MapScreenControls
 
             info.Update(engine);
 
-            if (start_shooting)
+            if (shooting)
             {
                 if (BallisticTrajectory == null)
-                {
-                    start_shooting = false;
                     _attack();
-                }
                 else
                 {
                     if (BallisticTrajectory.Update(engine, time))
                     {
                         _attack();
                         this.BallisticTrajectory = null;
-                        start_shooting = false;
                     }
                 }
             }
@@ -159,13 +156,12 @@ namespace TBSGame.Screens.MapScreenControls
 
             bounds = get_unit_bounds(new Rectangle(X, Y, (int)size, (int)size));
 
-
             set_dir();
 
             if (lindex != index)
                 clip();
 
-            if (start_attacking != TimeSpan.Zero)
+            if (!IsAnimating)
             {
                 clip();
                 if (time.TotalGameTime - start_attacking > TimeSpan.FromMilliseconds(100))
@@ -181,7 +177,7 @@ namespace TBSGame.Screens.MapScreenControls
                     {
                         if (type == 3)
                         {
-                            start_shooting = true;
+                            shooting = true;
                             Random random = new Random(DateTime.Now.Millisecond);
                             attack[random.Next(max)].Play();
                         }
@@ -201,6 +197,11 @@ namespace TBSGame.Screens.MapScreenControls
                 index = Unit.Direction - 4;
         }
 
+        public void DrawBallisticTrajectory()
+        {
+            BallisticTrajectory?.Draw();
+        }
+
         public void Draw()
         {
             VertexPositionTexture[] vertex = new VertexPositionTexture[5]
@@ -213,7 +214,7 @@ namespace TBSGame.Screens.MapScreenControls
             };
 
             sprite.FillArea(vertex, tx);
-            BallisticTrajectory?.Draw();
+            DrawBallisticTrajectory();
             info.Draw(bounds.Height);
         }
         

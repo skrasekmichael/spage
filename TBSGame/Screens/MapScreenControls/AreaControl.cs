@@ -114,13 +114,52 @@ namespace TBSGame.Screens.MapScreenControls
             }
         }
 
+        public void UpdateData(Map map, Engine engine, GameTime time)
+        {
+            Visibility visibility = engine.GetVisibility(X, Y);
+            bool drawing = visibility == Visibility.Visible || visibility == Visibility.Sighted;
+
+            Unit unit = map.GetUnit(X, Y);
+            if (unit != null)
+            {
+                if (UnitControl == null)
+                {
+                    UnitControl = new UnitControl(unit, X, Y);
+                    UnitControl.Load(graphics, content, sprite, driver, font);
+                    UnitControl.BaseIndex = this.Index;
+                }
+
+                UnitControl.Update(map, engine, time);
+                draw_unit = drawing;
+            }
+            else
+            {
+                UnitControl = null;
+                draw_unit = false;
+            }
+
+
+            MapObject obj = map.GetMapObject(X, Y);
+            if (obj != null)
+            {
+                if (Object == null)
+                {
+                    Object = new MapObjectControl(obj, X, Y);
+                    Object.Load(graphics, content, sprite, driver, font);
+                }
+
+                Object.Update(map, engine);
+            }
+            else
+                Object = null;
+        }
+
         public void Update(Map map, Engine engine, GameTime time, KeyboardState state, MouseState mouse, bool hover)
         {
             p1 = to_vector(engine.GetPoint(X, Y));
             p2 = to_vector(engine.GetPoint(X + 1, Y));
             p3 = to_vector(engine.GetPoint(X, Y + 1));
             p4 = to_vector(engine.GetPoint(X + 1, Y + 1));
-            center = to_vector(engine.GetCenter(X, Y));
 
             Vector2 pos = new Vector2(mouse.Position.X - Width / 2, Height / 2 - mouse.Position.Y);
             bool old_over = IsMouseOver;
@@ -144,37 +183,7 @@ namespace TBSGame.Screens.MapScreenControls
                 new VertexPositionColor(new Vector3(p1, 0), grid)
             };
 
-            Unit unit = map.GetUnit(X, Y);
-            if (unit != null)
-            {
-                if (UnitControl == null)
-                {
-                    UnitControl = new UnitControl(unit, X, Y);
-                    UnitControl.Load(graphics, content, sprite, driver, font);
-                    UnitControl.BaseIndex = this.Index;
-                }
-
-                UnitControl.Update(map, engine, time);
-                draw_unit = (engine.GetVisibility(X, Y) == Visibility.Visible || engine.GetVisibility(X, Y) == Visibility.Visible);
-            }
-            else
-                UnitControl = null;
-
-
-            MapObject obj = map.GetMapObject(X, Y);
-            if (obj != null)
-            {
-                if (Object == null)
-                {
-                    Object = new MapObjectControl(obj, X, Y);
-                    Object.Load(graphics, content, sprite, driver, font);
-                }
-
-                Object.Update(map, engine);
-            }
-            else
-                Object = null;
-
+            UpdateData(map, engine, time);
 
             texture = "";
             if (IsMouseOver && hover)
@@ -205,7 +214,7 @@ namespace TBSGame.Screens.MapScreenControls
                     texture += "mob";
             }
             else if (state.IsKeyDown(Keys.A) == true)
-            { 
+            {
                 if (engine.AttackRange != null && engine.AttackRange.Contains(new System.Drawing.Point(X, Y)))
                     texture += "inrange";
             }
@@ -217,7 +226,10 @@ namespace TBSGame.Screens.MapScreenControls
             sprite.DrawLine(line);
 
             if (draw_unit)
-                UnitControl?.Draw();
+                UnitControl.Draw();
+            else
+                if (UnitControl?.IsAnimating == true)
+                    UnitControl?.DrawBallisticTrajectory();
             Object?.Draw();
         }
     }
