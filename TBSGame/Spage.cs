@@ -69,7 +69,7 @@ namespace TBSGame
         {
             if (this.IsActive)
             {
-                screen = screen.Update(gameTime);
+                screen = screen.Update(gameTime, Keyboard.GetState(), Mouse.GetState());
                 if (screen == null)
                     Exit();
 
