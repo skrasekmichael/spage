@@ -292,6 +292,8 @@ namespace TBSGame.Screens
         protected override void loadpos()
         {
             engine = new Engine(map, Height / 15, Width, Height);
+            engine.ScreenWidth = Width;
+            engine.ScreenHeight = Height;
             engine.Center = new System.Drawing.PointF(0, 75 / 2);
         }
 
