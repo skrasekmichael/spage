@@ -50,8 +50,8 @@ namespace TBSGame.Screens
             this.sprite = sprite;
             this.driver = driver;
 
-            Width = graphics.GraphicsDevice.PresentationParameters.Bounds.Width;
-            Height = graphics.GraphicsDevice.PresentationParameters.Bounds.Height;
+            Width = graphics.PreferredBackBufferWidth;
+            Height = graphics.PreferredBackBufferHeight;
             sprite.Load();
 
             black = sprite.GetColorFill(Color.Black, Width, Height);
