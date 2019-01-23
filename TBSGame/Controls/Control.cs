@@ -19,6 +19,7 @@ namespace TBSGame.Controls
         protected CustomSpriteBatch sprite;
         protected Vector2 start = new Vector2(0, 0);
 
+        public bool IsVisible { get; set; } = true;
         public Rectangle Bounds { get; set; } = Rectangle.Empty;
         public virtual SpriteFont Font { get; set; }
 
@@ -38,18 +39,27 @@ namespace TBSGame.Controls
 
         protected abstract void load();
 
-        public abstract void Draw();
+        public void Draw()
+        {
+            if (IsVisible)
+                draw();
+        }
+
+        protected abstract void draw();
 
         public abstract void Update(GameTime time, KeyboardState? keyboard, MouseState? mouse);
 
         public void Update(GameTime gametime, Vector2? start = null, KeyboardState? keyboard = null, MouseState? mouse = null)
         {
-            if (start == null)
-                this.start = new Vector2(0, 0);
-            else
-                this.start = start.Value;
+            if (IsVisible)
+            {
+                if (start == null)
+                    this.start = new Vector2(0, 0);
+                else
+                    this.start = start.Value;
 
-            Update(gametime, keyboard, mouse);
+                Update(gametime, keyboard, mouse);
+            }
         }
     }
 }

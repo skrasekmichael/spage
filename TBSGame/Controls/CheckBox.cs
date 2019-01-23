@@ -31,7 +31,7 @@ namespace TBSGame.Controls.Buttons
             });
         }
 
-        public override void Draw()
+        protected override void draw()
         {
             label.Draw();
         }

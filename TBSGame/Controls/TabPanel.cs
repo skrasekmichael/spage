@@ -37,7 +37,7 @@ namespace TBSGame.Controls
         {
             if (selected != null)
             {
-                panels[selected].Visible = false;
+                panels[selected].IsVisible = false;
                 buttons[selected].TextColor = Color.White;
             }
         }
@@ -48,7 +48,7 @@ namespace TBSGame.Controls
             {
                 deselect();
                 selected = key;
-                panels[selected].Visible = true;
+                panels[selected].IsVisible = true;
                 buttons[selected].TextColor = Color.Orange;
             }
         }
@@ -59,7 +59,7 @@ namespace TBSGame.Controls
             panels.Values.ToList().ForEach(p => p.Load(graphics, content, sprite));
         }
 
-        public override void Draw()
+        protected override void draw()
         {
             panels[selected].Draw();
             buttons.Values.ToList().ForEach(btn => btn.Draw());

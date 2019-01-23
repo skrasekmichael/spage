@@ -58,7 +58,7 @@ namespace TBSGame.Controls
             File.Delete(path + index.ToString() + ".dat");
         }
 
-        public override void Draw()
+        protected override void draw()
         {
             for (int i = 0; i < 10; i++)
             {

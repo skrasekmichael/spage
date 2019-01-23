@@ -50,8 +50,6 @@ namespace TBSGame.Controls
             Title = title;
         }
 
-        protected abstract void draw();
-
         protected override void load()
         {
             frame = sprite.GetColorFill(Frame);
@@ -60,10 +58,10 @@ namespace TBSGame.Controls
             background_over_fill = sprite.GetColorFill(MouseOverFill);
         }
 
-        public override void Draw()
+        protected override void draw()
         {
             sprite.Draw(is_mouse_hover ? background_over_fill : background_fill, bounds, Color.White);
-            draw();
+            _draw();
             Vector2 middle = new Vector2(bounds.X + (Bounds.Width - Font.MeasureString(Title).X) / 2, bounds.Y + (Bounds.Height - Font.LineSpacing) / 2 + 1);
             sprite.DrawString(Font, Title, middle, IsLocked ? LockedColor : (is_mouse_hover ? MouseOverTextColor : TextColor) * Opacity);
 
@@ -76,6 +74,8 @@ namespace TBSGame.Controls
             if (BorderRight)
                 sprite.Draw(is_mouse_hover ? frame_over : frame, new Rectangle(bounds.X + Bounds.Width - FrameWidth, bounds.Y, FrameWidth, Bounds.Height), Color.White);
         }
+
+        protected virtual void _draw() { }
 
         public void Update(MouseState mouse)
         {

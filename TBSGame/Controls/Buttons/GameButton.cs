@@ -24,11 +24,6 @@ namespace TBSGame.Controls.Buttons
         protected override void draw()
         {
             sprite.Draw(is_mouse_hover ? background_over_fill : background_fill, bounds, Color.White);
-        }
-
-        public override void Draw()
-        {
-            draw();
             int padding = 8;
             sprite.Draw(is_mouse_hover ? hover_icon : icon, new Rectangle(bounds.X + padding, bounds.Y + padding, Bounds.Width - 2 * padding, Bounds.Height - 2 * padding), Color.White);
         }

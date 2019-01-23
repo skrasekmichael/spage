@@ -19,11 +19,6 @@ namespace TBSGame.Controls.Buttons
             this.MouseOverFill = Color.CornflowerBlue;
         }
 
-        protected override void draw()
-        {
-
-        }
-
         protected override void load()
         {
             base.load();

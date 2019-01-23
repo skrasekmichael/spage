@@ -55,7 +55,7 @@ namespace TBSGame.Controls
                 loc.Y = bounds.Y + Bounds.Height - space;
         }
 
-        public override void Draw()
+        protected override void draw()
         {
             sprite.DrawMultiLineText(Font, Text.Split('\n'), bounds, HAligment, VAligment, Space, TextColor * Opacity, LineHeight);
         }

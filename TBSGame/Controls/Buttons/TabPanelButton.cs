@@ -19,11 +19,6 @@ namespace TBSGame.Controls.Buttons
             MouseOverTextColor = Color.Orange;
         }
 
-        protected override void draw()
-        {
-
-        }
-
         protected override void load()
         {
             base.load();

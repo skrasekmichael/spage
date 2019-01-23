@@ -140,7 +140,7 @@ namespace TBSGame.Controls
             }
         }
 
-        public override void Draw()
+        protected override void draw()
         {
             if (IsVisibled)
             {

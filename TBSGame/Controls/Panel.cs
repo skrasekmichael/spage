@@ -13,7 +13,6 @@ namespace TBSGame.Controls
     {
         private List<Control> controls = new List<Control>();
 
-        public bool Visible { get; set; } = true;
         public bool OnlyArea { get; private set; } = false;
         public Color Fill { get; set; } = Color.Black;
         public Color Border { get; set; } = Color.Silver;
@@ -26,23 +25,19 @@ namespace TBSGame.Controls
             OnlyArea = only;
         }
 
-        public override void Draw()
+        protected override void draw()
         {
-            if (Visible)
+            if (!OnlyArea)
             {
-                if (!OnlyArea)
-                {
-                    sprite.Draw(border, bounds, Color.White);
-                    sprite.Draw(fill, new Rectangle(bounds.X + 1, bounds.Y + 1, bounds.Width - 2, bounds.Height - 2), Color.White);
-                }
-                controls.ForEach(c => c.Draw());
+                sprite.Draw(border, bounds, Color.White);
+                sprite.Draw(fill, new Rectangle(bounds.X + 1, bounds.Y + 1, bounds.Width - 2, bounds.Height - 2), Color.White);
             }
+            controls.ForEach(c => c.Draw());
         }
 
         public override void Update(GameTime time, KeyboardState? keyboard, MouseState? mouse)
         {
-            if (Visible)
-                controls.ForEach(c => c.Update(time, bounds.Location.ToVector2(), keyboard, mouse));
+            controls.ForEach(c => c.Update(time, bounds.Location.ToVector2(), keyboard, mouse));
         }
 
         protected override void load()
