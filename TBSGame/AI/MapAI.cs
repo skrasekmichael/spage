@@ -45,8 +45,8 @@ namespace TBSGame.AI
             Player = player;
             this.map = map;
 
-            move.OnTargetInSight += new TargetInSightEventHandle((sender, source, unit) => phase = 0);
-            move.OnMovingDone += new MovingDoneEventHandle((sender, source) => phase = 0);
+            move.OnTargetInSight += new TargetInSightEventHandle((sender, source, unit) => phase = ANALYZE);
+            move.OnMovingDone += new MovingDoneEventHandle((sender, source) => phase = ANALYZE);
         }
         
         public void Turn(Map map)
@@ -75,7 +75,10 @@ namespace TBSGame.AI
                 {
                     var p = units.Keys.ToArray()[index];
                     if (selected == -1)
+                    {
                         selected = MoveControl.GetIndex(map, p.X, p.Y);
+                        engine.SetViewToPostion(p.X, p.Y);
+                    }
 
                     //analýza dalšího kroku
                     if (phase == ANALYZE)
@@ -86,6 +89,9 @@ namespace TBSGame.AI
                     //pohyb jednotky
                     if (phase == MOVE)
                     {
+                        if (engine.GetVisibility(p.X, p.Y) == Visibility.Visible)
+                            engine.SetViewToPostion(p.X, p.Y);
+
                         move.Update(time, map, engine, areas, ref selected, Player);
                     }
 
