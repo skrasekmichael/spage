@@ -46,8 +46,8 @@ namespace TBSGame
 
         public static string GetString(string key)
         {
-            if (data.ContainsKey(key))
-                return data[key].Trim();
+            if (data.ContainsKey(key.ToLower()))
+                return data[key.ToLower()].Trim();
             else
             {
                 Error.Log($"Key [{key}] was not found in dictionary. ");
