@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="AI\MapAI.cs" />
     <Compile Include="Controls\Buttons\Button.cs" />
+    <Compile Include="Controls\Buttons\TextButton.cs" />
     <Compile Include="Controls\CheckBox.cs" />
     <Compile Include="Controls\Buttons\GameButton.cs" />
     <Compile Include="Controls\Buttons\MenuButton.cs" />
