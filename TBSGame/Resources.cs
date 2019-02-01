@@ -44,10 +44,15 @@ namespace TBSGame
 
         public static List<string> GetMissing() => missing;
 
-        public static string GetString(string key)
+        public static string GetString(string key, string[] args = null)
         {
             if (data.ContainsKey(key.ToLower()))
-                return data[key.ToLower()].Trim();
+            {
+                string s = data[key.ToLower()].Trim();
+                if (args != null)
+                    for (int i = 0; i < args.Length; i++) s = s.Replace("{" + i + "}", args[i]);
+                return s;
+            }
             else
             {
                 Error.Log($"Key [{key}] was not found in dictionary. ");
