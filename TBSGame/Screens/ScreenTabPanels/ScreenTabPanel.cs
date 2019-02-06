@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TBSGame.Controls.Buttons;
 using Microsoft.Xna.Framework.Input;
+using TBSGame.Saver;
 
 namespace TBSGame.Screens.ScreenTabPanels
 {
@@ -26,6 +27,7 @@ namespace TBSGame.Screens.ScreenTabPanels
         protected CustomSpriteBatch sprite;
         protected GameButton button;
         protected Settings settings;
+        protected GameSave game;
 
         public int Width => graphics.PreferredBackBufferWidth;
         public int Height => graphics.PreferredBackBufferHeight;
@@ -33,9 +35,10 @@ namespace TBSGame.Screens.ScreenTabPanels
         public SpriteFont Font { get; set; }
         public int Index { get; set; }
 
-        public ScreenTabPanel(Settings settings, string icon)
+        public ScreenTabPanel(Settings settings, GameSave game, string icon)
         {
             button = new GameButton(icon, icon);
+            this.game = game;
             this.settings = settings;
         }
 
@@ -54,6 +57,8 @@ namespace TBSGame.Screens.ScreenTabPanels
         }
 
         protected abstract void load();
+
+        public abstract void LoadPosition();
 
         public void UpdateButton(GameTime time, KeyboardState keyboard, MouseState mouse) => button.Update(time, keyboard, mouse);
         

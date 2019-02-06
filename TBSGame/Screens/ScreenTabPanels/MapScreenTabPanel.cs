@@ -11,22 +11,28 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using TBSGame.Controls;
 using TBSGame.Controls.Buttons;
+using TBSGame.Saver;
 
 namespace TBSGame.Screens.ScreenTabPanels
 {
-    public delegate void PlayGameEventhandle(object sender, LevelMap map);
+    public delegate void PlayGameEventhandle(object sender, LevelMap map, List<Unit> list);
 
     public class MapScreenTabPanel : ScreenTabPanel
     {
         public event PlayGameEventhandle OnPlayGame;
-        private void PlayGame(LevelMap map)
+        private void PlayGame(LevelMap map, List<Unit> list)
         {
-            OnPlayGame?.Invoke(this, map);
+            OnPlayGame?.Invoke(this, map, list);
         }
 
         private LevelMap selected = null;
+
         private Label desc = new Label("");
-        private MenuButton play, play_at_night, cancel;
+        private MenuButton play, play_at_night, cancel, select_all;
+        private List<TextButton> units = new List<TextButton>();
+
+        private List<Control> controls = new List<Control>();
+
         private Level level;
         private Texture2D map, texture, borders, shadow, selected_map;
         private Dictionary<string, Texture2D> hover;
@@ -34,16 +40,39 @@ namespace TBSGame.Screens.ScreenTabPanels
         private Rectangle resize;
         private string key = null, path = null;
 
-        public MapScreenTabPanel(string path, Settings settings, Level level, string icon) : base(settings, icon)
+        public MapScreenTabPanel(string path, Settings settings, GameSave game, Level level, string icon) : base(settings, game, icon)
         {
             this.level = level;
             this.path = path;
 
             hover = new Dictionary<string, Texture2D>(level.Count);
             play = new MenuButton(Resources.GetString("play"));
-            play.OnButtonClicked += new ButtonClickedEventHandler(sender => PlayGame(selected));
+            play.OnButtonClicked += new ButtonClickedEventHandler(sender =>
+            {
+                List<Unit> list = new List<Unit>();
+                for (int i = 0; i < units.Count; i++)
+                {
+                    TextButton btn = units[i];
+                    if ((bool)btn.Tag)
+                        list.Add(game.Units[i]);
+                }
+                PlayGame(selected, list);
+            });
             cancel = new MenuButton(Resources.GetString("cancel"));
-            cancel.OnButtonClicked += new ButtonClickedEventHandler(sener => deselect());
+            cancel.OnButtonClicked += new ButtonClickedEventHandler(sender => deselect());
+            select_all = new MenuButton(Resources.GetString("select_all_units"));
+            select_all.OnButtonClicked += new ButtonClickedEventHandler(sender =>
+            {
+                MenuButton button = (MenuButton)sender;
+                bool check = (bool)button.Tag;
+                for (int i = 0; i < game.Units.Count; i++)
+                {
+                    units[i].Tag = check;
+                    units[i].TextColor = check ? Color.Red : Color.White;
+                }
+                button.Tag = !check;
+                button.Title = check ? Resources.GetString("deselect_all_units") : Resources.GetString("select_all_units");
+            });
         }
 
         protected override void draw()
@@ -63,9 +92,7 @@ namespace TBSGame.Screens.ScreenTabPanels
             else
                 sprite.Draw(texture, resize, Color.White);
 
-            desc.Draw();
-            play.Draw();
-            cancel.Draw();
+            controls.ForEach(c => c.Draw());
         }
 
         protected override void load()
@@ -78,6 +105,22 @@ namespace TBSGame.Screens.ScreenTabPanels
 
             float size = (Height * 0.6f) - 15;
             resize = new Rectangle(bounds.X, bounds.Y, (int)(size / bounds.Height * bounds.Width), (int)size);
+
+            for (int i = 0; i < game.Units.Count; i++)
+            {
+                TextButton button = new TextButton(Resources.GetString(game.Units[i].GetType().Name));
+                button.Tag = false;
+                button.IsVisible = false;
+                button.OnButtonClicked += new ButtonClickedEventHandler(sender =>
+                {
+                    TextButton tb = (TextButton)sender;
+                    tb.TextColor = (bool)tb.Tag ? Color.Red : Color.White;
+                    tb.Tag = !(bool)tb.Tag;
+                });
+                button.Bounds = new Rectangle(resize.X + resize.Width + 10, resize.Top + i * 40 + 60, 200, 40);
+                button.Load(graphics, content, sprite);
+                units.Add(button);
+            }
 
             for (int i = 0; i < level.Count; i++)
             {
@@ -103,6 +146,14 @@ namespace TBSGame.Screens.ScreenTabPanels
 
             cancel.Load(graphics, content, sprite);
             cancel.Bounds = new Rectangle(resize.Width + resize.Left + 2 * 10 + 110, Height - 70, 110, 50);
+
+            select_all.Load(graphics, content, sprite);
+            select_all.Bounds = new Rectangle(resize.X + resize.Width + 10, resize.Top, 350, 50);
+            select_all.IsVisible = false;
+            select_all.Tag = true;
+
+            controls.AddRange(units);
+            controls.AddRange(new Control[] { play, cancel, select_all, desc });
 
             SetColors();
         }
@@ -224,10 +275,8 @@ namespace TBSGame.Screens.ScreenTabPanels
         protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
             key = null;
-            desc.Update();
 
-            play.Update(mouse);
-            cancel.Update(mouse);
+            controls.ForEach(c => c.Update(time, keyboard, mouse));
 
             if (resize.Contains(mouse.Position))
             {
@@ -238,7 +287,7 @@ namespace TBSGame.Screens.ScreenTabPanels
                 {
                     if (mouse.LeftButton == ButtonState.Pressed)
                     {
-                        if (level[k].Player == 2)
+                        if (level[k].Player == 2 && level[k].IsVisibled)
                             select(level[k]);
                     }
 
@@ -250,6 +299,8 @@ namespace TBSGame.Screens.ScreenTabPanels
         
         private void deselect()
         {
+            select_all.IsVisible = false;
+            set_all(false);
             selected = null;
             desc.Text = "";
         }
@@ -258,6 +309,9 @@ namespace TBSGame.Screens.ScreenTabPanels
         {
             if (selected != lm)
             {
+                select_all.IsVisible = true;
+
+                set_all(true);
                 selected = lm;
                 set_maps(ref selected_map, Color.Red, Color.Red, lm);
                 string path = $"{Path.GetDirectoryName(this.path)}/maps/{lm.Name}.dat";
@@ -271,6 +325,21 @@ namespace TBSGame.Screens.ScreenTabPanels
                     desc.Text = Resources.GetString("missing_map");
                 }
             }
+        }
+
+        private void set_all(bool visibility)
+        {
+            foreach (TextButton tb in units)
+            {
+                tb.Tag = visibility;
+                tb.IsVisible = visibility;
+                tb.TextColor = Color.White;
+            }
+        }
+
+        public override void LoadPosition()
+        {
+            
         }
     }
 }

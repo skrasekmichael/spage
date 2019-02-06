@@ -14,36 +14,31 @@ namespace TBSGame.Screens.ScreenTabPanels
 {
     public class SaveScreenTabPanel : ScreenTabPanel
     {
-        public event SaveGameEventHandler OnSaveGame;
-        public event LoadGameEventHandler OnLoadGame;
-
-        private GameSavePanel saves;
+        public GameSavePanel Saves { get; private set; }
         
-        public SaveScreenTabPanel(Settings settings, string icon) : base(settings, icon)
+        public SaveScreenTabPanel(Settings settings, GameSave game, string icon) : base(settings, game, icon)
         {
-            saves = new GameSavePanel(settings.GameSaves, GameSavePanel.Display.LoadSave);
-            saves.OnSaveGame += new SaveGameEventHandler((sender, index, name) => OnSaveGame?.Invoke(this, index, name));
-            saves.OnLoadGame += new LoadGameEventHandler((sender, index) => OnLoadGame(this, index));
+            Saves = new GameSavePanel(settings.GameSaves, GameSavePanel.Display.LoadSave);
         }
 
         protected override void draw()
         {
-            saves.Draw();
+            Saves.Draw();
         }
 
         protected override void load()
         {
-            saves.Load(graphics, content, sprite);
+            Saves.Load(graphics, content, sprite);
         }
 
         protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
-            saves.Update(time, keyboard, mouse);
+            Saves.Update(time, keyboard, mouse);
         }
 
         public override void LoadPosition()
         {
-            saves.LoadPostiton();
+            Saves.LoadPostiton();
         }
     }
 }
