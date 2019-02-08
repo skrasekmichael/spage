@@ -18,6 +18,7 @@ namespace TBSGame.Screens.ScreenTabPanels
         
         public SaveScreenTabPanel(Settings settings, GameSave game, string icon) : base(settings, game, icon)
         {
+            button.Tint = Color.Lime;
             Saves = new GameSavePanel(settings.GameSaves, GameSavePanel.Display.LoadSave);
         }
 

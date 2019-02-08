@@ -66,7 +66,10 @@
     <Compile Include="Screens\AboutScreen.cs" />
     <Compile Include="Screens\GameSavesScreen.cs" />
     <Compile Include="MessageBoxes\MessageBox.cs" />
+    <Compile Include="Screens\ScreenTabPanels\ResearchScreenTabPanel.cs" />
     <Compile Include="Screens\ScreenTabPanels\SaveScreenTabPanel.cs" />
+    <Compile Include="Screens\ScreenTabPanels\SourcesScreenTabPanel.cs" />
+    <Compile Include="Screens\ScreenTabPanels\UnitsScreenTabPanel.cs" />
     <Compile Include="Spage.cs" />
     <Compile Include="KeyboardChecker.cs" />
     <Compile Include="Program.cs" />
