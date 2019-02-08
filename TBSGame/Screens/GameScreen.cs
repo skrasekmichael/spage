@@ -38,22 +38,22 @@ namespace TBSGame.Screens
         {
             this.level = Level.Load(path);
 
-            MapScreenTabPanel map = new MapScreenTabPanel(this.path, Settings, level, "gamemap");
-            map.OnPlayGame += new PlayGameEventhandle((sender, level_map) =>
+            MapScreenTabPanel map = new MapScreenTabPanel(this.path, Settings, game, level, "gamemap");
+            map.OnPlayGame += new PlayGameEventhandle((sender, level_map, list) =>
             {
                 string path = $"{Path.GetDirectoryName(this.path)}/maps/{level_map.Name}.dat";
                 if (File.Exists(path))
-                    this.Dispose(new MapScreen(game, Settings, Map.Load(path)));
+                    this.Dispose(new MapScreen(game, Settings, Map.Load(path), level_map.Name, list));
             });
 
-            SaveScreenTabPanel save = new SaveScreenTabPanel(Settings, "gamesave");
-            save.OnSaveGame += new SaveGameEventHandler((sender, i, name) =>
+            SaveScreenTabPanel save = new SaveScreenTabPanel(Settings, game, "gamesave");
+            save.Saves.OnSaveGame += new SaveGameEventHandler((sender, i, name) =>
             {
                 this.game.Name = name;
                 string path = Settings.GameSaves + i.ToString() + ".dat";
                 this.game.Save(path);
             });
-            save.OnLoadGame += new LoadGameEventHandler((sender, i) =>
+            save.Saves.OnLoadGame += new LoadGameEventHandler((sender, i) =>
             {
                 GameSave game = GameSave.Load(Settings.GameSaves + i.ToString() + ".dat");
                 Scenario.Load("scenario\\campaign.dat", game.Scenario + "campaign\\");

@@ -16,41 +16,53 @@ using TBSGame.Controls.Buttons;
 using TBSGame.Saver;
 using TBSGame.Screens.MapScreenControls;
 using TBSGame.Screens.MapScreenControls.MapWindows;
+using TBSGame.MessageBoxes;
 
 namespace TBSGame.Screens
 {
     public class MapScreen : Screen
     {
+        private const int START = 0;
+        private const int GAME = 1;
+
         private Map map;
+        private MapInfo info;
         private Engine engine;
-        private Texture2D bar;
-        private Label enemy_turn;
-        private GameTime time = null;
-        private List<Button> buttons = new List<Button>();
-        private List<AreaControl> areas;
-        private int selected_index = -1, turn = 1;
-        private UnitDetailControl sunit = null, hunit = null;
         private GameMapSaver saver;
-        private MoveControl move = new MoveControl();
+        private GameSave game;
+
+        private Texture2D bar;
         private SoundEffect enemysighted;
+
+        private Label enemy_turn;
+        private UnitDetailControl sunit = null, hunit = null;
+        private GameButton start;
+
+        private GameTime time = null;
+
+        private bool active_map = true;
+        private int selected_index = -1, turn = 1, phase = START;
+
+        private MoveControl move = new MoveControl();
         private MapAI[] ai = new MapAI[7];
 
         private TextWindow start_message, win_message;
         private MenuWindow menu;
         private MiniMapWindow minimap;
 
+        private List<Button> buttons = new List<Button>();
         private List<MapWindow> windows = new List<MapWindow>();
+        private List<AreaControl> areas;
+        private List<Unit> selected_units;
 
-        private bool active_map = true;
-        private GameSave game;
-
-        public MapScreen(GameSave game, Settings settings, Map map) : base()
+        public MapScreen(GameSave game, Settings settings, Map map, string name, List<Unit> selected_units) : base()
         {
             this.game = game;
             this.map = map;
+            this.info = game.Info[name];
+            this.selected_units = selected_units;
 
             saver = new GameMapSaver(settings);
-
             areas = new List<AreaControl>(map.Width * map.Height);
 
             menu = new MenuWindow(saver, map);
@@ -61,7 +73,8 @@ namespace TBSGame.Screens
 
             menu.OnLoadMapSaveEventHandler += new LoadMapSaveEventHandler((sender, loaded_map) =>
             {
-                MapScreen map_screen = new MapScreen(game, settings, loaded_map);
+                MapScreen map_screen = new MapScreen(game, settings, loaded_map, name, selected_units);
+                map_screen.phase = GAME;
                 map_screen.start_message.Visible = false;
                 this.Dispose(map_screen);
             });
@@ -86,12 +99,54 @@ namespace TBSGame.Screens
 
             enemy_turn = new Label("Enemy turn");
 
+            //odejít
             menu.OnExit += new EventHandler((sender, args) => Dispose(new MainMenuScreen()));
+
+            //ustoupit
+            menu.OnGoBack += new EventHandler((sender, args) =>
+            {
+                Visibility[,] visibilities = new Visibility[map.Width, map.Height];
+                HashSet<Unit> death = new HashSet<Unit>();
+
+                for (int x = 0; x < map.Width; x++)
+                {
+                    for (int y = 0; y < map.Height; y++)
+                    {
+                        visibilities[x, y] = engine.GetVisibility(x, y);
+                        Unit unit = map.GetUnit(x, y);
+                        MapObject obj = map.GetMapObject(x, y);
+
+                        if (unit != null && unit.Player == 1)
+                        {
+                            if (!(obj != null && obj.GetType() == typeof(StartPoint)))
+                                death.Add(unit);
+                        }
+                    }
+                }
+
+                YesNoMessageBox message = new YesNoMessageBox(Resources.GetString("goback?", new[] { death.Count.ToString() }));
+                message.OnMessageBox += new MessageBoxEventHandler((obj, result) =>
+                {
+                    if (result == DialogResult.Yes)
+                    {
+                        info.MapVisibilities = visibilities;
+                        game.Units = game.Units.Where(u => !death.Contains(u)).ToList();
+                        //game.Info[info.Name] = info;
+                        this.Dispose(new GameScreen(game));
+                    }
+                });
+
+                this.ShowMessage(message);
+            });
 
             move.OnTargetInSight += new TargetInSightEventHandle((sender, source, dest) =>
             {
                 enemysighted.Play();
             });
+
+            start = new GameButton("ok", "ok");
+            start.OnButtonClicked += new ButtonClickedEventHandler(sender => phase = GAME);
+            start.IsLocked = true;
 
             buttons.AddRange(new GameButton[]
             {
@@ -159,7 +214,7 @@ namespace TBSGame.Screens
             selected_index = a.Index;
             if (a.UnitControl != null)
             {
-                sunit = new UnitDetailControl(a.UnitControl.Unit, a.X, a.Y);
+                sunit = new UnitDetailControl(a.UnitControl.Unit);
                 sunit.Load(graphics, content, sprite, driver, small);
 
                 var mob = engine.GetMobility(a.X, a.Y);
@@ -183,31 +238,65 @@ namespace TBSGame.Screens
                     a.Index = index;
                     a.AreaClicked += new EventHandler((sender, e) =>
                     {
-                        if (turn == 1)
+                        AreaControl area = (AreaControl)sender;
+                        if (phase == START)
                         {
-                            AreaControl area = (AreaControl)sender;
-                            if (area.UnitControl != null)
+                            if (selected_units.Count > 0)
                             {
-                                if (area.UnitControl.Unit.Player == 1)
+                                MapObject obj = map.GetMapObject(area.X, area.Y);
+                                if (obj?.GetType() == typeof(StartPoint))
                                 {
-                                    select(area);
+                                    Unit unit = map.GetUnit(area.X, area.Y);
+                                    if (unit != null)
+                                    {
+                                        selected_units.Add(unit);
+                                        map.SetUnit(area.X, area.Y, null);
+                                        start.IsLocked = true;
+                                    }
+                                    else
+                                    {
+                                        map.SetUnit(area.X, area.Y, selected_units[0]);
+                                        selected_units.RemoveAt(0);
+
+                                        if (selected_units.Count > 0)
+                                        {
+                                            sunit = new UnitDetailControl(selected_units[0]);
+                                            sunit.Load(graphics, content, sprite, driver, small);
+                                            start.IsLocked = true;
+                                        }
+                                        else
+                                            start.IsLocked = false;
+                                    }
+                                }
+                            }
+                        }
+                        else if (phase == GAME)
+                        {
+                            if (turn == 1)
+                            {
+                                if (area.UnitControl != null)
+                                {
+                                    if (area.UnitControl.Unit.Player == 1)
+                                    {
+                                        select(area);
+                                    }
+                                    else
+                                    {
+                                        if (selected_index != -1)
+                                        {
+                                            areas[selected_index].UnitControl.Attack(area.UnitControl);
+                                        }
+                                    }
                                 }
                                 else
                                 {
                                     if (selected_index != -1)
                                     {
-                                        areas[selected_index].UnitControl.Attack(area.UnitControl);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if (selected_index != -1)
-                                {
-                                    var key = new System.Drawing.Point(area.X, area.Y);
-                                    if (engine.Mobility.ContainsKey(key))
-                                    {
-                                        move.Move(engine, engine.Mobility, areas[selected_index].UnitControl, new Point(area.X, area.Y));
+                                        var key = new System.Drawing.Point(area.X, area.Y);
+                                        if (engine.Mobility.ContainsKey(key))
+                                        {
+                                            move.Move(engine, engine.Mobility, areas[selected_index].UnitControl, new Point(area.X, area.Y));
+                                        }
                                     }
                                 }
                             }
@@ -222,7 +311,7 @@ namespace TBSGame.Screens
                             {
                                 if (hunit == null || (hunit.X != area.X && hunit.Y != area.Y))
                                 {
-                                    hunit = new UnitDetailControl(area.UnitControl.Unit, area.X, area.Y);
+                                    hunit = new UnitDetailControl(area.UnitControl.Unit);
                                     hunit.Load(graphics, content, sprite, driver, small);
                                 }
                             }
@@ -251,22 +340,37 @@ namespace TBSGame.Screens
                 }
             }
 
-            if (turn == 1)
+            if (phase == START)
             {
-                if (selected_index != -1)
-                    areas[selected_index].UnitControl.DrawPointer(time);
-
-                windows.ForEach(w => w.Draw());
-
                 sprite.Draw(bar, new Rectangle(0, Height - 75, Width, 75), Color.White);
                 sunit?.Draw(bar, new Point(0, Height - 125));
                 hunit?.Draw(bar, new Point(295, Height - 125));
-                buttons.ForEach(btn => btn.Draw());
+
+                start.Draw();
+                start_message.Draw();
+
+                buttons[1].Draw();
+                minimap.Draw();
             }
-            else
+            else if (phase == GAME)
             {
-                sprite.Draw(bar, new Rectangle(0, Height - 150, Width, 150), Color.White);
-                enemy_turn.Draw();
+                if (turn == 1)
+                {
+                    if (selected_index != -1)
+                        areas[selected_index].UnitControl.DrawPointer(time);
+
+                    windows.ForEach(w => w.Draw());
+
+                    sprite.Draw(bar, new Rectangle(0, Height - 75, Width, 75), Color.White);
+                    sunit?.Draw(bar, new Point(0, Height - 125));
+                    hunit?.Draw(bar, new Point(295, Height - 125));
+                    buttons.ForEach(btn => btn.Draw());
+                }
+                else
+                {
+                    sprite.Draw(bar, new Rectangle(0, Height - 150, Width, 150), Color.White);
+                    enemy_turn.Draw();
+                }
             }
         }
         
@@ -284,9 +388,15 @@ namespace TBSGame.Screens
                 buttons[i].Bounds = new Rectangle(Width - (i + 1) * 80, Height - 75, 80, 75);
             }
 
+            start.Load(graphics, content, sprite);
+            start.Bounds = new Rectangle(Width - 80, Height - 75, 80, 75);
+
             enemy_turn.Load(graphics, content, sprite);
             enemy_turn.Bounds = new Rectangle(0, Height - 150, Width, 150);
             enemy_turn.Font = font;
+
+            sunit = new UnitDetailControl(selected_units[0]);
+            sunit.Load(graphics, content, sprite, driver, small);
         }
 
         protected override void loadpos()
@@ -295,48 +405,76 @@ namespace TBSGame.Screens
             engine.ScreenWidth = Width;
             engine.ScreenHeight = Height;
             engine.Center = new System.Drawing.PointF(0, 75 / 2);
+
+            for (int x = 0; x < map.Width; x++)
+            {
+                for (int y = 0; y < map.Height; y++)
+                {
+                    if (info.MapVisibilities == null)
+                    {
+                        MapObject obj = map.GetMapObject(x, y);
+                        if (obj != null && obj.GetType() == typeof(StartPoint))
+                        {
+                            engine.SetVisibility(x, y, Visibility.Visible);
+                        }
+                    }
+                    else
+                        engine.SetVisibility(x, y, info.MapVisibilities[x, y]);
+                }
+            }  
         }
 
         private void refresh(MouseState mouse, KeyboardState keyboard)
         {
-            engine.CalcPoints();
+            engine.CalcPoints(phase);
 
-            if (turn == 1)
+            if (phase == START)
             {
-                //pokud všechny jednotky umřou
-                if (map.Units.Where(kvp => kvp.Value.Player == 1).Count() == 0)
-                {
-                    Dispose(new GameScreen(game));
-                }
+                start.Update(mouse);
 
-                //pokud budou splněny všechny úkoly
-                List<Quest> task = map.QuestList.ToList();
-                if (task.Where(t => t.Check(map, engine)).Count() == task.Count)
-                {
-                    if (!win_message.Visible)
-                        Dispose(new GameScreen(game));
-                    show_window(win_message);
-                }
-
-                buttons.ForEach(btn => btn.Update(mouse));
-
+                buttons[1].Update(mouse);
                 minimap.Update(map, engine, mouse);
-                menu.Update(time, map, mouse);
+
                 start_message.Update(mouse);
-                win_message.Update(mouse);
-
-                active_map = windows.Where(w => w.Visible).Count() == 0;
-
-                //posouvání jednotek po mapě
-                move.Update(time, map, engine, areas, ref selected_index);
             }
-            else
+            else if (phase == GAME)
             {
-                enemy_turn.Update();
-            }
+                if (turn == 1)
+                {
+                    //pokud všechny jednotky umřou
+                    if (map.Units.Where(kvp => kvp.Value.Player == 1).Count() == 0)
+                    {
+                        Dispose(new GameScreen(game));
+                    }
 
-            for (int i = 0; i < ai.Length; i++)
-                ai[i].Update(map, engine, areas, time);
+                    //pokud budou splněny všechny úkoly
+                    List<Quest> task = map.QuestList.ToList();
+                    if (task.Where(t => t.Check(map, engine)).Count() == task.Count)
+                    {
+                        if (!win_message.Visible)
+                            Dispose(new GameScreen(game));
+                        show_window(win_message);
+                    }
+
+                    buttons.ForEach(btn => btn.Update(mouse));
+
+                    minimap.Update(map, engine, mouse);
+                    menu.Update(time, map, mouse);
+                    win_message.Update(mouse);
+
+                    active_map = windows.Where(w => w.Visible).Count() == 0;
+
+                    //posouvání jednotek po mapě
+                    move.Update(time, map, engine, areas, ref selected_index);
+                }
+                else
+                {
+                    enemy_turn.Update();
+                }
+
+                for (int i = 0; i < ai.Length; i++)
+                    ai[i].Update(map, engine, areas, time);
+            }
 
             areas.ForEach(area => area.Update(map, engine, time, keyboard, mouse, active_map));
         }

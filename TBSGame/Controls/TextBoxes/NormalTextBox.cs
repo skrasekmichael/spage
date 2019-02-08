@@ -14,7 +14,7 @@ namespace TBSGame.Controls.TextBoxes
         private Texture2D bg, frame, frame_over;
 
         public override Color BackColor { get; set; } = Color.Black;
-        public override Color BorderColor { get; set; } = Color.CornflowerBlue;
+        public override Color BorderColor { get; set; } = new Color(30, 30, 30);
         public override Color BorderHoverColor { get; set; } = Color.White;
         public override Color TextColor { get; set; } = Color.White;
         public override Color PlaceHolderColor { get; set; } = Color.Gray;

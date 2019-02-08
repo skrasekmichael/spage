@@ -43,7 +43,7 @@ namespace TBSGame.Controls
 
         protected Rectangle bounds => new Rectangle(Bounds.X + (int)start.X, Bounds.Y + (int)start.Y, Bounds.Width, Bounds.Height);
         protected bool is_mouse_hover = false, is_mouse_down = false;
-        protected Texture2D frame, frame_over, background_fill, background_over_fill;
+        protected Texture2D frame, frame_over, background_fill, background_over_fill, locked_bg;
 
         public Button(string title)
         {
@@ -56,11 +56,12 @@ namespace TBSGame.Controls
             frame_over = sprite.GetColorFill(MouseOverFrame);
             background_fill = sprite.GetColorFill(Fill);
             background_over_fill = sprite.GetColorFill(MouseOverFill);
+            locked_bg = sprite.GetColorFill(Color.Lerp(Fill, Color.White, 0.2f));
         }
 
         protected override void draw()
         {
-            sprite.Draw(is_mouse_hover ? background_over_fill : background_fill, bounds, Color.White);
+            sprite.Draw(IsLocked ? locked_bg : (is_mouse_hover ? background_over_fill : background_fill), bounds, Color.White);
             _draw();
             Vector2 middle = new Vector2(bounds.X + (Bounds.Width - Font.MeasureString(Title).X) / 2, bounds.Y + (Bounds.Height - Font.LineSpacing) / 2 + 1);
             sprite.DrawString(Font, Title, middle, IsLocked ? LockedColor : (is_mouse_hover ? MouseOverTextColor : TextColor) * Opacity);
@@ -81,7 +82,7 @@ namespace TBSGame.Controls
         {
             check_mouse(mouse);
 
-            sprite.SetColorFill(ref frame, IsLocked ? LockedColor : Frame);
+            sprite.SetColorFill(ref frame, Frame);
             sprite.SetColorFill(ref frame_over, MouseOverFrame);
             sprite.SetColorFill(ref background_fill, Fill);
             sprite.SetColorFill(ref background_over_fill, MouseOverFill);

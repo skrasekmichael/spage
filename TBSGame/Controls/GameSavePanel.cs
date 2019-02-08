@@ -56,6 +56,27 @@ namespace TBSGame.Controls
         public void Delete(int index)
         {
             File.Delete(path + index.ToString() + ".dat");
+            Reload(index);
+        }
+
+        public void Reload(int index)
+        {
+            string file = path + index.ToString() + ".dat";
+            bool a = false;
+            GameSave save = null;
+
+            if (File.Exists(file))
+            {
+                save = GameSave.Load(file);
+                a = (save != null);
+            }
+
+            input[index].SetText(a ? save.Name : "");
+            dates[index].Text = a ? save.SavedAt.ToString("dd.MM.yyyy HH:mm:ss") : "";
+            scenarios[index].Text = a ? save.ScenarioName : "";
+            delete_buttons[index].IsLocked = !a;
+            if (ShowLoad)
+                load_buttons[index].IsLocked = !a;
         }
 
         protected override void draw()
@@ -119,7 +140,9 @@ namespace TBSGame.Controls
                 textbox.Tag = i;
                 textbox.OnConfirm += new TextBoxConfirmedEventHandler(sender => {
                     ((TextBox)sender).IsLocked = true;
-                    OnSaveGame?.Invoke(this, (int)((TextBox)sender).Tag, ((TextBox)sender).Text);
+                    int index = (int)((TextBox)sender).Tag;
+                    OnSaveGame?.Invoke(this, index, ((TextBox)sender).Text);
+                    Reload(index);
                 });
 
                 MenuButton del_btn = new MenuButton(Resources.GetString("delete"));

@@ -12,6 +12,7 @@ namespace TBSGame.Controls.Buttons
     {
         private MenuButton label;
 
+        public object Tag { get; set; }
         public bool IsChecked { get; set; } = false;
         public Color Checked { get; set; } = Color.Lime;
         public Color UnChecked { get; set; } = Color.DarkGreen;
@@ -19,7 +20,7 @@ namespace TBSGame.Controls.Buttons
         public CheckBox(string text)
         {
             label = new MenuButton(text);
-
+            
             label.FrameWidth = 0;
             label.MouseOverTextColor = Color.White;
             label.Fill = Color.Transparent;
