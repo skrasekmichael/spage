@@ -21,7 +21,7 @@ namespace TBSGame.Controls
             {
                 panels.Add(key, panel);
                 button.Tag = key;
-                button.OnButtonClicked += new ButtonClickedEventHandler((obj) =>
+                button.OnControlClicked += new ControlClickedEventHandler((obj) =>
                 {
                     TabPanelButton sender = (TabPanelButton)obj;
                     Select((string)sender.Tag);
@@ -65,10 +65,10 @@ namespace TBSGame.Controls
             buttons.Values.ToList().ForEach(btn => btn.Draw());
         }
 
-        public override void Update(GameTime time, KeyboardState? keyboard, MouseState? mouse)
+        protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
             buttons.Values.ToList().ForEach(btn => btn.Update(time, keyboard, mouse));
-            panels[selected].Update(time);
+            panels[selected].Update(time, keyboard, mouse);
         }
     }
 }

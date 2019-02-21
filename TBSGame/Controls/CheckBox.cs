@@ -10,6 +10,8 @@ namespace TBSGame.Controls.Buttons
 {
     public class CheckBox : Control
     {
+        public override event ControlClickedEventHandler OnControlClicked;
+
         private MenuButton label;
 
         public object Tag { get; set; }
@@ -26,9 +28,10 @@ namespace TBSGame.Controls.Buttons
             label.Fill = Color.Transparent;
             label.MouseOverFill = Color.Transparent;
 
-            label.OnButtonClicked += new ButtonClickedEventHandler(sendr =>
+            label.OnControlClicked += new ControlClickedEventHandler(sender =>
             {
                 IsChecked = !IsChecked;
+                OnControlClicked?.Invoke(this);
             });
         }
 
@@ -37,7 +40,7 @@ namespace TBSGame.Controls.Buttons
             label.Draw();
         }
 
-        public override void Update(GameTime time, KeyboardState? keyboard, MouseState? mouse)
+        protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
             label.TextColor = IsChecked ? Checked : UnChecked;
             label.Update(time, keyboard, mouse);

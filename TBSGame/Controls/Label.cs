@@ -15,7 +15,6 @@ namespace TBSGame.Controls
     {
         public Color TextColor { get; set; } = Color.Black;
         public string Text { get; set; }
-        private Rectangle bounds => new Rectangle(Bounds.X + (int)start.X, Bounds.Y + (int)start.Y, Bounds.Width, Bounds.Height);
         public HorizontalAligment HAligment { get; set; } = HorizontalAligment.Center;
         public VerticalAligment VAligment { get; set; } = VerticalAligment.Center;
         public int Space { get; set; } = 10;
@@ -35,7 +34,7 @@ namespace TBSGame.Controls
             loc = new Vector2(bounds.X, bounds.Y);
         }
 
-        public override void Update(GameTime time, KeyboardState? keyboard, MouseState? mouse) => Update();
+        protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse) => Update();
 
         public void Update()
         {

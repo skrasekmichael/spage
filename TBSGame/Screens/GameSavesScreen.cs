@@ -22,7 +22,7 @@ namespace TBSGame.Screens
         public GameSavesScreen()
         {
             back = new MenuButton(Resources.GetString("back"));
-            back.OnButtonClicked += new ButtonClickedEventHandler(sender => this.Dispose(new MainMenuScreen()));
+            back.OnControlClicked += new ControlClickedEventHandler(sender => this.Dispose(new MainMenuScreen()));
         }
 
         protected override void draw()

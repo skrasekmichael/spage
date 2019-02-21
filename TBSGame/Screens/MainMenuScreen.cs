@@ -29,7 +29,7 @@ namespace TBSGame.Screens
                 new MenuButton(Resources.GetString("exit"))
             });
 
-            ButtonClickedEventHandler[] handlers = new ButtonClickedEventHandler[] {
+            ControlClickedEventHandler[] handlers = new ControlClickedEventHandler[] {
                 sender => {
                     Scenario scenario = Scenario.Load("scenario\\campaign.dat", Settings.Scenario + "campaign\\");
                     GameSave game = new GameSave(scenario, Settings);
@@ -43,7 +43,7 @@ namespace TBSGame.Screens
             };
 
             for (int i = 0; i < buttons.Count; i++)
-                buttons[i].OnButtonClicked += new ButtonClickedEventHandler(handlers[i]);
+                buttons[i].OnControlClicked += new ControlClickedEventHandler(handlers[i]);
         }
 
         protected override void draw()
@@ -65,7 +65,7 @@ namespace TBSGame.Screens
 
         protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
-            buttons.ForEach(btn => btn.Update(time));
+            buttons.ForEach(btn => btn.Update(time, keyboard, mouse));
         }
     }
 }

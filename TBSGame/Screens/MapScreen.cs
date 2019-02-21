@@ -36,7 +36,6 @@ namespace TBSGame.Screens
 
         private Label enemy_turn;
         private UnitDetailControl sunit = null, hunit = null;
-        private GameButton start;
 
         private GameTime time = null;
 
@@ -71,6 +70,7 @@ namespace TBSGame.Screens
             start_message.Visible = true;
             win_message = new TextWindow(map.Win);
 
+            //načíst
             menu.OnLoadMapSaveEventHandler += new LoadMapSaveEventHandler((sender, loaded_map) =>
             {
                 MapScreen map_screen = new MapScreen(game, settings, loaded_map, name, selected_units);
@@ -103,7 +103,7 @@ namespace TBSGame.Screens
             menu.OnExit += new EventHandler((sender, args) => Dispose(new MainMenuScreen()));
 
             //ustoupit
-            menu.OnGoBack += new EventHandler((sender, args) =>
+            menu.OnRetreat += new EventHandler((sender, args) =>
             {
                 Visibility[,] visibilities = new Visibility[map.Width, map.Height];
                 HashSet<Unit> death = new HashSet<Unit>();
@@ -124,14 +124,13 @@ namespace TBSGame.Screens
                     }
                 }
 
-                YesNoMessageBox message = new YesNoMessageBox(Resources.GetString("goback?", new[] { death.Count.ToString() }));
+                YesNoMessageBox message = new YesNoMessageBox(Resources.GetString("retreat?", new[] { death.Count.ToString() }));
                 message.OnMessageBox += new MessageBoxEventHandler((obj, result) =>
                 {
                     if (result == DialogResult.Yes)
                     {
                         info.MapVisibilities = visibilities;
                         game.Units = game.Units.Where(u => !death.Contains(u)).ToList();
-                        //game.Info[info.Name] = info;
                         this.Dispose(new GameScreen(game));
                     }
                 });
@@ -144,29 +143,31 @@ namespace TBSGame.Screens
                 enemysighted.Play();
             });
 
-            start = new GameButton("ok", "ok");
-            start.OnButtonClicked += new ButtonClickedEventHandler(sender => phase = GAME);
-            start.IsLocked = true;
-
             buttons.AddRange(new GameButton[]
             {
-                new GameButton("ok", "ok"),
-                new GameButton("map", "map"),
-                new GameButton("menu", "menu")
+                new GameButton("ok", "ok") { Tag = true },
+                new GameButton("map", "map") { Tag = true },
+                new GameButton("menu", "menu") { Tag = false }
             });
 
-            buttons[0].OnButtonClicked += new ButtonClickedEventHandler(sender =>
+            buttons[0].OnControlClicked += new ControlClickedEventHandler(sender =>
             {
-                engine.LoadVisibility();
-                map.Units.Values.ToList().ForEach(u => u.Stamina = u.MaxStamina);
+                if (phase == START)
+                    phase = GAME;
+                else
+                {
+                    engine.LoadVisibility();
+                    map.Units.Values.ToList().ForEach(u => u.Stamina = u.MaxStamina);
 
-                set();
+                    set();
 
-                turn++;
-                ai[turn - 2].Turn(map);
+                    turn++;
+                    ai[turn - 2].Turn(map);
+                }
             });
+            buttons[0].IsLocked = true;
 
-            buttons[1].OnButtonClicked += new ButtonClickedEventHandler(sender =>
+            buttons[1].OnControlClicked += new ControlClickedEventHandler(sender =>
             {
                 if (turn == 1)
                 {
@@ -174,7 +175,7 @@ namespace TBSGame.Screens
                 }
             });
 
-            buttons[2].OnButtonClicked += new ButtonClickedEventHandler(sender =>
+            buttons[2].OnControlClicked += new ControlClickedEventHandler(sender =>
             {
                 if (turn == 1)
                 {
@@ -251,7 +252,7 @@ namespace TBSGame.Screens
                                     {
                                         selected_units.Add(unit);
                                         map.SetUnit(area.X, area.Y, null);
-                                        start.IsLocked = true;
+                                        buttons[0].IsLocked = true;
                                     }
                                     else
                                     {
@@ -262,10 +263,10 @@ namespace TBSGame.Screens
                                         {
                                             sunit = new UnitDetailControl(selected_units[0]);
                                             sunit.Load(graphics, content, sprite, driver, small);
-                                            start.IsLocked = true;
+                                            buttons[0].IsLocked = true;
                                         }
                                         else
-                                            start.IsLocked = false;
+                                            buttons[0].IsLocked = false;
                                     }
                                 }
                             }
@@ -346,10 +347,9 @@ namespace TBSGame.Screens
                 sunit?.Draw(bar, new Point(0, Height - 125));
                 hunit?.Draw(bar, new Point(295, Height - 125));
 
-                start.Draw();
-                start_message.Draw();
+                buttons.Where(btn => (bool)btn.Tag).ToList().ForEach(btn => btn.Draw());
 
-                buttons[1].Draw();
+                start_message.Draw();
                 minimap.Draw();
             }
             else if (phase == GAME)
@@ -381,15 +381,12 @@ namespace TBSGame.Screens
             windows.ForEach(w => w.Load(graphics, content, sprite, driver, font));
             areas.ForEach(area => area.Load(graphics, content, sprite, driver, small));
 
-            bar = sprite.GetColorFill(Color.Gray);
+            bar = sprite.GetColorFill(new Color(90, 90, 90));
             for (int i = 0; i < buttons.Count; i++)
             { 
                 buttons[i].Load(graphics, content, sprite);
                 buttons[i].Bounds = new Rectangle(Width - (i + 1) * 80, Height - 75, 80, 75);
             }
-
-            start.Load(graphics, content, sprite);
-            start.Bounds = new Rectangle(Width - 80, Height - 75, 80, 75);
 
             enemy_turn.Load(graphics, content, sprite);
             enemy_turn.Bounds = new Rectangle(0, Height - 150, Width, 150);
@@ -430,9 +427,7 @@ namespace TBSGame.Screens
 
             if (phase == START)
             {
-                start.Update(mouse);
-
-                buttons[1].Update(mouse);
+                buttons.Where(btn => (bool)btn.Tag).ToList().ForEach(btn => btn.Update(time, keyboard, mouse));
                 minimap.Update(map, engine, mouse);
 
                 start_message.Update(mouse);
@@ -456,10 +451,10 @@ namespace TBSGame.Screens
                         show_window(win_message);
                     }
 
-                    buttons.ForEach(btn => btn.Update(mouse));
+                    buttons.ForEach(btn => btn.Update(time, keyboard, mouse));
 
                     minimap.Update(map, engine, mouse);
-                    menu.Update(time, map, mouse);
+                    menu.Update(time, map, keyboard, mouse);
                     win_message.Update(mouse);
 
                     active_map = windows.Where(w => w.Visible).Count() == 0;

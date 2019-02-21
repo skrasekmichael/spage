@@ -36,7 +36,7 @@ namespace TBSGame.Screens
 
         protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
-            label.Update(time);
+            label.Update(time, keyboard, mouse);
             MouseState ms = Mouse.GetState();
             if (Keyboard.GetState().GetPressedKeys().Count() > 0 || ms.LeftButton == ButtonState.Pressed ||
                 ms.MiddleButton == ButtonState.Pressed || ms.RightButton == ButtonState.Pressed)

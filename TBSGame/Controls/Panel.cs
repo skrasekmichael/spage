@@ -17,7 +17,6 @@ namespace TBSGame.Controls
         public Color Fill { get; set; } = Color.Black;
         public Color Border { get; set; } = Color.Silver;
 
-        private Rectangle bounds => new Rectangle(Bounds.X + (int)start.X, Bounds.Y + (int)start.Y, Bounds.Width, Bounds.Height);
         private Texture2D fill, border;
 
         public Panel(bool only = false)
@@ -35,9 +34,9 @@ namespace TBSGame.Controls
             controls.ForEach(c => c.Draw());
         }
 
-        public override void Update(GameTime time, KeyboardState? keyboard, MouseState? mouse)
+        protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
-            controls.ForEach(c => c.Update(time, bounds.Location.ToVector2(), keyboard, mouse));
+            controls.ForEach(c => c.Update(time, keyboard, mouse, bounds.Location.ToVector2()));
         }
 
         protected override void load()

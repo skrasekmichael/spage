@@ -17,6 +17,7 @@ namespace TBSGame.Screens.MapScreenControls.MapWindows
     public class MenuWindow : MapWindow
     {
         public event EventHandler OnExit;
+        public event EventHandler OnRetreat;
         public event LoadMapSaveEventHandler OnLoadMapSaveEventHandler;
 
         private void Exit()
@@ -52,29 +53,29 @@ namespace TBSGame.Screens.MapScreenControls.MapWindows
 
             MenuButton save = new MenuButton(Resources.GetString("save"));
             save.Bounds = new Rectangle(h, Bounds.Height - h, w, h);
-            save.OnButtonClicked += new ButtonClickedEventHandler(sender =>
+            save.OnControlClicked += new ControlClickedEventHandler(sender =>
             {
                 if (saver.Saves < 4 && saver.Saves >= 0)
                     saver.Save(map);
             });
 
-            MenuButton back = new MenuButton(Resources.GetString("go_back"));
-            back.Bounds = new Rectangle(h + w, Bounds.Height - h, w, h);
-            back.OnButtonClicked += new ButtonClickedEventHandler(sender =>
+            MenuButton retreat = new MenuButton(Resources.GetString("retreat"));
+            retreat.Bounds = new Rectangle(h + w, Bounds.Height - h, w, h);
+            retreat.OnControlClicked += new ControlClickedEventHandler(sender =>
             {
-                
+                OnRetreat?.Invoke(this, new EventArgs());
             });
 
             MenuButton exit = new MenuButton(Resources.GetString("exit"));
             exit.Bounds = new Rectangle(h + 2 * w, Bounds.Height - h, w, h);
-            exit.OnButtonClicked += new ButtonClickedEventHandler(sender =>
+            exit.OnControlClicked += new ControlClickedEventHandler(sender =>
             {
                 Exit();
             });
 
             system.Add(save);
             system.Add(exit);
-            system.Add(back);
+            system.Add(retreat);
             system.Add(save_counter);
 
             TabPanelButton btn_saves = new TabPanelButton(Resources.GetString("system"));
@@ -110,12 +111,12 @@ namespace TBSGame.Screens.MapScreenControls.MapWindows
             }
         }
 
-        public void Update(GameTime time, Map map, MouseState mouse)
+        public void Update(GameTime time, Map map, KeyboardState keyboard, MouseState mouse)
         {
             if (Visible)
             {
                 this.map = map;
-                tab.Update(time);
+                tab.Update(time, keyboard, mouse);
 
                 if (mouse.RightButton == ButtonState.Pressed)
                 {
@@ -140,7 +141,7 @@ namespace TBSGame.Screens.MapScreenControls.MapWindows
                     name.TextColor = Color.White;
                     MenuButton load = new MenuButton(Resources.GetString("load"));
                     load.Tag = i - 1;
-                    load.OnButtonClicked += new ButtonClickedEventHandler(sender =>
+                    load.OnControlClicked += new ControlClickedEventHandler(sender =>
                     {
                         Map loaded_map = saver.Load((int)load.Tag);
                         OnLoadMapSaveEventHandler?.Invoke(this, loaded_map);
@@ -154,7 +155,7 @@ namespace TBSGame.Screens.MapScreenControls.MapWindows
                     save_row.Add(name);
                     save_row.Add(load);
                     system.Add(save_row, false);
-                    tab.Update(time);
+                    tab.Update(time, keyboard, mouse);
                 }
 
                 last_count = saver.Saves;

@@ -51,7 +51,7 @@ namespace TBSGame.Screens.ScreenTabPanels
 
             button.Load(graphics, content, sprite);
             button.Bounds = new Rectangle(graphics.PreferredBackBufferWidth - 100, 100 * Index, 100, 100);
-            button.OnButtonClicked += new Controls.ButtonClickedEventHandler(sender => SelectTab());
+            button.OnControlClicked += new Controls.ControlClickedEventHandler(sender => SelectTab());
 
             load();
         }

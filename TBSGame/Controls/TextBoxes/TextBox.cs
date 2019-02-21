@@ -43,7 +43,6 @@ namespace TBSGame.Controls
         public byte Border { get; set; } = 1;
 
         public object Tag { get; set; }
-        public bool IsLocked { get; set; } = false;
         public bool IsVisibled { get; set; } = true;
         public bool IsFocused { get; protected set; } = false;
         public string PlaceHolder { get; set; } = "";
@@ -57,15 +56,12 @@ namespace TBSGame.Controls
             }
         }
 
-        protected Rectangle bounds => new Rectangle(Bounds.X + (int)start.X, Bounds.Y + (int)start.Y, Bounds.Width, Bounds.Height);
         protected TextInput input;
-        protected bool is_mouse_hover = false;
 
         private string text = "";
         private TimeSpan last_cursor_time = TimeSpan.Zero;
         private bool is_cursor_visible = true;
         private int pos = 0;
-        private bool is_mouse_down;
         private bool is_mouse_down_outside;
         private string source = "";
 
@@ -173,10 +169,8 @@ namespace TBSGame.Controls
         protected abstract void draw_background();
         protected abstract void draw_foreground();
 
-        public override void Update(GameTime time, KeyboardState? ks, MouseState? ms)
+        protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
-            MouseState mouse = ms.Value;
-
             if (!IsLocked)
             {
                 if (IsFocused)
@@ -191,7 +185,7 @@ namespace TBSGame.Controls
                         last_cursor_time = time.TotalGameTime;
                     }
 
-                    input.Update(time, ks.Value);
+                    input.Update(time, keyboard);
                 }
 
                 if (this.bounds.Contains(mouse.X, mouse.Y))

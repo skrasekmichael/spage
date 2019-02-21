@@ -29,7 +29,7 @@ namespace TBSGame.Screens
 
             btns = buttons.Count;
 
-            buttons.ForEach(btn => btn.OnButtonClicked += new ButtonClickedEventHandler(sender =>
+            buttons.ForEach(btn => btn.OnControlClicked += new ControlClickedEventHandler(sender =>
             {
                 string[] resolution = ((MenuButton)sender).Title.Split('x');
                 graphics.PreferredBackBufferWidth = int.Parse(resolution[0]);
@@ -39,7 +39,7 @@ namespace TBSGame.Screens
             }));
 
             MenuButton back = new MenuButton(Resources.GetString("back"));
-            back.OnButtonClicked += new ButtonClickedEventHandler(sender => this.Dispose(new MainMenuScreen()));
+            back.OnControlClicked += new ControlClickedEventHandler(sender => this.Dispose(new MainMenuScreen()));
             buttons.Add(back);
         }
 
@@ -64,7 +64,7 @@ namespace TBSGame.Screens
 
         protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
-            buttons.ForEach(btn => btn.Update(time));
+            buttons.ForEach(btn => btn.Update(time, keyboard, mouse));
         }
     }
 }

@@ -49,7 +49,7 @@ namespace TBSGame.Screens.ScreenTabPanels
 
             hover = new Dictionary<string, Texture2D>(level.Count);
             play = new MenuButton(Resources.GetString("play")) { IsVisible = false };
-            play.OnButtonClicked += new ButtonClickedEventHandler(sender =>
+            play.OnControlClicked += new ControlClickedEventHandler(sender =>
             {
                 List<Unit> list = new List<Unit>();
                 for (int i = 0; i < units.Count; i++)
@@ -63,9 +63,9 @@ namespace TBSGame.Screens.ScreenTabPanels
                     PlayGame(selected, list);
             });
             cancel = new MenuButton(Resources.GetString("cancel")) { IsVisible = false };
-            cancel.OnButtonClicked += new ButtonClickedEventHandler(sender => deselect());
+            cancel.OnControlClicked += new ControlClickedEventHandler(sender => deselect());
             select_all = new MenuButton(Resources.GetString("select_all_units"));
-            select_all.OnButtonClicked += new ButtonClickedEventHandler(sender =>
+            select_all.OnControlClicked += new ControlClickedEventHandler(sender =>
             {
                 MenuButton button = (MenuButton)sender;
                 bool check = (bool)button.Tag;

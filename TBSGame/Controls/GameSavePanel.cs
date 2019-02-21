@@ -92,7 +92,7 @@ namespace TBSGame.Controls
             }
         }
 
-        public override void Update(GameTime time, KeyboardState? keyboard, MouseState? mouse)
+        protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
             for (int i = 0; i < 10; i++)
             {
@@ -150,7 +150,7 @@ namespace TBSGame.Controls
                 del_btn.Tag = i;
                 del_btn.IsLocked = true;
                 delete_buttons[i] = del_btn;
-                del_btn.OnButtonClicked += new ButtonClickedEventHandler(sender => OnDeleteGame?.Invoke(this, (int)((Button)sender).Tag));
+                del_btn.OnControlClicked += new ControlClickedEventHandler(sender => OnDeleteGame?.Invoke(this, (int)((Button)sender).Tag));
 
                 Label date = new Label("");
                 date.Load(graphics, content, sprite);
@@ -171,7 +171,7 @@ namespace TBSGame.Controls
                     MenuButton load_btn = new MenuButton(Resources.GetString("load"));
                     load_btn.Load(graphics, content, sprite);
                     load_btn.Tag = i;
-                    load_btn.OnButtonClicked += new ButtonClickedEventHandler(sender => OnLoadGame?.Invoke(this, (int)((MenuButton)sender).Tag));
+                    load_btn.OnControlClicked += new ControlClickedEventHandler(sender => OnLoadGame?.Invoke(this, (int)((MenuButton)sender).Tag));
                     load_btn.IsLocked = true;
                     load_buttons[i] = load_btn;
                 }
@@ -180,7 +180,7 @@ namespace TBSGame.Controls
                 {
                     MenuButton save_btn = new MenuButton(Resources.GetString("save"));
                     save_btn.Tag = i;
-                    save_btn.OnButtonClicked += new ButtonClickedEventHandler(sender =>
+                    save_btn.OnControlClicked += new ControlClickedEventHandler(sender =>
                     {
                         int index = (int)((Button)sender).Tag;
                         input[index].IsLocked = false;
