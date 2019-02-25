@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Input;
 using TBSGame.Controls;
 using TBSGame.Controls.Buttons;
 using TBSGame.Saver;
+using TBSGame.Screens.GameScreenControls;
 
 namespace TBSGame.Screens.ScreenTabPanels
 {
@@ -25,16 +26,20 @@ namespace TBSGame.Screens.ScreenTabPanels
             OnPlayGame?.Invoke(this, map, list);
         }
 
+        public Texture2D MapTexture { get; set; }
+
         private LevelMap selected = null;
 
         private Label desc = new Label("");
         private MenuButton play, play_at_night, cancel, select_all;
-        private List<CheckBox> units = new List<CheckBox>();
+        private List<UnitBox> units = new List<UnitBox>();
 
-        private List<Control> controls = new List<Control>();
+        private Panel map_panel = new Panel(true);
+        private Panel units_panel = new Panel(true);
 
         private Level level;
-        private Texture2D map, texture, borders, shadow, selected_map;
+
+        private Texture2D texture, borders, shadow, selected_map;
         private Dictionary<string, Texture2D> hover;
         private Rectangle bounds = new Rectangle(140, 140, 800, 600);
         private Rectangle resize;
@@ -45,24 +50,23 @@ namespace TBSGame.Screens.ScreenTabPanels
             this.level = level;
             this.path = path;
 
-            button.Tint = Color.Lime;
-
             hover = new Dictionary<string, Texture2D>(level.Count);
-            play = new MenuButton(Resources.GetString("play")) { IsVisible = false };
+            play = new MenuButton(Resources.GetString("assault"));
             play.OnControlClicked += new ControlClickedEventHandler(sender =>
             {
                 List<Unit> list = new List<Unit>();
                 for (int i = 0; i < units.Count; i++)
                 {
-                    CheckBox checkbox = units[i];
-                    if (checkbox.IsChecked)
+                    UnitBox unitbox = units[i];
+                    if (unitbox.IsChecked)
                         list.Add(game.Units[i]);
                 }
 
                 if (list.Count > 0)
                     PlayGame(selected, list);
             });
-            cancel = new MenuButton(Resources.GetString("cancel")) { IsVisible = false };
+            play_at_night = new MenuButton(Resources.GetString("assault2"));
+            cancel = new MenuButton(Resources.GetString("cancel"));
             cancel.OnControlClicked += new ControlClickedEventHandler(sender => deselect());
             select_all = new MenuButton(Resources.GetString("select_all_units"));
             select_all.OnControlClicked += new ControlClickedEventHandler(sender =>
@@ -78,7 +82,7 @@ namespace TBSGame.Screens.ScreenTabPanels
 
         protected override void draw()
         {
-            sprite.Draw(map, resize, Color.White);
+            sprite.Draw(MapTexture, resize, Color.White);
 
             sprite.Draw(borders, resize, Color.White);
 
@@ -92,31 +96,32 @@ namespace TBSGame.Screens.ScreenTabPanels
             }
             else
                 sprite.Draw(texture, resize, Color.White);
-
-            controls.ForEach(c => c.Draw());
         }
 
         protected override void load()
         {
-            map = sprite.GetTexture(level.Map);
             texture = new Texture2D(graphics.GraphicsDevice, bounds.Width, bounds.Height);
             borders = new Texture2D(graphics.GraphicsDevice, bounds.Width, bounds.Height);
             shadow = new Texture2D(graphics.GraphicsDevice, bounds.Width, bounds.Height);
             selected_map = new Texture2D(graphics.GraphicsDevice, bounds.Width, bounds.Height);
 
-            float size = (Height * 0.6f) - 15;
-            resize = new Rectangle(bounds.X, bounds.Y, (int)(size / bounds.Height * bounds.Width), (int)size);
+            map_panel.Bounds = new Rectangle(10, 10, (int)(panel.Bounds.Width * 0.5f), panel.Bounds.Height - 20);
+            units_panel.Bounds = new Rectangle(map_panel.Bounds.Width + 20, 10, panel.Bounds.Width - map_panel.Bounds.Width - 30, panel.Bounds.Height - 20);
+            panel.AddRange(new[] { map_panel, units_panel });
+
+            units_panel.IsVisible = false;
 
             for (int i = 0; i < game.Units.Count; i++)
             {
-                CheckBox checkbox = new CheckBox(Resources.GetString(game.Units[i].GetType().Name));
-                checkbox.IsVisible = false;
-                checkbox.Bounds = new Rectangle(resize.X + resize.Width + 10, resize.Top + i * 40 + 60, 200, 40);
-                checkbox.Load(graphics, content, sprite);
-                checkbox.Checked = Color.Crimson;
-                checkbox.UnChecked = new Color(60, 60, 60);
-                units.Add(checkbox);
+                UnitBox unitbox = new UnitBox(game.Units[i]);
+                unitbox.Bounds = new Rectangle(resize.X + resize.Width, resize.Top + i * 40 + 60, 300, 40);
+                unitbox.Checked = Color.Crimson;
+                unitbox.UnChecked = new Color(60, 60, 60);
+                units.Add(unitbox);
             }
+
+            float size = map_panel.Bounds.Width;
+            resize = new Rectangle(10, 10, (int)size, (int)(size / bounds.Width * bounds.Height));
 
             for (int i = 0; i < level.Count; i++)
             {
@@ -131,25 +136,21 @@ namespace TBSGame.Screens.ScreenTabPanels
                 hover.Add(lm.Name, t);
             }
 
-            desc.Load(graphics, content, sprite);
-            desc.Bounds = new Rectangle(resize.X, resize.Y + resize.Height + 10, resize.Width, resize.Height);
+            desc.Bounds = new Rectangle(resize.X, resize.Y + resize.Height, resize.Width, map_panel.Bounds.Height - resize.Height - 30);
             desc.VAligment = VerticalAligment.Top;
             desc.HAligment = HorizontalAligment.Left;
             desc.TextColor = Color.White;
 
-            play.Load(graphics, content, sprite);
-            play.Bounds = new Rectangle(resize.Width + resize.Left + 10, Height - 70, 110, 50);
+            play.Bounds = new Rectangle(0, units_panel.Bounds.Height - 50, 150, 50);
+            play_at_night.Bounds = new Rectangle(160, units_panel.Bounds.Height - 50, 200, 50);
+            cancel.Bounds = new Rectangle(370, units_panel.Bounds.Height - 50, 110, 50);
 
-            cancel.Load(graphics, content, sprite);
-            cancel.Bounds = new Rectangle(resize.Width + resize.Left + 2 * 10 + 110, Height - 70, 110, 50);
-
-            select_all.Load(graphics, content, sprite);
-            select_all.Bounds = new Rectangle(resize.X + resize.Width + 10, resize.Top, 350, 50);
-            select_all.IsVisible = false;
+            select_all.Bounds = new Rectangle(0, 0, 350, 50);
             select_all.Tag = true;
 
-            controls.AddRange(units);
-            controls.AddRange(new Control[] { play, cancel, select_all, desc });
+            map_panel.Add(desc);
+            units_panel.AddRange(units);
+            units_panel.AddRange(new Control[] { play, play_at_night, cancel, select_all });
 
             SetColors();
         }
@@ -272,10 +273,9 @@ namespace TBSGame.Screens.ScreenTabPanels
         {
             key = null;
 
-            controls.ForEach(c => c.Update(time, keyboard, mouse));
-
             bool val = (units.Where(ch => ch.IsChecked).Count() == 0);
             play.IsLocked = val;
+            play_at_night.IsLocked = val;
 
             if (resize.Contains(mouse.Position))
             {
@@ -298,21 +298,17 @@ namespace TBSGame.Screens.ScreenTabPanels
         
         private void deselect()
         {
-            select_all.IsVisible = false;
             set_all(false);
             selected = null;
             desc.Text = "";
-            play.IsVisible = false;
-            cancel.IsVisible = false;
         }
 
         private void select(LevelMap lm)
         {
             if (selected != lm)
             {
-                select_all.IsVisible = true;
-
                 set_all(true);
+
                 selected = lm;
                 set_maps(ref selected_map, Color.Red, Color.Red, lm);
                 string path = $"{Path.GetDirectoryName(this.path)}/maps/{lm.Name}.dat";
@@ -330,16 +326,13 @@ namespace TBSGame.Screens.ScreenTabPanels
 
         private void set_all(bool visibility)
         {
-            foreach (CheckBox checkbox in units)
-            {
-                checkbox.IsVisible = visibility;
-                checkbox.IsChecked = false;
-            }
+            foreach (UnitBox unitbox in units)
+                unitbox.IsChecked = false;
 
-            play.IsVisible = true;
-            cancel.IsVisible = true;
             select_all.Title = Resources.GetString("select_all_units");
             select_all.Tag = true;
+
+            units_panel.IsVisible = visibility;
         }
 
         public override void LoadPosition()

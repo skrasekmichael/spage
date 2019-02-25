@@ -7,8 +7,11 @@ using System.Threading.Tasks;
 using MapDriver;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using TBSGame.Controls;
+using TBSGame.Controls.Buttons;
+using TBSGame.MessageBoxes;
 using TBSGame.Saver;
 using TBSGame.Screens.ScreenTabPanels;
 
@@ -22,6 +25,12 @@ namespace TBSGame.Screens
         private int selected = 0;
         private GameSave game;
 
+        private Panel game_info = new Panel();
+        private Label resources, round;
+        private GameButton next_turn = new GameButton("ok", "ok");
+
+        private Texture2D bar; 
+
         public GameScreen(GameSave game)
         {
             this.game = game;
@@ -30,13 +39,34 @@ namespace TBSGame.Screens
 
         protected override void draw()
         {
+            sprite.Draw(bar, new Rectangle(Width - 100, 0, 100, Height), Color.White);
             tabs.ToList().ForEach(t => t.DrawButton());
             tabs[selected].Draw();
+            game_info.Draw();
         }
 
         protected override void load(GraphicsDeviceManager graphics, ContentManager content, CustomSpriteBatch sprite)
         {
             this.level = Level.Load(path);
+            Texture2D map_texture = sprite.GetTexture(level.Map);
+
+            game_info.Bounds = new Rectangle(Width - 260, Height - 100, 260, 100);
+            game_info.Load(graphics, content, sprite);
+            game_info.Fill = new Color(20, 20, 20);
+            game_info.Border = Color.Transparent;
+            game_info.Foreground = Color.White;
+
+            bar = sprite.GetColorFill(game_info.Fill);
+
+            resources = new Label("");
+            resources.Bounds = new Rectangle(10, 10, 180, 40);
+            resources.HAligment = HorizontalAligment.Left;
+
+            round = new Label("");
+            round.Bounds = new Rectangle(10, 50, 180, 40);
+            round.HAligment = HorizontalAligment.Left;
+
+            next_turn.Bounds = new Rectangle(game_info.Bounds.Width - 100, game_info.Bounds.Height - 100, 100, 100);
 
             MapScreenTabPanel map = new MapScreenTabPanel(this.path, Settings, game, level, "gamemap");
             map.OnPlayGame += new PlayGameEventhandle((sender, level_map, list) =>
@@ -45,7 +75,16 @@ namespace TBSGame.Screens
                 if (File.Exists(path))
                     this.Dispose(new MapScreen(game, Settings, Map.Load(path), level_map.Name, list));
             });
+            map.MapTexture = sprite.Clone(map_texture);
 
+            UnitsScreenTabPanel units = new UnitsScreenTabPanel(Settings, game, "barracks");
+
+            ResearchScreenTabPanel research = new ResearchScreenTabPanel(Settings, game, "anvil");
+
+            SourcesScreenTabPanel sources = new SourcesScreenTabPanel(Settings, game, level, "income");
+            sources.MapTexture = map_texture;
+
+            #region _saves_
             SaveScreenTabPanel save = new SaveScreenTabPanel(Settings, game, "gamesave");
             save.Saves.OnSaveGame += new SaveGameEventHandler((sender, i, name) =>
             {
@@ -60,8 +99,19 @@ namespace TBSGame.Screens
                 if (game != null)
                     this.Dispose(new GameScreen(game));
             });
+            save.Saves.OnDeleteGame += new DeleteGameEventHandler((sender, i) =>
+            {
+                YesNoMessageBox message = new YesNoMessageBox(Resources.GetString("delete?"));
+                message.OnMessageBox += new MessageBoxEventHandler((obj, result) =>
+                {
+                    if (result == DialogResult.Yes)
+                        save.Saves.Delete(i);
+                });
+                this.ShowMessage(message);
+            });
+            #endregion
 
-            tabs = new ScreenTabPanel[] { map, save };
+            tabs = new ScreenTabPanel[] { map, units, research, sources, save };
 
             int index = 0;
             foreach (ScreenTabPanel tab in tabs)
@@ -71,6 +121,8 @@ namespace TBSGame.Screens
                 tab.Load(graphics, content, sprite);
                 index++;
             }
+
+            game_info.AddRange(new Control[] { resources, round, next_turn });
         }
 
         protected override void loadpos()
@@ -80,8 +132,12 @@ namespace TBSGame.Screens
 
         protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
+            resources.Text = $"{Resources.GetString("gold")}: {game.Sources}";
+            round.Text = $"{Resources.GetString("round")}: {game.Round}";
+
             tabs.ToList().ForEach(t => t.UpdateButton(time, keyboard, mouse));
             tabs[selected].Update(time, keyboard, mouse);
+            game_info.Update(time, keyboard, mouse);
         }
     }
 }

@@ -36,9 +36,18 @@ namespace TBSGame.Screens.MapScreenControls
             {
                 double width = 2 * Math.Cos(Math.PI / 6) * engine.Size * Object.DrawScale;
                 double height = width / bounds.Width * bounds.Height;
-                Vector2 c = to_vector(engine.GetCenter(bounds.X, bounds.Y));
-                //c = Object.DrawType == DrawType.Bottom ? new Vector2(c.X, c.Y - (float)(engine.Size * engine.Height)) : c;
-                return new Rectangle((int)c.X, (int)c.Y, (int)(width / 2), (int)height);
+                Vector2 p = to_vector(engine.GetCenter(bounds.X, bounds.Y));
+
+                switch (Object.DrawType)
+                {
+                    case DrawType.Bottom:
+                        p = to_vector(engine.GetPoint(bounds.X, bounds.Y));
+                        break;
+                    case DrawType.Third:
+                        p = new Vector2(p.X, (float)(p.Y - engine.Height / 2));
+                        break;
+                }
+                return new Rectangle((int)p.X, (int)p.Y, (int)(width / 2), (int)height);
             }
 
             Texture2D tx = driver[Object.Texture];

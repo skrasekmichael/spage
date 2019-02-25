@@ -14,12 +14,9 @@ namespace TBSGame.Screens.MapScreenControls
         public Unit Unit { get; set; }
         private Texture2D bg, experience;
 
-        public UnitDetailControl(Unit unit, int x, int y)
+        public UnitDetailControl(Unit unit)
         {
             this.Unit = unit;
-
-            this.X = x; 
-            this.Y = y;
         }
 
         protected override void load()
@@ -29,6 +26,10 @@ namespace TBSGame.Screens.MapScreenControls
 
             if (driver["attack"] == null)
             {
+                driver.LoadTexture("health", sprite.GetColorFill(Color.Red));
+                driver.LoadTexture("health2", sprite.GetColorFill(Color.GreenYellow));
+                driver.LoadTexture("stamina", sprite.GetColorFill(Color.CornflowerBlue));
+
                 driver.LoadTexture("staminashadow", sprite.Shadow(driver["stamina"], Color.Black, 0.4f));
                 driver.LoadTexture("healthshadow", sprite.Shadow(driver["health"], Color.Black, 0.4f));
 
@@ -96,9 +97,9 @@ namespace TBSGame.Screens.MapScreenControls
             sprite.Draw(this.experience, new Rectangle(p.X + padding + 1, p.Y + height - 8, (int)((epercent * epl) / 100), 5), Color.White);
 
             //vlastnoti jednotky
-            string attack = $"{Unit.Attack - Unit.UpgradeBonuses[0]}+{Unit.UpgradeBonuses[0]}";
-            string piecearmor = $"{Unit.PieceArmor - Unit.UpgradeBonuses[2]}+{Unit.UpgradeBonuses[2]}";
-            string armor = $"{Unit.Armor - Unit.UpgradeBonuses[1]}+{Unit.UpgradeBonuses[1]}";
+            string attack = $"{Unit.Attack - Unit.UpgradeBonuses[Unit.ATTACK]}+{Unit.UpgradeBonuses[Unit.ATTACK]}";
+            string piecearmor = $"{Unit.PieceArmor - Unit.UpgradeBonuses[Unit.PIECEARMOR]}+{Unit.UpgradeBonuses[Unit.PIECEARMOR]}";
+            string armor = $"{Unit.Armor - Unit.UpgradeBonuses[Unit.ARMOR]}+{Unit.UpgradeBonuses[Unit.ARMOR]}";
             string range = $"{Unit.MinRange}-{Unit.Range}";
 
             sprite.Draw(driver["attack"], new Rectangle(p.X + height, p.Y + padding + 3 * (15 + space), 25, 25), Color.White);

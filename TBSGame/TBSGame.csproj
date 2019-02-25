@@ -66,6 +66,8 @@
     <Compile Include="Screens\AboutScreen.cs" />
     <Compile Include="Screens\GameSavesScreen.cs" />
     <Compile Include="MessageBoxes\MessageBox.cs" />
+    <Compile Include="Screens\GameScreenControls\UnitBox.cs" />
+    <Compile Include="Screens\GameScreenControls\UnitBuyBox.cs" />
     <Compile Include="Screens\ScreenTabPanels\ResearchScreenTabPanel.cs" />
     <Compile Include="Screens\ScreenTabPanels\SaveScreenTabPanel.cs" />
     <Compile Include="Screens\ScreenTabPanels\SourcesScreenTabPanel.cs" />

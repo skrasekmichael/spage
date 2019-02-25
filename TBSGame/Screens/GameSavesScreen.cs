@@ -42,7 +42,12 @@ namespace TBSGame.Screens
                  GameSave game = GameSave.Load(Settings.GameSaves + i.ToString() + ".dat");
                  Scenario.Load("scenario\\campaign.dat", game.Scenario + "campaign\\");
                  if (game != null)
-                     this.Dispose(new GameScreen(game));
+                 {
+                     if (game.Map == null)
+                         this.Dispose(new GameScreen(game));
+                     else
+                         this.Dispose(new MapScreen(game, Settings, game.Map, null, null));
+                 }
              });
             saves.OnDeleteGame += new DeleteGameEventHandler((sender, index) =>
             {

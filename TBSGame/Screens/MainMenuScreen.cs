@@ -22,7 +22,7 @@ namespace TBSGame.Screens
         {
             buttons.AddRange(new Button[] {
                 new MenuButton(Resources.GetString("campaign")),
-                new MenuButton(Resources.GetString("custom_scenario")),
+                new MenuButton(Resources.GetString("custom_scenario")) { IsLocked = true },
                 new MenuButton(Resources.GetString("loadgame")),
                 new MenuButton(Resources.GetString("about")),
                 new MenuButton(Resources.GetString("settings")),

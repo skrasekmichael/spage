@@ -58,8 +58,12 @@ namespace TBSGame.Screens
         {
             this.game = game;
             this.map = map;
-            this.info = game.Info[name];
-            this.selected_units = selected_units;
+
+            if (name != null)
+            {
+                this.info = game.Info[name];
+                this.selected_units = selected_units;
+            }
 
             saver = new GameMapSaver(settings);
             areas = new List<AreaControl>(map.Width * map.Height);
@@ -464,7 +468,7 @@ namespace TBSGame.Screens
                 }
                 else
                 {
-                    enemy_turn.Update();
+                    enemy_turn.Update(time, keyboard, mouse);
                 }
 
                 for (int i = 0; i < ai.Length; i++)

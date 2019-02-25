@@ -27,9 +27,12 @@ namespace TBSGame.Screens.MapScreenControls
         protected override void load()
         {
             bg = sprite.GetColorFill(new Color(0, 0, 0, 0.5f));
-            driver.LoadTexture("health", sprite.GetColorFill(Color.Red));
-            driver.LoadTexture("health2", sprite.GetColorFill(Color.GreenYellow));
-            driver.LoadTexture("stamina", sprite.GetColorFill(Color.CornflowerBlue));
+            if (driver["health"] == null)
+            {
+                driver.LoadTexture("health", sprite.GetColorFill(Color.Red));
+                driver.LoadTexture("health2", sprite.GetColorFill(Color.GreenYellow));
+                driver.LoadTexture("stamina", sprite.GetColorFill(Color.CornflowerBlue));
+            }
         }
 
         public void Update(Engine engine)

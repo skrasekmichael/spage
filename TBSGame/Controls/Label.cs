@@ -22,37 +22,15 @@ namespace TBSGame.Controls
         public float Opacity { get; set; } = 1f;
 
         private bool IsMultiLine => Text.Split('\n').Length > 1;
-        private Vector2 loc = Vector2.Zero;
 
         public Label(string text)
         {
             this.Text = text;
         }
 
-        protected override void load()
-        { 
-            loc = new Vector2(bounds.X, bounds.Y);
-        }
+        protected override void load() { }
 
-        protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse) => Update();
-
-        public void Update()
-        {
-            int space = Space;
-            if (HAligment == HorizontalAligment.Left)
-                loc.X = bounds.X + space;
-            else if (HAligment == HorizontalAligment.Center)
-                loc.X = bounds.X + (Bounds.Width - Font.MeasureString(Text).X) / 2;
-            else if (HAligment == HorizontalAligment.Right)
-                loc.X = bounds.X + (Bounds.Width - Font.MeasureString(Text).X) - space;
-
-            if (VAligment == VerticalAligment.Top)
-                loc.Y = bounds.Y + space;
-            else if (VAligment == VerticalAligment.Center)
-                loc.Y = bounds.Y + (Bounds.Height - Font.LineSpacing) / 2 + 1;
-            else if (VAligment == VerticalAligment.Bottom)
-                loc.Y = bounds.Y + Bounds.Height - space;
-        }
+        protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse) { }
 
         protected override void draw()
         {

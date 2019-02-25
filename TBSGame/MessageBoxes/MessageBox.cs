@@ -53,7 +53,7 @@ namespace TBSGame.MessageBoxes
 
             panel = new Panel();
             panel.Load(graphics, content, sprite);
-            panel.Fill = Color.Aqua;
+            panel.Fill = Color.Black;
             Size = new Point(400, 200);
 
             load();
@@ -61,7 +61,7 @@ namespace TBSGame.MessageBoxes
             foreach (KeyValuePair<Button, DialogResult> kvp in buttons)
             {
                 kvp.Key.Load(graphics, content, sprite);
-                kvp.Key.OnButtonClicked += new ButtonClickedEventHandler(sender => Close(kvp.Value));
+                kvp.Key.OnControlClicked += new ControlClickedEventHandler(sender => Close(kvp.Value));
                 panel.Add(kvp.Key);
             }
         }

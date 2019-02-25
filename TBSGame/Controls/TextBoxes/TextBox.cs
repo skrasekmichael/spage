@@ -20,6 +20,7 @@ namespace TBSGame.Controls
         private void confirm()
         {
             IsFocused = false;
+            IsLocked = true;
             OnConfirm?.Invoke(this);
         }
 
@@ -28,21 +29,20 @@ namespace TBSGame.Controls
         {
             text = source;
             IsFocused = false;
+            IsLocked = true;
             OnCancel?.Invoke(this);
         }
 
-        public bool BorderTop { get; set; } = true;
-        public bool BorderLeft { get; set; } = true;
-        public bool BorderRight { get; set; } = true;
-        public bool BorderBottom { get; set; } = true;
+        public override bool BorderTop { get; set; } = true;
+        public override bool BorderLeft { get; set; } = true;
+        public override bool BorderRight { get; set; } = true;
+        public override bool BorderBottom { get; set; } = true;
+
         public abstract Color BackColor { get; set; }
-        public abstract Color BorderColor { get; set; }
-        public abstract Color BorderHoverColor { get; set; }
         public abstract Color TextColor { get; set; }
         public abstract Color PlaceHolderColor { get; set; }
         public byte Border { get; set; } = 1;
 
-        public object Tag { get; set; }
         public bool IsVisibled { get; set; } = true;
         public bool IsFocused { get; protected set; } = false;
         public string PlaceHolder { get; set; } = "";
@@ -138,36 +138,33 @@ namespace TBSGame.Controls
 
         protected override void draw()
         {
-            if (IsVisibled)
+            draw_background();
+
+            string text = Text;
+            if (IsFocused)
+                text = Text.Substring(0, pos) + " " + Text.Substring(pos);
+
+            Color tc = TextColor;
+            if (text.Length == 0)
             {
-                draw_background();
-
-                string text = Text;
-                if (IsFocused)
-                    text = Text.Substring(0, pos) + " " + Text.Substring(pos);
-
-                Color tc = TextColor;
-                if (text.Length == 0)
-                {
-                    text = PlaceHolder;
-                    tc = PlaceHolderColor;
-                }
-
-                Vector2 middle = new Vector2(bounds.X + (Bounds.Width - Font.MeasureString(text).X) / 2, bounds.Y + (Bounds.Height - Font.LineSpacing) / 2 + 1);
-                sprite.DrawString(Font, text, middle, tc);
-
-                if (is_cursor_visible && IsFocused)
-                {
-                    Vector2 cur_pos = new Vector2(middle.X + Font.MeasureString(Text.Substring(0, pos)).X - 3 + Font.MeasureString(" ").X / 2, bounds.Y + (Bounds.Height - Font.LineSpacing) / 2 + 1);
-                    sprite.DrawString(Font, "|", cur_pos, TextColor);
-                }
-
-                draw_foreground();               
+                text = PlaceHolder;
+                tc = PlaceHolderColor;
             }
+
+            Vector2 middle = new Vector2(bounds.X + (Bounds.Width - Font.MeasureString(text).X) / 2, bounds.Y + (Bounds.Height - Font.LineSpacing) / 2 + 1);
+            sprite.DrawString(Font, text, middle, tc);
+
+            if (is_cursor_visible && IsFocused)
+            {
+                Vector2 cur_pos = new Vector2(middle.X + Font.MeasureString(Text.Substring(0, pos)).X - 3 + Font.MeasureString(" ").X / 2, bounds.Y + (Bounds.Height - Font.LineSpacing) / 2 + 1);
+                sprite.DrawString(Font, "|", cur_pos, TextColor);
+            }
+
+            draw_foreground();
         }
 
         protected abstract void draw_background();
-        protected abstract void draw_foreground();
+        protected virtual void draw_foreground() { }
 
         protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {

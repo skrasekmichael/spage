@@ -98,7 +98,7 @@ namespace TBSGame.Screens.MapScreenControls
                         }
 
                         Unit.Stamina -= Unit.StaminaPerAttack;
-                        engine.Mobility = engine.GetMobility(X, Y); ;
+                        engine.Mobility = engine.GetMobility(X, Y);
 
                         return 1;
                     }

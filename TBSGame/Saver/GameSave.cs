@@ -13,16 +13,20 @@ namespace TBSGame.Saver
     public class GameSave
     {
         public int MapLevel { get; set; } = 0;
-        public Dictionary<string, MapInfo> Info { get; set; } = null;
+        public Dictionary<string, MapInfo> Info { get; set; }
         public List<Unit> Units { get; set; } = null;
         public string Name { get; set; } = "default";
         public int Sources { get; set; } = 0;
         public int Round { get; set; } = 0;
+        public int Research { get; set; } = 0;
+        public int Income { get; set; } = 0;
         public DateTime SavedAt { get; private set; }
         public Map Map { get; set; } = null;
         public string ScenarioName { get; private set; }
         public string Level { get; private set; }
         public string Scenario { get; private set; }
+        public List<Type> Researches { get; } = new List<Type>(new[] { typeof(StartAge) });
+        public Research Researching { get; set; } = null;
 
         public GameSave(Scenario scenario, Settings settings)
         {
@@ -30,6 +34,21 @@ namespace TBSGame.Saver
             this.Units = scenario.StarterPack;
             this.Scenario = settings.Scenario;
             NextLevel();
+
+            Info = new Dictionary<string, MapInfo>();
+            Level level = MapDriver.Level.Load(Level);
+            foreach (LevelMap map in level.Maps)
+            {
+                MapInfo info = new MapInfo()
+                {
+                    Layer = 0,
+                    IsEnemy = map.Player != 1,
+                    MapVisibilities = null,
+                    Name = map.Name,
+                    RoundsToDeplete = map.Rounds
+                };
+                this.Info.Add(info.Name, info);
+            }
         }
 
         private string getpath()

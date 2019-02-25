@@ -14,8 +14,28 @@ namespace TBSGame.Controls
         private List<Control> controls = new List<Control>();
 
         public bool OnlyArea { get; private set; } = false;
-        public Color Fill { get; set; } = Color.Black;
-        public Color Border { get; set; } = Color.Silver;
+
+        private Color _fill = Color.Black;
+        public Color Fill
+        {
+            get => _fill;
+            set
+            {
+                _fill = value;
+                fill = sprite?.GetColorFill(_fill);
+            }
+        }
+        private Color _border = Color.Silver;
+        public Color Border
+        {
+            get => _border;
+            set
+            {
+                _border = value;
+                border = sprite?.GetColorFill(_border);
+            }
+        }
+        public Color? Foreground { get; set; } = null;
 
         private Texture2D fill, border;
 
@@ -46,7 +66,8 @@ namespace TBSGame.Controls
                 fill = sprite.GetColorFill(Fill);
                 border = sprite.GetColorFill(Border);
             }
-            controls.ForEach(c => c.Load(graphics, content, sprite));
+
+            controls.ForEach(c => c.Load(graphics, content, sprite, bounds.Location.ToVector2()));
         }
 
         public Panel(IEnumerable<Control> controls)
@@ -56,15 +77,22 @@ namespace TBSGame.Controls
 
         public void AddRange(IEnumerable<Control> controls)
         {
-            controls.ToList().ForEach(c => c.Load(graphics, content, sprite));
-            this.controls.AddRange(controls);
+            controls.ToList().ForEach(c => Add(c));            
         }
 
         public void Add(Control control, bool isloading = true)
         {
-            if (!isloading)
-                control.Load(graphics, content, sprite);
+            if (isloading)
+                control.Load(graphics, content, sprite, bounds.Location.ToVector2());
             controls.Add(control);
+
+            if (Foreground != null)
+            {
+                if (control.GetType() == typeof(Button))
+                    ((Button)control).TextColor = Foreground.Value;
+                else if (control.GetType() == typeof(Label))
+                    ((Label)control).TextColor = Foreground.Value;
+            }
         }
 
         public void Remove(Control control) => controls.Remove(control);

@@ -42,7 +42,7 @@ namespace TBSGame
             for (int i = 0; i < lines.Length; i++)
             {
                 Vector2 loc = Vector2.Zero;
-                string text = lines[i];
+                string text = lines[i].Trim();
 
                 if (h == HorizontalAligment.Left)
                     loc.X = bounds.X + space;
@@ -54,7 +54,7 @@ namespace TBSGame
                 if (v == VerticalAligment.Top)
                     loc.Y = bounds.Y + space + i * (font.LineSpacing + hspace);
                 else if (v == VerticalAligment.Center)
-                    loc.Y = bounds.Y + (bounds.Height - lines.Length * (font.LineSpacing + hspace)) / 2 + 1 + i * (font.LineSpacing + hspace);
+                    loc.Y = bounds.Y + (bounds.Height - lines.Length * (font.LineSpacing + hspace)) / 2 - 1 + i * (font.LineSpacing + hspace);
                 else if (v == VerticalAligment.Bottom)
                     loc.Y = bounds.Y + bounds.Height - space - (lines.Length * (font.LineSpacing + hspace)) + i * (font.LineSpacing + hspace);
 
@@ -164,7 +164,7 @@ namespace TBSGame
             GraphicsDevice.DrawUserPrimitives(PrimitiveType.LineStrip, vertex, 0, vertex.Length - 1);
         }
 
-        public Texture2D Tint(Texture2D texture, Color tint)
+        public Texture2D Tint(Texture2D texture, Color tint, Color color = new Color())
         {
             Color[] colors = new Color[texture.Width * texture.Height];
             texture.GetData(colors);                    
@@ -176,6 +176,8 @@ namespace TBSGame
                     int index = x + y * texture.Width;
                     if (colors[index].A != 0)
                         colors[index] = tint;
+                    else
+                        colors[index] = color;
                 }
             }
             Texture2D tinted = new Texture2D(manager.GraphicsDevice, texture.Width, texture.Height);
@@ -259,6 +261,15 @@ namespace TBSGame
 
             tx.SetData(data);
             return tx;
+        }
+
+        public Texture2D Clone(Texture2D texture)
+        {
+            Texture2D t = new Texture2D(this.GraphicsDevice, texture.Width, texture.Height);
+            Color[] data = new Color[texture.Width * texture.Height];
+            texture.GetData(data);
+            t.SetData(data);
+            return t;
         }
     }
 }

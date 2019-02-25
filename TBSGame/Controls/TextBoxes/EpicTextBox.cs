@@ -12,8 +12,8 @@ namespace TBSGame.Controls.TextBoxes
     public class EpicTextBox : TextBox
     {
         public override Color BackColor { get; set; } = Color.Black;
-        public override Color BorderColor { get; set; } = Color.DarkGray;
-        public override Color BorderHoverColor { get; set; } = Color.Silver;
+        public override Color Frame { get; set; } = Color.DarkGray;
+        public override Color MouseOverFrame { get; set; } = Color.Silver;
         public override Color TextColor { get; set; } = Color.White;
         public override Color PlaceHolderColor { get; set; } = new Color(Color.White, 0.3f);
 

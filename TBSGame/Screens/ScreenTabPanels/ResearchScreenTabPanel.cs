@@ -13,7 +13,7 @@ namespace TBSGame.Screens.ScreenTabPanels
     {
         public ResearchScreenTabPanel(Settings settings, GameSave game, string icon) : base(settings, game, icon)
         {
-            button.Tint = Color.Red;
+            
         }
 
         public override void LoadPosition()
