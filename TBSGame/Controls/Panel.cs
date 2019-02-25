@@ -25,19 +25,11 @@ namespace TBSGame.Controls
                 fill = sprite?.GetColorFill(_fill);
             }
         }
-        private Color _border = Color.Silver;
-        public Color Border
-        {
-            get => _border;
-            set
-            {
-                _border = value;
-                border = sprite?.GetColorFill(_border);
-            }
-        }
+
+        public override Color Frame { get; set; } = Color.Silver;
         public Color? Foreground { get; set; } = null;
 
-        private Texture2D fill, border;
+        private Texture2D fill;
 
         public Panel(bool only = false)
         {
@@ -47,25 +39,24 @@ namespace TBSGame.Controls
         protected override void draw()
         {
             if (!OnlyArea)
-            {
-                sprite.Draw(border, bounds, Color.White);
-                sprite.Draw(fill, new Rectangle(bounds.X + 1, bounds.Y + 1, bounds.Width - 2, bounds.Height - 2), Color.White);
-            }
+                sprite.Draw(fill, bounds, Color.White);
             controls.ForEach(c => c.Draw());
         }
 
         protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
             controls.ForEach(c => c.Update(time, keyboard, mouse, bounds.Location.ToVector2()));
+            if (!OnlyArea)
+            {
+                Border.IsVisible = true;
+                MouseOverFrame = Frame;
+            }
         }
 
         protected override void load()
         {
             if (!OnlyArea)
-            {
                 fill = sprite.GetColorFill(Fill);
-                border = sprite.GetColorFill(Border);
-            }
 
             controls.ForEach(c => c.Load(graphics, content, sprite, bounds.Location.ToVector2()));
         }

@@ -11,10 +11,12 @@ using System.Threading.Tasks;
 namespace TBSGame.Controls
 {
     public delegate void ControlClickedEventHandler(object sender);
+    public delegate void ControlMouseMoveEventHandler(object sender, Point position);
 
     public abstract class Control
     {
         public virtual event ControlClickedEventHandler OnControlClicked;
+        public virtual event ControlMouseMoveEventHandler OnMouseMoved;
 
         protected GraphicsDeviceManager graphics;
         protected int Width => graphics.PreferredBackBufferWidth;
@@ -24,11 +26,7 @@ namespace TBSGame.Controls
         protected Vector2 start = new Vector2(0, 0);
         protected bool is_mouse_hover = false, is_mouse_down = false;
 
-        public virtual bool BorderTop { get; set; } = false;
-        public virtual bool BorderLeft { get; set; } = false;
-        public virtual bool BorderRight { get; set; } = false;
-        public virtual bool BorderBottom { get; set; } = false;
-        public int FrameWidth { get; set; } = 1;
+        public virtual Border Border { get; set; } = new Border();
 
         public bool IsVisible { get; set; } = true;
         public bool IsLocked { get; set; } = false;
@@ -42,6 +40,7 @@ namespace TBSGame.Controls
         protected Rectangle bounds => new Rectangle(Bounds.X + (int)start.X, Bounds.Y + (int)start.Y, Bounds.Width, Bounds.Height);
 
         protected Texture2D frame, frame_over;
+        private Point last = new Point(-1, -1);
 
         public virtual SpriteFont Font { get; set; }
 
@@ -80,14 +79,14 @@ namespace TBSGame.Controls
 
         protected virtual void draw_border()
         {
-            if (BorderTop)
-                sprite.Draw(is_mouse_hover ? frame_over : frame, new Rectangle(bounds.X, bounds.Y, Bounds.Width, FrameWidth), Color.White);
-            if (BorderLeft)
-                sprite.Draw(is_mouse_hover ? frame_over : frame, new Rectangle(bounds.X, bounds.Y, FrameWidth, Bounds.Height), Color.White);
-            if (BorderBottom)
-                sprite.Draw(is_mouse_hover ? frame_over : frame, new Rectangle(bounds.X, bounds.Y + Bounds.Height - FrameWidth, Bounds.Width, FrameWidth), Color.White);
-            if (BorderRight)
-                sprite.Draw(is_mouse_hover ? frame_over : frame, new Rectangle(bounds.X + Bounds.Width - FrameWidth, bounds.Y, FrameWidth, Bounds.Height), Color.White);
+            if (Border.Top)
+                sprite.Draw(is_mouse_hover ? frame_over : frame, new Rectangle(bounds.X, bounds.Y, Bounds.Width, Border.Width), Color.White);
+            if (Border.Left)
+                sprite.Draw(is_mouse_hover ? frame_over : frame, new Rectangle(bounds.X, bounds.Y, Border.Width, Bounds.Height), Color.White);
+            if (Border.Bottom)
+                sprite.Draw(is_mouse_hover ? frame_over : frame, new Rectangle(bounds.X, bounds.Y + Bounds.Height - Border.Width, Bounds.Width, Border.Width), Color.White);
+            if (Border.Right)
+                sprite.Draw(is_mouse_hover ? frame_over : frame, new Rectangle(bounds.X + Bounds.Width - Border.Width, bounds.Y, Border.Width, Bounds.Height), Color.White);
         }
 
         protected abstract void draw();
@@ -105,6 +104,11 @@ namespace TBSGame.Controls
 
                 if (!IsLocked && this.bounds.Contains(mouse.X, mouse.Y))
                 {
+                    Point npoint = mouse.Position;
+                    if (npoint != last)
+                        OnMouseMoved?.Invoke(this, npoint);
+                    last = npoint;
+
                     this.is_mouse_hover = true;
                     if (mouse.LeftButton != ButtonState.Pressed && is_mouse_down)
                     {
@@ -124,6 +128,27 @@ namespace TBSGame.Controls
                 sprite.SetColorFill(ref frame_over, MouseOverFrame);
 
                 update(gametime, keyboard, mouse);
+            }
+        }
+    }
+
+    public class Border
+    {
+        public bool Top { get; set; } = false;
+        public bool Left { get; set; } = false;
+        public bool Right { get; set; } = false;
+        public bool Bottom { get; set; } = false;
+
+        public int Width { get; set; } = 1;
+
+        public bool IsVisible
+        {
+            set
+            {
+                Top = value;
+                Left = value;
+                Right = value;
+                Bottom = value;
             }
         }
     }

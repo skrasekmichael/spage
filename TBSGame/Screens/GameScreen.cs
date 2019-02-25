@@ -53,7 +53,7 @@ namespace TBSGame.Screens
             game_info.Bounds = new Rectangle(Width - 260, Height - 100, 260, 100);
             game_info.Load(graphics, content, sprite);
             game_info.Fill = new Color(20, 20, 20);
-            game_info.Border = Color.Transparent;
+            game_info.Frame = Color.Transparent;
             game_info.Foreground = Color.White;
 
             bar = sprite.GetColorFill(game_info.Fill);

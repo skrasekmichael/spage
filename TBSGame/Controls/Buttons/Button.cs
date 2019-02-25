@@ -24,10 +24,7 @@ namespace TBSGame.Controls
         public string Title { get; set; }
         public float Opacity { get; set; } = 1f;
 
-        public override bool BorderTop { get; set; } = true;
-        public override bool BorderLeft { get; set; } = true;
-        public override bool BorderRight { get; set; } = true;
-        public override bool BorderBottom { get; set; } = true;
+        public override Border Border { get; set; } = new Border() { IsVisible = true };
 
         protected Texture2D background_fill, background_over_fill, locked_bg;
 

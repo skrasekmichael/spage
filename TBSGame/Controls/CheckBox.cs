@@ -29,7 +29,7 @@ namespace TBSGame.Controls
         {
             Label = new MenuButton(text);
             
-            Label.FrameWidth = 0;
+            Label.Border.Width = 0;
             Label.MouseOverTextColor = Color.White;
             Label.Fill = Color.Transparent;
             Label.MouseOverFill = Color.Transparent;

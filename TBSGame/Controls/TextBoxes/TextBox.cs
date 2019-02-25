@@ -33,15 +33,11 @@ namespace TBSGame.Controls
             OnCancel?.Invoke(this);
         }
 
-        public override bool BorderTop { get; set; } = true;
-        public override bool BorderLeft { get; set; } = true;
-        public override bool BorderRight { get; set; } = true;
-        public override bool BorderBottom { get; set; } = true;
+        public override Border Border { get; set; } = new Border() { IsVisible = true };
 
         public abstract Color BackColor { get; set; }
         public abstract Color TextColor { get; set; }
         public abstract Color PlaceHolderColor { get; set; }
-        public byte Border { get; set; } = 1;
 
         public bool IsVisibled { get; set; } = true;
         public bool IsFocused { get; protected set; } = false;

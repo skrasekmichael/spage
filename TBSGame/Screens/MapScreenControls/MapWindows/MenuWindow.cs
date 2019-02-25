@@ -107,7 +107,7 @@ namespace TBSGame.Screens.MapScreenControls.MapWindows
             {
                 panels[i].Bounds = new Rectangle(Bounds.X + w - 1, Bounds.Y, Bounds.Width - w, Bounds.Height); 
                 btns[i].Bounds = new Rectangle(Bounds.X, Bounds.Y + i * (h + 2) + 15, w, h);
-                btns[i].BorderRight = false;
+                btns[i].Border.Right = false;
             }
         }
 

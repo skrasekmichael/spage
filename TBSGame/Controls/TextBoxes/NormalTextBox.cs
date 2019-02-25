@@ -26,14 +26,14 @@ namespace TBSGame.Controls.TextBoxes
 
         protected override void draw_border()
         {
-            if (BorderTop)
-                sprite.Draw(is_mouse_hover || IsFocused ? frame_over : frame, new Rectangle(bounds.X, bounds.Y, Bounds.Width, Border), Color.White);
-            if (BorderLeft)
-                sprite.Draw(is_mouse_hover || IsFocused ? frame_over : frame, new Rectangle(bounds.X, bounds.Y, Border, Bounds.Height), Color.White);
-            if (BorderBottom)
-                sprite.Draw(is_mouse_hover || IsFocused ? frame_over : frame, new Rectangle(bounds.X, bounds.Y + Bounds.Height - Border, Bounds.Width, Border), Color.White);
-            if (BorderRight)
-                sprite.Draw(is_mouse_hover || IsFocused ? frame_over : frame, new Rectangle(bounds.X + Bounds.Width - Border, bounds.Y, Border, Bounds.Height), Color.White);
+            if (Border.Top)
+                sprite.Draw(is_mouse_hover || IsFocused ? frame_over : frame, new Rectangle(bounds.X, bounds.Y, Bounds.Width, Border.Width), Color.White);
+            if (Border.Left)
+                sprite.Draw(is_mouse_hover || IsFocused ? frame_over : frame, new Rectangle(bounds.X, bounds.Y, Border.Width, Bounds.Height), Color.White);
+            if (Border.Bottom)
+                sprite.Draw(is_mouse_hover || IsFocused ? frame_over : frame, new Rectangle(bounds.X, bounds.Y + Bounds.Height - Border.Width, Bounds.Width, Border.Width), Color.White);
+            if (Border.Right)
+                sprite.Draw(is_mouse_hover || IsFocused ? frame_over : frame, new Rectangle(bounds.X + Bounds.Width - Border.Width, bounds.Y, Border.Width, Bounds.Height), Color.White);
         }
 
         protected override void load()
