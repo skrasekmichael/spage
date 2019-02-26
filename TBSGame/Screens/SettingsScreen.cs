@@ -31,7 +31,7 @@ namespace TBSGame.Screens
 
             buttons.ForEach(btn => btn.OnControlClicked += new ControlClickedEventHandler(sender =>
             {
-                string[] resolution = ((MenuButton)sender).Title.Split('x');
+                string[] resolution = ((MenuButton)sender).Text.Split('x');
                 graphics.PreferredBackBufferWidth = int.Parse(resolution[0]);
                 graphics.PreferredBackBufferHeight = int.Parse(resolution[1]);
                 graphics.ApplyChanges();

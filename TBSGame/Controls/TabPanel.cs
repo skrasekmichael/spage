@@ -38,7 +38,7 @@ namespace TBSGame.Controls
             if (selected != null)
             {
                 panels[selected].IsVisible = false;
-                buttons[selected].TextColor = Color.White;
+                buttons[selected].Foreground = Color.White;
             }
         }
 
@@ -49,7 +49,7 @@ namespace TBSGame.Controls
                 deselect();
                 selected = key;
                 panels[selected].IsVisible = true;
-                buttons[selected].TextColor = Color.Orange;
+                buttons[selected].Foreground = Color.Orange;
             }
         }
 

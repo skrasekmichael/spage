@@ -16,7 +16,7 @@ namespace TBSGame.Controls.TextBoxes
         public override Color BackColor { get; set; } = Color.Black;
         public override Color Frame { get; set; } = new Color(30, 30, 30);
         public override Color MouseOverFrame { get; set; } = Color.White;
-        public override Color TextColor { get; set; } = Color.White;
+        public override Color Foreground { get; set; } = Color.White;
         public override Color PlaceHolderColor { get; set; } = Color.Gray;
 
         protected override void draw_background()

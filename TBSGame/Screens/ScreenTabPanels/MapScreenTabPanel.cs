@@ -76,7 +76,7 @@ namespace TBSGame.Screens.ScreenTabPanels
                 for (int i = 0; i < game.Units.Count; i++)
                     units[i].IsChecked = check;
                 button.Tag = !check;
-                button.Title = check ? Resources.GetString("deselect_all_units") : Resources.GetString("select_all_units");
+                button.Text = check ? Resources.GetString("deselect_all_units") : Resources.GetString("select_all_units");
             });
         }
 
@@ -139,7 +139,7 @@ namespace TBSGame.Screens.ScreenTabPanels
             desc.Bounds = new Rectangle(resize.X, resize.Y + resize.Height, resize.Width, map_panel.Bounds.Height - resize.Height - 30);
             desc.VAligment = VerticalAligment.Top;
             desc.HAligment = HorizontalAligment.Left;
-            desc.TextColor = Color.White;
+            desc.Foreground = Color.White;
 
             play.Bounds = new Rectangle(0, units_panel.Bounds.Height - 50, 150, 50);
             play_at_night.Bounds = new Rectangle(160, units_panel.Bounds.Height - 50, 200, 50);
@@ -329,7 +329,7 @@ namespace TBSGame.Screens.ScreenTabPanels
             foreach (UnitBox unitbox in units)
                 unitbox.IsChecked = false;
 
-            select_all.Title = Resources.GetString("select_all_units");
+            select_all.Text = Resources.GetString("select_all_units");
             select_all.Tag = true;
 
             units_panel.IsVisible = visibility;

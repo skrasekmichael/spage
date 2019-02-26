@@ -32,7 +32,7 @@ namespace TBSGame.MessageBoxes
             text.HAligment = HorizontalAligment.Center;
             text.VAligment = VerticalAligment.Center;
             text.Load(graphics, content, sprite);
-            text.TextColor = Color.White;
+            text.Foreground = Color.White;
 
             panel.Add(text);
         }

@@ -39,7 +39,7 @@ namespace TBSGame.Screens.GameScreenControls
 
             Reload(Unit);
 
-            panel.Fill = Color.Aqua;
+            panel.Foreground = Color.White;
             panel.Bounds = this.bounds;
             panel.Load(graphics, content, sprite);
             panel.AddRange(labels);

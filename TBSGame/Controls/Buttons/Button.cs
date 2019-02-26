@@ -10,10 +10,9 @@ using Microsoft.Xna.Framework.Content;
 
 namespace TBSGame.Controls
 {
-    public abstract class Button : Control
+    public abstract class Button : Label
     {
-        public Color TextColor { get; set; } = Color.Black;
-        public Color MouseOverTextColor { get; set; } = Color.Black;
+        public Color MouseOverForeground { get; set; } = Color.Black;
         public Color Fill { get; set; } = Color.Transparent;
         public Color MouseOverFill { get; set; } = Color.Transparent;
         public override Color Frame { get; set; } = Color.Transparent;
@@ -21,16 +20,14 @@ namespace TBSGame.Controls
         public Color LockedColor { get; set; } = Color.Gray;
 
         public int Key { get; set; } = 0;
-        public string Title { get; set; }
-        public float Opacity { get; set; } = 1f;
 
         public override Border Border { get; set; } = new Border() { IsVisible = true };
 
         protected Texture2D background_fill, background_over_fill, locked_bg;
 
-        public Button(string title)
+        public Button(string title) : base(title)
         {
-            Title = title;
+            
         }
 
         protected override void load()
@@ -44,8 +41,7 @@ namespace TBSGame.Controls
         {
             sprite.Draw(IsLocked ? locked_bg : (is_mouse_hover ? background_over_fill : background_fill), bounds, Color.White);
             _draw();
-            Vector2 middle = new Vector2(bounds.X + (Bounds.Width - Font.MeasureString(Title).X) / 2, bounds.Y + (Bounds.Height - Font.LineSpacing) / 2 - 1);
-            sprite.DrawString(Font, Title, middle, IsLocked ? LockedColor : (is_mouse_hover ? MouseOverTextColor : TextColor) * Opacity);
+            sprite.DrawMultiLineText(Font, Text.Split('\n'), bounds, HAligment, VAligment, Space, IsLocked ? LockedColor : (is_mouse_hover ? MouseOverForeground : Foreground) * Opacity, LineHeight);
         }
 
         protected virtual void _draw() { }

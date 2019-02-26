@@ -11,11 +11,11 @@ namespace TBSGame.Controls.Buttons
     {
         public TextButton(string title) : base(title)
         {
-            this.TextColor = Color.White;
-            this.MouseOverTextColor = Color.Orange;
-            this.Fill = Color.Black;
-            this.Frame = Color.Transparent;
-            this.MouseOverFill = Color.Black;
+            Foreground = Color.White;
+            MouseOverForeground = Color.Orange;
+            Fill = Color.Black;
+            Frame = Color.Transparent;
+            MouseOverFill = Color.Black;
         }
     }
 }

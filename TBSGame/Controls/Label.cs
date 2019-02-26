@@ -13,10 +13,9 @@ namespace TBSGame.Controls
 {
     public class Label : Control
     {
-        public Color TextColor { get; set; } = Color.Black;
         public string Text { get; set; }
-        public HorizontalAligment HAligment { get; set; } = HorizontalAligment.Center;
-        public VerticalAligment VAligment { get; set; } = VerticalAligment.Center;
+        public override HorizontalAligment HAligment { get; set; } = HorizontalAligment.Center;
+        public override VerticalAligment VAligment { get; set; } = VerticalAligment.Center;
         public int Space { get; set; } = 10;
         public int LineHeight { get; set; } = 0;
         public float Opacity { get; set; } = 1f;
@@ -34,7 +33,7 @@ namespace TBSGame.Controls
 
         protected override void draw()
         {
-            sprite.DrawMultiLineText(Font, Text.Split('\n'), bounds, HAligment, VAligment, Space, TextColor * Opacity, LineHeight);
+            sprite.DrawMultiLineText(Font, Text.Split('\n'), bounds, HAligment, VAligment, Space, Foreground * Opacity, LineHeight);
         }
     }
 }

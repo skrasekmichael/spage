@@ -56,6 +56,7 @@ namespace TBSGame.Screens.GameScreenControls
         {
             check.Bounds = new Rectangle(0, 0, this.bounds.Width - 120, this.bounds.Height);
             check.IsChecked = false;
+            check.Label.HAligment = HorizontalAligment.Left;
 
             int index = Unit.GetLevel();
             int exp = Unit.Experience - Unit.ExperiencePerLevel[index];
@@ -67,7 +68,7 @@ namespace TBSGame.Screens.GameScreenControls
 
             Label label = new Label(level.ToString() + "/6*");
             label.Bounds = new Rectangle(check.Bounds.Width, 0, 120, this.bounds.Height);
-            label.TextColor = Color.Silver;
+            label.Foreground = Color.Silver;
             label.HAligment = HorizontalAligment.Left;
 
             panel.Bounds = this.bounds;

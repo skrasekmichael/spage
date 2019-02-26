@@ -27,13 +27,24 @@ namespace TBSGame.Controls
         }
 
         public override Color Frame { get; set; } = Color.Silver;
-        public Color? Foreground { get; set; } = null;
+        private bool fore_is_changed = false;
+        public override Color Foreground
+        {
+            get => _fore;
+            set
+            {
+                fore_is_changed = true;
+                _fore = value;
+                controls.ForEach(c => c.Foreground = value);
+            }
+        }
 
         private Texture2D fill;
 
         public Panel(bool only = false)
         {
             OnlyArea = only;
+            Border.IsVisible = !only;
         }
 
         protected override void draw()
@@ -46,19 +57,16 @@ namespace TBSGame.Controls
         protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
             controls.ForEach(c => c.Update(time, keyboard, mouse, bounds.Location.ToVector2()));
-            if (!OnlyArea)
-            {
-                Border.IsVisible = true;
-                MouseOverFrame = Frame;
-            }
         }
 
         protected override void load()
         {
+            MouseOverFrame = Frame;
+
             if (!OnlyArea)
                 fill = sprite.GetColorFill(Fill);
 
-            controls.ForEach(c => c.Load(graphics, content, sprite, bounds.Location.ToVector2()));
+            controls.ForEach(load);
         }
 
         public Panel(IEnumerable<Control> controls)
@@ -74,16 +82,15 @@ namespace TBSGame.Controls
         public void Add(Control control, bool isloading = true)
         {
             if (isloading)
-                control.Load(graphics, content, sprite, bounds.Location.ToVector2());
+                load(control);
             controls.Add(control);
+        }
 
-            if (Foreground != null)
-            {
-                if (control.GetType() == typeof(Button))
-                    ((Button)control).TextColor = Foreground.Value;
-                else if (control.GetType() == typeof(Label))
-                    ((Label)control).TextColor = Foreground.Value;
-            }
+        private void load(Control control)
+        {
+            if (fore_is_changed)
+                control.Foreground = this.Foreground;
+            control.Load(graphics, content, sprite, bounds.Location.ToVector2());
         }
 
         public void Remove(Control control) => controls.Remove(control);

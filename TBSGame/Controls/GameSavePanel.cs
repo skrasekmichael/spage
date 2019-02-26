@@ -155,14 +155,14 @@ namespace TBSGame.Controls
                 Label date = new Label("");
                 date.Load(graphics, content, sprite);
                 date.Font = content.Load<SpriteFont>("fonts/small");
-                date.TextColor = Color.Silver;
+                date.Foreground = Color.Silver;
                 date.HAligment = HorizontalAligment.Left;
                 dates[i] = date;
 
                 Label scenario = new Label("");
                 scenario.Load(graphics, content, sprite);
                 scenario.Font = content.Load<SpriteFont>("fonts/small");
-                scenario.TextColor = Color.Silver;
+                scenario.Foreground = Color.Silver;
                 scenario.HAligment = HorizontalAligment.Left;
                 scenarios[i] = scenario;
 

@@ -28,6 +28,9 @@ namespace TBSGame.Controls
 
         public virtual Border Border { get; set; } = new Border();
 
+        public virtual HorizontalAligment HAligment { get; set; } = HorizontalAligment.Left;
+        public virtual VerticalAligment VAligment { get; set; } = VerticalAligment.Top;
+
         public bool IsVisible { get; set; } = true;
         public bool IsLocked { get; set; } = false;
         public bool IsMouseOver => is_mouse_hover;
@@ -35,6 +38,12 @@ namespace TBSGame.Controls
 
         public virtual Color Frame { get; set; } = Color.Transparent;
         public virtual Color MouseOverFrame { get; set; } = Color.Transparent;
+        protected Color _fore = Color.Black;
+        public virtual Color Foreground
+        {
+            get => _fore;
+            set => _fore = value;
+        }
 
         public Rectangle Bounds { get; set; } = Rectangle.Empty;
         protected Rectangle bounds => new Rectangle(Bounds.X + (int)start.X, Bounds.Y + (int)start.Y, Bounds.Width, Bounds.Height);

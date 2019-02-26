@@ -23,7 +23,7 @@ namespace TBSGame.Screens
         {
             label = new Label(Resources.GetString("about_text"));
             label.Load(graphics, content, sprite);
-            label.TextColor = Color.Silver;
+            label.Foreground = Color.Silver;
             label.LineHeight = 20;
             label.VAligment = VerticalAligment.Center;
             label.HAligment = HorizontalAligment.Left;

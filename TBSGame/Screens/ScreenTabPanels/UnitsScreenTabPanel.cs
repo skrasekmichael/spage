@@ -58,6 +58,7 @@ namespace TBSGame.Screens.ScreenTabPanels
                         unitbox.UnChecked = new Color(60, 60, 60);                        
                         unitbox.OnControlClicked += new ControlClickedEventHandler(sender =>
                         {
+                            units.ForEach(u => u.IsChecked = false);
                             buy.Reload(((UnitBox)sender).Unit);
                         });
                         units.Add(unitbox);

@@ -12,12 +12,12 @@ namespace TBSGame.Controls.Buttons
     {
         public MenuButton(string title) : base(title)
         {
-            this.TextColor = Color.White;
-            this.MouseOverTextColor = new Color(30, 30, 30);
-            this.Fill = new Color(30, 30, 30);
-            this.Frame = Color.Transparent;
-            this.MouseOverFrame = Color.Transparent;
-            this.MouseOverFill = new Color(Color.Crimson, 0.8f);
+            Foreground = Color.White;
+            MouseOverForeground = new Color(30, 30, 30);
+            Fill = new Color(30, 30, 30);
+            Frame = Color.Transparent;
+            MouseOverFrame = Color.Transparent;
+            MouseOverFill = new Color(Color.Crimson, 0.8f);
         }
 
         protected override void load()

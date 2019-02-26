@@ -15,8 +15,8 @@ namespace TBSGame.Controls.Buttons
             MouseOverFrame = Color.Orange;
             Fill = Color.Black;
             MouseOverFill = Color.Black;
-            TextColor = Color.White;
-            MouseOverTextColor = Color.Orange;
+            Foreground = Color.White;
+            MouseOverForeground = Color.Orange;
         }
 
         protected override void load()

@@ -55,6 +55,7 @@ namespace TBSGame.Screens
             game_info.Fill = new Color(20, 20, 20);
             game_info.Frame = Color.Transparent;
             game_info.Foreground = Color.White;
+            game_info.Border.IsVisible = false;
 
             bar = sprite.GetColorFill(game_info.Fill);
 

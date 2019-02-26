@@ -17,9 +17,9 @@ namespace TBSGame.Controls.Buttons
 
         public GameButton(string title, string icon) : base(title)
         {
-            this.TextColor = Color.Black;
-            this.MouseOverFill = new Color(40, 40, 40);
-            this.Fill = new Color(80, 80, 80);
+            Foreground = Color.Black;
+            MouseOverFill = new Color(40, 40, 40);
+            Fill = new Color(80, 80, 80);
             ic = icon;
         }
 

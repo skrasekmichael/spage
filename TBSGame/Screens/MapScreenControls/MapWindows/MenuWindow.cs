@@ -48,7 +48,7 @@ namespace TBSGame.Screens.MapScreenControls.MapWindows
             system = new Panel();
 
             save_counter = new Label("");
-            save_counter.TextColor = Color.Red;
+            save_counter.Foreground = Color.Red;
             save_counter.Bounds = new Rectangle(0, Bounds.Height - h, h, h);
 
             MenuButton save = new MenuButton(Resources.GetString("save"));
@@ -90,7 +90,7 @@ namespace TBSGame.Screens.MapScreenControls.MapWindows
             {
                 Label label = new Label(Resources.GetString(task_list[i].Name));
                 label.Bounds = new Rectangle(5, 5 + i * (h + 2), Bounds.Width - w - 10, h);
-                label.TextColor = Color.Red;
+                label.Foreground = Color.Red;
                 tasks_labels[i] = label;
                 tasks.Add(label);
             }
@@ -128,7 +128,7 @@ namespace TBSGame.Screens.MapScreenControls.MapWindows
                 for (int i = 0; i < task_list.Length; i++)
                 {
                     if (task_list[i].Done)
-                        tasks_labels[i].TextColor = Color.Lime;
+                        tasks_labels[i].Foreground = Color.Lime;
                 }
 
                 save_counter.Text = (4 - saver.Saves).ToString();
@@ -138,7 +138,7 @@ namespace TBSGame.Screens.MapScreenControls.MapWindows
                     int i = saver.Saves;
                     Panel save_row = new Panel();
                     Label name = new Label($"{i}. save");
-                    name.TextColor = Color.White;
+                    name.Foreground = Color.White;
                     MenuButton load = new MenuButton(Resources.GetString("load"));
                     load.Tag = i - 1;
                     load.OnControlClicked += new ControlClickedEventHandler(sender =>

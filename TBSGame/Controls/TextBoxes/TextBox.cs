@@ -36,7 +36,6 @@ namespace TBSGame.Controls
         public override Border Border { get; set; } = new Border() { IsVisible = true };
 
         public abstract Color BackColor { get; set; }
-        public abstract Color TextColor { get; set; }
         public abstract Color PlaceHolderColor { get; set; }
 
         public bool IsVisibled { get; set; } = true;
@@ -140,7 +139,7 @@ namespace TBSGame.Controls
             if (IsFocused)
                 text = Text.Substring(0, pos) + " " + Text.Substring(pos);
 
-            Color tc = TextColor;
+            Color tc = Foreground;
             if (text.Length == 0)
             {
                 text = PlaceHolder;
@@ -153,7 +152,7 @@ namespace TBSGame.Controls
             if (is_cursor_visible && IsFocused)
             {
                 Vector2 cur_pos = new Vector2(middle.X + Font.MeasureString(Text.Substring(0, pos)).X - 3 + Font.MeasureString(" ").X / 2, bounds.Y + (Bounds.Height - Font.LineSpacing) / 2 + 1);
-                sprite.DrawString(Font, "|", cur_pos, TextColor);
+                sprite.DrawString(Font, "|", cur_pos, Foreground);
             }
 
             draw_foreground();

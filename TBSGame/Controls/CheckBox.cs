@@ -21,8 +21,8 @@ namespace TBSGame.Controls
 
         public string Text
         {
-            get => Label.Title;
-            set => Label.Title = value;
+            get => Label.Text;
+            set => Label.Text = value;
         }
 
         public CheckBox(string text)
@@ -30,7 +30,7 @@ namespace TBSGame.Controls
             Label = new MenuButton(text);
             
             Label.Border.Width = 0;
-            Label.MouseOverTextColor = Color.White;
+            Label.MouseOverForeground = Color.White;
             Label.Fill = Color.Transparent;
             Label.MouseOverFill = Color.Transparent;
 
@@ -49,7 +49,7 @@ namespace TBSGame.Controls
         protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
             Label.Bounds = this.bounds;
-            Label.TextColor = IsChecked ? Checked : UnChecked;
+            Label.Foreground = IsChecked ? Checked : UnChecked;
             Label.Update(time, keyboard, mouse);
         }
 
