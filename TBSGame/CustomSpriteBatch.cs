@@ -35,11 +35,16 @@ namespace TBSGame
             effect.Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver2, GraphicsDevice.DisplayMode.AspectRatio, 1, 1000);
         }
 
-        public void DrawMultiLineText(SpriteFont font, string[] lines, Rectangle bounds, HorizontalAligment h, VerticalAligment v, int space, Color c, int hspace = 0)
+        public void DrawMultiLineText(SpriteFont font, string[] data, Rectangle bounds, HorizontalAligment h, VerticalAligment v, int space, Color c, int hspace = 0)
         {
-            lines = lines.ToList().Select(line => WrapText(font, line, bounds.Width - 2 * space)).ToArray();
+            List<string> lines = new List<string>(data.Length);
+            foreach (string line in data)
+            {
+                string[] ls = WrapText(font, line, bounds.Width - 2 * space).Split('\n');
+                lines.AddRange(ls);
+            }
 
-            for (int i = 0; i < lines.Length; i++)
+            for (int i = 0; i < lines.Count; i++)
             {
                 Vector2 loc = Vector2.Zero;
                 string text = lines[i].Trim();
@@ -54,9 +59,9 @@ namespace TBSGame
                 if (v == VerticalAligment.Top)
                     loc.Y = bounds.Y + space + i * (font.LineSpacing + hspace);
                 else if (v == VerticalAligment.Center)
-                    loc.Y = bounds.Y + (bounds.Height - lines.Length * (font.LineSpacing + hspace)) / 2 - 1 + i * (font.LineSpacing + hspace);
+                    loc.Y = bounds.Y + (bounds.Height - lines.Count * (font.LineSpacing + hspace)) / 2 - 1 + i * (font.LineSpacing + hspace);
                 else if (v == VerticalAligment.Bottom)
-                    loc.Y = bounds.Y + bounds.Height - space - (lines.Length * (font.LineSpacing + hspace)) + i * (font.LineSpacing + hspace);
+                    loc.Y = bounds.Y + bounds.Height - space - (lines.Count * (font.LineSpacing + hspace)) + i * (font.LineSpacing + hspace);
 
                 this.DrawString(font, text, loc, c);
             }

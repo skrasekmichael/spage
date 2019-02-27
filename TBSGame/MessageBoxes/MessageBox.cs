@@ -54,7 +54,8 @@ namespace TBSGame.MessageBoxes
             panel = new Panel();
             panel.Load(graphics, content, sprite);
             panel.Fill = Color.Black;
-            Size = new Point(400, 200);
+            if (Size == new Point(0, 0))
+                Size = new Point(400, 200);
 
             load();
 

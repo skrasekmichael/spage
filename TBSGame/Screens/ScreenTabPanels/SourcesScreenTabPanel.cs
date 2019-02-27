@@ -57,7 +57,7 @@ namespace TBSGame.Screens.ScreenTabPanels
             for (int i = 0; i < level.Maps.Count; i++)
             {
                 LevelMap lm = level.Maps[i];
-                if (lm.Player == 1 && lm.Rounds > 0)
+                if (lm.Player == 1 && game.Info[lm.Name].RoundsToDeplete > 0)
                     total_income += lm.Sources;
                 System.Drawing.Point center = lm.Center;
                 Label label = new Label($"{lm.Sources.ToString()} ({game.Info[lm.Name].RoundsToDeplete.ToString()})")
@@ -152,9 +152,10 @@ namespace TBSGame.Screens.ScreenTabPanels
             for (int i = 0; i < level.Maps.Count; i++)
             {
                 LevelMap lm = level.Maps[i];
-                labels[i].IsVisible = lm.Player == 1 && lm.Rounds > 0;
+                labels[i].IsVisible = lm.Player == 1 && game.Info[lm.Name].RoundsToDeplete > 0;
                 labels[i].Update(time, keyboard, mouse);
-                if (lm.Player == 1 && lm.Rounds > 0)
+                labels[i].Text = $"{lm.Sources.ToString()} ({game.Info[lm.Name].RoundsToDeplete.ToString()})";
+                if (lm.Player == 1 && game.Info[lm.Name].RoundsToDeplete > 0)
                     total_income += lm.Sources;
             }
 
@@ -163,10 +164,21 @@ namespace TBSGame.Screens.ScreenTabPanels
             source_label.Text = game.Income.ToString();
             total.Text = total_income.ToString();
 
-            int space = 5;
-            int w = (switch_panel.Bounds.Width - 400 - 2 * space) * game.Income / total_income;
-            bar_panel1.Bounds = new Rectangle(200 + space, 75 - 8, (switch_panel.Bounds.Width - 400 - 2 * space) - w, 4);
-            bar_panel2.Bounds = new Rectangle(200 + space + bar_panel1.Bounds.Width, 75 - 8, w, 4);
+            if (total_income > 0)
+            {
+                int space = 5;
+                int w = (switch_panel.Bounds.Width - 400 - 2 * space) * game.Income / total_income;
+                bar_panel1.Bounds = new Rectangle(200 + space, 75 - 8, (switch_panel.Bounds.Width - 400 - 2 * space) - w, 4);
+                bar_panel2.Bounds = new Rectangle(200 + space + bar_panel1.Bounds.Width, 75 - 8, w, 4);
+
+                bar_panel1.Fill = Color.Lime;
+                bar_panel2.Fill = Color.Gold;
+            }
+            else
+            {
+                bar_panel1.Fill = Color.Silver;
+                bar_panel2.Fill = Color.Silver;
+            }
         }
 
         private void set_map(Color c1, float f1, Color c2, float f2)
