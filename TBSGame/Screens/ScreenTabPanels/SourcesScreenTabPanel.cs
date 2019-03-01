@@ -207,5 +207,10 @@ namespace TBSGame.Screens.ScreenTabPanels
 
             MapTexture.SetData(colors);
         }
+
+        public override void Reload()
+        {
+            
+        }
     }
 }

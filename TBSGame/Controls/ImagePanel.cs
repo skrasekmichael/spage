@@ -11,23 +11,28 @@ namespace TBSGame.Controls
 {
     public class ImagePanel : Control
     {
-        public VerticalAligment VAligment { get; set; }
-        public HorizontalAligment HAligment { get; set; }
-
         public Rectangle MaxBounds { get; private set; }
         public Rectangle ImageBounds { get; set; }
 
         public double WidthCoef => ImageBounds.Width / texture.Width;
         public double HeightCoef => ImageBounds.Height / texture.Height;
 
-        public override Border Border { get; set; } = new Border() { IsVisible = true };
-        public override Color Frame { get; set; } = Color.Pink;
-
         private Texture2D texture;
+        public Texture2D Image
+        {
+            get => texture;
+            set
+            {
+                texture = value;
+                ImageBounds = texture.Bounds;
+                load_bounds();
+            }
+        }
 
         public ImagePanel(Texture2D texture)
         {
             this.texture = texture;
+            ImageBounds = texture.Bounds;
         }
 
         protected override void draw()
@@ -47,26 +52,22 @@ namespace TBSGame.Controls
 
         private void load_bounds()
         {
-            double wc = bounds.Width / texture.Width;
-            double hc = bounds.Height / texture.Height;
-
             int width = 0, height = 0;
-
-            if (wc < hc)
+            if ((double)bounds.Width / texture.Width < (double)bounds.Height / texture.Height)
             {
                 width = bounds.Width;
-                height = (int)(bounds.Height * wc);
+                height = width * (texture.Width / texture.Height);
             }
             else
             {
-                width = (int)(bounds.Width * hc);
                 height = bounds.Height;
+                width = height * (texture.Height / texture.Width);
             }
 
             MaxBounds = new Rectangle(0, 0, width, height);
 
             if (ImageBounds.Width > width || ImageBounds.Height > height)
-                ImageBounds = MaxBounds;            
+                ImageBounds = new Rectangle(0, 0, width, height);
 
             Rectangle rec = new Rectangle(0, 0, ImageBounds.Width, ImageBounds.Height);
 

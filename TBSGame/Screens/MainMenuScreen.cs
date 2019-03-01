@@ -17,6 +17,7 @@ namespace TBSGame.Screens
     public class MainMenuScreen : Screen
     {
         private List<Button> buttons = new List<Button>();
+        private ImagePanel background;
 
         public MainMenuScreen() : base()
         {
@@ -48,12 +49,18 @@ namespace TBSGame.Screens
 
         protected override void draw()
         {
+            //background.Draw();
             buttons.ForEach(btn => btn.Draw());
         }
 
         protected override void load(GraphicsDeviceManager graphics, ContentManager content, CustomSpriteBatch sprite)
         {
             buttons.ForEach(btn => btn.Load(graphics, content, sprite));
+            background = new ImagePanel(sprite.Tint(content.Load<Texture2D>("icons/heal"), Color.Red));
+            background.HAligment = HorizontalAligment.Left;
+            background.VAligment = VerticalAligment.Center;
+            background.Bounds = new Rectangle(10, 10, Width - 20, Height - 20);
+            background.Load(graphics, content, sprite);
         }
 
         protected override void loadpos()
@@ -66,6 +73,7 @@ namespace TBSGame.Screens
         protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
             buttons.ForEach(btn => btn.Update(time, keyboard, mouse));
+            background.Update(time, keyboard, mouse);
         }
     }
 }

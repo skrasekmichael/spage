@@ -53,7 +53,7 @@ namespace TBSGame.Screens
             game_info.Bounds = new Rectangle(Width - 260, Height - 100, 260, 100);
             game_info.Load(graphics, content, sprite);
             game_info.Fill = new Color(20, 20, 20);
-            game_info.Frame = Color.Transparent;
+            game_info.Border.Color = Color.Transparent;
             game_info.Foreground = Color.White;
             game_info.Border.IsVisible = false;
 
@@ -68,6 +68,21 @@ namespace TBSGame.Screens
             round.HAligment = HorizontalAligment.Left;
 
             next_turn.Bounds = new Rectangle(game_info.Bounds.Width - 100, game_info.Bounds.Height - 100, 100, 100);
+            next_turn.OnControlClicked += new ControlClickedEventHandler(sender =>
+            {
+                if (game.Researching == null && game.Research > 0)
+                {
+                    YesNoMessageBox message = new YesNoMessageBox(Resources.GetString("points_in_researching"));
+                    message.OnMessageBox += new MessageBoxEventHandler((obj, result) =>
+                    {
+                        if (result == DialogResult.Yes)
+                            next();
+                    });
+                    this.ShowMessage(message);
+                }
+                else
+                    next();
+            });
 
             MapScreenTabPanel map = new MapScreenTabPanel(this.path, Settings, game, level, "gamemap");
             map.OnPlayGame += new PlayGameEventhandle((sender, level_map, list) =>
@@ -139,6 +154,45 @@ namespace TBSGame.Screens
             tabs.ToList().ForEach(t => t.UpdateButton(time, keyboard, mouse));
             tabs[selected].Update(time, keyboard, mouse);
             game_info.Update(time, keyboard, mouse);
+        }
+
+        private void next()
+        {
+            if (game.Researching != null)
+            {
+                game.Researching.Done += game.Research;
+                if (game.Researching.Done >= game.Researching.ResearchDifficulty)
+                {
+                    game.Researches.Add(game.GetType());
+                    game.Researching = null;
+                }
+            }
+
+            game.Sources += game.Income;
+            game.Round++;
+
+            foreach (Unit unit in game.Units)
+            {
+                if (unit.Rounds > 0)
+                {
+                    unit.Rounds--;
+                    if (unit.Rounds == 0)
+                        unit.UnitStatus = UnitStatus.InBarracks;
+                }
+            }
+
+            foreach (KeyValuePair<string, MapInfo> kvp in game.Info)
+            {
+                if (level[kvp.Value.Name].Player == 1)
+                {
+                    kvp.Value.RoundsToDeplete -= 1;
+                    if (kvp.Value.RoundsToDeplete < 0)
+                        kvp.Value.RoundsToDeplete = 0;
+                }
+            }
+
+            foreach (ScreenTabPanel tab in tabs)
+                tab.Reload();
         }
     }
 }

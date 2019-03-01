@@ -15,8 +15,6 @@ namespace TBSGame.Controls.Buttons
             Foreground = Color.White;
             MouseOverForeground = new Color(30, 30, 30);
             Fill = new Color(30, 30, 30);
-            Frame = Color.Transparent;
-            MouseOverFrame = Color.Transparent;
             MouseOverFill = new Color(Color.Crimson, 0.8f);
         }
 

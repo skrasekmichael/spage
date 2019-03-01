@@ -40,5 +40,10 @@ namespace TBSGame.Screens.ScreenTabPanels
         {
             Saves.LoadPostiton();
         }
+
+        public override void Reload()
+        {
+            
+        }
     }
 }

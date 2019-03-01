@@ -7,6 +7,7 @@ using MapDriver;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using TBSGame.Controls;
+using TBSGame.Controls.Buttons;
 
 namespace TBSGame.Screens.GameScreenControls
 {
@@ -16,10 +17,12 @@ namespace TBSGame.Screens.GameScreenControls
 
         private Panel panel = new Panel();
         private List<Label> labels = new List<Label>();
+        public MenuButton Recruit { get; private set; }
 
         public UnitBuyBox(Unit unit)
         {
             this.Unit = unit;
+            Recruit = new MenuButton(Resources.GetString("recruit"));
         }
 
         protected override void draw()
@@ -37,12 +40,15 @@ namespace TBSGame.Screens.GameScreenControls
                 labels.Add(l);
             }
 
+            Recruit.Bounds = new Rectangle(10, bounds.Height - 60, 200, 50);
+
             Reload(Unit);
 
             panel.Foreground = Color.White;
             panel.Bounds = this.bounds;
             panel.Load(graphics, content, sprite);
             panel.AddRange(labels);
+            panel.Add(Recruit);
         }
 
         protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
@@ -56,6 +62,7 @@ namespace TBSGame.Screens.GameScreenControls
             {
                 IsVisible = true;
                 Unit = unit;
+                Recruit.Tag = Unit;
 
                 string[] vals =
                 {

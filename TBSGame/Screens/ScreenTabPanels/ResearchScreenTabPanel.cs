@@ -16,6 +16,11 @@ namespace TBSGame.Screens.ScreenTabPanels
             
         }
 
+        public override void Reload()
+        {
+            
+        }
+
         public override void LoadPosition()
         {
 

@@ -11,7 +11,7 @@ namespace TBSGame.Controls
 {
     public class Panel : Control
     {
-        private List<Control> controls = new List<Control>();
+        public List<Control> Controls { get; private set; } = new List<Control>();
 
         public bool OnlyArea { get; private set; } = false;
 
@@ -26,7 +26,6 @@ namespace TBSGame.Controls
             }
         }
 
-        public override Color Frame { get; set; } = Color.Silver;
         private bool fore_is_changed = false;
         public override Color Foreground
         {
@@ -35,7 +34,7 @@ namespace TBSGame.Controls
             {
                 fore_is_changed = true;
                 _fore = value;
-                controls.ForEach(c => c.Foreground = value);
+                Controls.ForEach(c => c.Foreground = value);
             }
         }
 
@@ -45,33 +44,37 @@ namespace TBSGame.Controls
         {
             OnlyArea = only;
             Border.IsVisible = !only;
+            Border.Color = Color.Silver;
         }
 
         protected override void draw()
         {
             if (!OnlyArea)
                 sprite.Draw(fill, bounds, Color.White);
-            controls.ForEach(c => c.Draw());
+            Controls.ForEach(c => c.Draw());
         }
 
         protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
-            controls.ForEach(c => c.Update(time, keyboard, mouse, bounds.Location.ToVector2()));
+            foreach (Control control in Controls)
+            {
+                /*
+                //autoload
+                if (!control.IsLoaded)
+                    load(control);
+                */
+                control.Update(time, keyboard, mouse, bounds.Location.ToVector2());
+            }
         }
 
         protected override void load()
         {
-            MouseOverFrame = Frame;
+            Border.MouseOverColor = Border.Color;
 
             if (!OnlyArea)
                 fill = sprite.GetColorFill(Fill);
 
-            controls.ForEach(load);
-        }
-
-        public Panel(IEnumerable<Control> controls)
-        {
-            this.controls.AddRange(controls);
+            Controls.ForEach(load);
         }
 
         public void AddRange(IEnumerable<Control> controls)
@@ -83,7 +86,7 @@ namespace TBSGame.Controls
         {
             if (isloading)
                 load(control);
-            controls.Add(control);
+            Controls.Add(control);
         }
 
         private void load(Control control)
@@ -92,8 +95,5 @@ namespace TBSGame.Controls
                 control.Foreground = this.Foreground;
             control.Load(graphics, content, sprite, bounds.Location.ToVector2());
         }
-
-        public void Remove(Control control) => controls.Remove(control);
-        public void RemoveAll(Predicate<Control> match) => controls.RemoveAll(match);
     }
 }

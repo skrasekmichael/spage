@@ -86,5 +86,7 @@ namespace TBSGame.Screens.ScreenTabPanels
         }
 
         protected abstract void draw();
+
+        public abstract void Reload();
     }
 }

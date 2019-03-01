@@ -12,11 +12,13 @@ namespace TBSGame.Controls
 {
     public delegate void ControlClickedEventHandler(object sender);
     public delegate void ControlMouseMoveEventHandler(object sender, Point position);
+    public delegate void ControlBoundsChnagedEventHanlder(object sender, Rectangle bounds);
 
     public abstract class Control
     {
         public virtual event ControlClickedEventHandler OnControlClicked;
         public virtual event ControlMouseMoveEventHandler OnMouseMoved;
+        public virtual event ControlBoundsChnagedEventHanlder OnBoundsChaned;
 
         protected GraphicsDeviceManager graphics;
         protected int Width => graphics.PreferredBackBufferWidth;
@@ -26,18 +28,10 @@ namespace TBSGame.Controls
         protected Vector2 start = new Vector2(0, 0);
         protected bool is_mouse_hover = false, is_mouse_down = false;
 
-        public virtual Border Border { get; set; } = new Border();
-
+        public virtual SpriteFont Font { get; set; }
         public virtual HorizontalAligment HAligment { get; set; } = HorizontalAligment.Left;
         public virtual VerticalAligment VAligment { get; set; } = VerticalAligment.Top;
-
-        public bool IsVisible { get; set; } = true;
-        public bool IsLocked { get; set; } = false;
-        public bool IsMouseOver => is_mouse_hover;
-        public object Tag { get; set; }
-
-        public virtual Color Frame { get; set; } = Color.Transparent;
-        public virtual Color MouseOverFrame { get; set; } = Color.Transparent;
+        public virtual Border Border { get; set; } = new Border();
         protected Color _fore = Color.Black;
         public virtual Color Foreground
         {
@@ -45,13 +39,26 @@ namespace TBSGame.Controls
             set => _fore = value;
         }
 
-        public Rectangle Bounds { get; set; } = Rectangle.Empty;
+        public bool IsLoaded { get; private set; } = false;
+        public bool IsVisible { get; set; } = true;
+        public bool IsLocked { get; set; } = false;
+        public bool IsMouseOver => is_mouse_hover;
+        public object Tag { get; set; }
+
+        private Rectangle _bounds = Rectangle.Empty;
+        public Rectangle Bounds
+        {
+            get => _bounds;
+            set
+            {
+                _bounds = value;
+                OnBoundsChaned?.Invoke(this, value);
+            }
+        }
         protected Rectangle bounds => new Rectangle(Bounds.X + (int)start.X, Bounds.Y + (int)start.Y, Bounds.Width, Bounds.Height);
 
         protected Texture2D frame, frame_over;
         private Point last = new Point(-1, -1);
-
-        public virtual SpriteFont Font { get; set; }
 
         public void SetPos(Vector2 p) => start = p;
 
@@ -67,10 +74,11 @@ namespace TBSGame.Controls
                 this.start = start.Value;
 
             this.Font = load_font();
-            frame = sprite.GetColorFill(Frame);
-            frame_over = sprite.GetColorFill(MouseOverFrame);
+            frame = sprite.GetColorFill(Border.Color);
+            frame_over = sprite.GetColorFill(Border.MouseOverColor);
 
             load();
+            IsLoaded = true;
         }
 
         protected virtual SpriteFont load_font() => content.Load<SpriteFont>("fonts/text");
@@ -133,8 +141,8 @@ namespace TBSGame.Controls
                     this.is_mouse_down = false;
                 }
 
-                sprite.SetColorFill(ref frame, Frame);
-                sprite.SetColorFill(ref frame_over, MouseOverFrame);
+                sprite.SetColorFill(ref frame, Border.Color);
+                sprite.SetColorFill(ref frame_over, Border.MouseOverColor);
 
                 update(gametime, keyboard, mouse);
             }
@@ -143,6 +151,9 @@ namespace TBSGame.Controls
 
     public class Border
     {
+        public Color Color { get; set; } = Color.Transparent;
+        public Color MouseOverColor { get; set; } = Color.Transparent;
+
         public bool Top { get; set; } = false;
         public bool Left { get; set; } = false;
         public bool Right { get; set; } = false;

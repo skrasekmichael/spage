@@ -111,14 +111,7 @@ namespace TBSGame.Screens.ScreenTabPanels
 
             units_panel.IsVisible = false;
 
-            for (int i = 0; i < game.Units.Count; i++)
-            {
-                UnitBox unitbox = new UnitBox(game.Units[i]);
-                unitbox.Bounds = new Rectangle(resize.X + resize.Width, resize.Top + i * 40 + 60, 300, 40);
-                unitbox.Checked = Color.Crimson;
-                unitbox.UnChecked = new Color(60, 60, 60);
-                units.Add(unitbox);
-            }
+            load_units();
 
             float size = map_panel.Bounds.Width;
             resize = new Rectangle(10, 10, (int)size, (int)(size / bounds.Width * bounds.Height));
@@ -142,14 +135,13 @@ namespace TBSGame.Screens.ScreenTabPanels
             desc.Foreground = Color.White;
 
             play.Bounds = new Rectangle(0, units_panel.Bounds.Height - 50, 150, 50);
-            play_at_night.Bounds = new Rectangle(160, units_panel.Bounds.Height - 50, 200, 50);
-            cancel.Bounds = new Rectangle(370, units_panel.Bounds.Height - 50, 110, 50);
+            play_at_night.Bounds = new Rectangle(160, units_panel.Bounds.Height - 50, 210, 50);
+            cancel.Bounds = new Rectangle(380, units_panel.Bounds.Height - 50, 110, 50);
 
             select_all.Bounds = new Rectangle(0, 0, 350, 50);
             select_all.Tag = true;
 
             map_panel.Add(desc);
-            units_panel.AddRange(units);
             units_panel.AddRange(new Control[] { play, play_at_night, cancel, select_all });
 
             SetColors();
@@ -273,6 +265,9 @@ namespace TBSGame.Screens.ScreenTabPanels
         {
             key = null;
 
+            if (game.Units.Count != units.Count)
+                Reload();
+
             bool val = (units.Where(ch => ch.IsChecked).Count() == 0);
             play.IsLocked = val;
             play_at_night.IsLocked = val;
@@ -338,6 +333,38 @@ namespace TBSGame.Screens.ScreenTabPanels
         public override void LoadPosition()
         {
             
+        }
+
+        public override void Reload()
+        {
+            load_units();
+        }
+
+        private void load_units()
+        {
+            int index = 0;
+            foreach (Unit unit in game.Units)
+            {
+                UnitBox unitbox;
+                if (index < units.Count)
+                {
+                    unitbox = units[index];
+                    unitbox.Unit = unit;
+                }
+                else
+                {
+                    unitbox = new UnitBox(unit);
+                    units.Add(unitbox);
+                    units_panel.Add(unitbox);
+                }
+
+                unitbox.Bounds = new Rectangle(0, resize.Top + index * 40 + 60, 350, 40);
+                unitbox.Checked = Color.Crimson;
+                unitbox.UnChecked = new Color(60, 60, 60);
+                unitbox.IsLocked = unit.Rounds > 0;
+
+                index++;
+            }
         }
     }
 }

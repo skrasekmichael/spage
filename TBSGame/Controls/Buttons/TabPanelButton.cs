@@ -11,8 +11,8 @@ namespace TBSGame.Controls.Buttons
     {
         public TabPanelButton(string title) : base(title)
         {
-            Frame = Color.Silver;
-            MouseOverFrame = Color.Orange;
+            Border.Color = Color.Silver;
+            Border.MouseOverColor = Color.Orange;
             Fill = Color.Black;
             MouseOverFill = Color.Black;
             Foreground = Color.White;

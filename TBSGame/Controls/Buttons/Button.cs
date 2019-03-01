@@ -15,8 +15,6 @@ namespace TBSGame.Controls
         public Color MouseOverForeground { get; set; } = Color.Black;
         public Color Fill { get; set; } = Color.Transparent;
         public Color MouseOverFill { get; set; } = Color.Transparent;
-        public override Color Frame { get; set; } = Color.Transparent;
-        public override Color MouseOverFrame { get; set; } = Color.Transparent;
         public Color LockedColor { get; set; } = Color.Gray;
 
         public int Key { get; set; } = 0;
