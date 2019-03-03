@@ -39,6 +39,7 @@ namespace TBSGame.Controls
             set => _fore = value;
         }
 
+        public float Opacity { get; set; } = 1f;
         public bool IsLoaded { get; private set; } = false;
         public bool IsVisible { get; set; } = true;
         public bool IsLocked { get; set; } = false;
@@ -97,13 +98,13 @@ namespace TBSGame.Controls
         protected virtual void draw_border()
         {
             if (Border.Top)
-                sprite.Draw(is_mouse_hover ? frame_over : frame, new Rectangle(bounds.X, bounds.Y, Bounds.Width, Border.Width), Color.White);
+                sprite.Draw(is_mouse_hover ? frame_over : frame, new Rectangle(bounds.X, bounds.Y, Bounds.Width, Border.Width), Color.White * Opacity);
             if (Border.Left)
-                sprite.Draw(is_mouse_hover ? frame_over : frame, new Rectangle(bounds.X, bounds.Y, Border.Width, Bounds.Height), Color.White);
+                sprite.Draw(is_mouse_hover ? frame_over : frame, new Rectangle(bounds.X, bounds.Y, Border.Width, Bounds.Height), Color.White * Opacity);
             if (Border.Bottom)
-                sprite.Draw(is_mouse_hover ? frame_over : frame, new Rectangle(bounds.X, bounds.Y + Bounds.Height - Border.Width, Bounds.Width, Border.Width), Color.White);
+                sprite.Draw(is_mouse_hover ? frame_over : frame, new Rectangle(bounds.X, bounds.Y + Bounds.Height - Border.Width, Bounds.Width, Border.Width), Color.White * Opacity);
             if (Border.Right)
-                sprite.Draw(is_mouse_hover ? frame_over : frame, new Rectangle(bounds.X + Bounds.Width - Border.Width, bounds.Y, Border.Width, Bounds.Height), Color.White);
+                sprite.Draw(is_mouse_hover ? frame_over : frame, new Rectangle(bounds.X + Bounds.Width - Border.Width, bounds.Y, Border.Width, Bounds.Height), Color.White * Opacity);
         }
 
         protected abstract void draw();

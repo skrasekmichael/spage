@@ -15,6 +15,9 @@ namespace TBSGame.Screens.GameScreenControls
     public class UnitBox : Control
     {
         public Unit Unit { get; set; }
+        public bool DisplayLevel { get; set; } = true;
+        public bool DisplayHP { get; set; } = true;
+        public bool DisplayIcon { get; set; } = true;
 
         private Panel panel = new Panel(true);
         private CheckBox check;
@@ -59,6 +62,9 @@ namespace TBSGame.Screens.GameScreenControls
             icon.Bounds = new Rectangle(this.bounds.Width - this.bounds.Height, 0, this.bounds.Height, this.bounds.Height);
             rounds.Bounds = new Rectangle(icon.Bounds.Left - 40, 0, 40, this.bounds.Height);
             panel.Bounds = this.bounds;
+
+            icon.IsVisible = DisplayIcon;
+            label.IsVisible = DisplayLevel;
 
             panel.Update(time, keyboard, mouse);
         }
@@ -133,7 +139,7 @@ namespace TBSGame.Screens.GameScreenControls
             {
                 string name = icon_name(val);
                 if (name == null)
-                    textures.Add(new Texture2D(graphics.GraphicsDevice, 10, 10));
+                    textures.Add(new Texture2D(graphics.GraphicsDevice, 1, 1));
                 else
                     textures.Add(sprite.Tint(content.Load<Texture2D>("icons/" + name), Color.Crimson));
             }

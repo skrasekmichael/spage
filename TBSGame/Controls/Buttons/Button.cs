@@ -37,7 +37,7 @@ namespace TBSGame.Controls
 
         protected override void draw()
         {
-            sprite.Draw(IsLocked ? locked_bg : (is_mouse_hover ? background_over_fill : background_fill), bounds, Color.White);
+            sprite.Draw(IsLocked ? locked_bg : (is_mouse_hover ? background_over_fill : background_fill), bounds, Color.White * Opacity);
             _draw();
             sprite.DrawMultiLineText(Font, Text.Split('\n'), bounds, HAligment, VAligment, Space, IsLocked ? LockedColor : (is_mouse_hover ? MouseOverForeground : Foreground) * Opacity, LineHeight);
         }

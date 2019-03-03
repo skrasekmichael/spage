@@ -38,7 +38,7 @@ namespace TBSGame
                 Error.Log(ex.Message);
             }
 
-            graphics.IsFullScreen = false;
+            graphics.IsFullScreen = true;
             graphics.ApplyChanges();
             
             System.Windows.Forms.Form form = (System.Windows.Forms.Form)System.Windows.Forms.Form.FromHandle(Window.Handle);

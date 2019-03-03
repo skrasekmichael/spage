@@ -23,17 +23,17 @@ namespace TBSGame.Screens.ScreenTabPanels
 
         protected override void draw()
         {
-            Saves.Draw();
+            
         }
 
         protected override void load()
         {
-            Saves.Load(graphics, content, sprite);
+            panel.Add(Saves);
         }
 
         protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
-            Saves.Update(time, keyboard, mouse);
+            
         }
 
         public override void LoadPosition()

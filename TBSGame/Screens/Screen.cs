@@ -66,8 +66,8 @@ namespace TBSGame.Screens
 
         protected void Reload()
         {
-            Width = graphics.GraphicsDevice.PresentationParameters.Bounds.Width;
-            Height = graphics.GraphicsDevice.PresentationParameters.Bounds.Height;
+            Width = graphics.PreferredBackBufferWidth;
+            Height = graphics.PreferredBackBufferHeight;
 
             sprite.Load();
             loadpos();

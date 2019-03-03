@@ -44,23 +44,27 @@ namespace TBSGame.Screens
             };
 
             for (int i = 0; i < buttons.Count; i++)
+            {
                 buttons[i].OnControlClicked += new ControlClickedEventHandler(handlers[i]);
+                buttons[i].Opacity = 0.8f;
+            }
         }
 
         protected override void draw()
         {
-            //background.Draw();
+            background.Draw();
             buttons.ForEach(btn => btn.Draw());
         }
 
         protected override void load(GraphicsDeviceManager graphics, ContentManager content, CustomSpriteBatch sprite)
         {
             buttons.ForEach(btn => btn.Load(graphics, content, sprite));
-            background = new ImagePanel(sprite.Tint(content.Load<Texture2D>("icons/heal"), Color.Red));
-            background.HAligment = HorizontalAligment.Left;
+            background = new ImagePanel(content.Load<Texture2D>("background"));
+            background.HAligment = HorizontalAligment.Center;
             background.VAligment = VerticalAligment.Center;
-            background.Bounds = new Rectangle(10, 10, Width - 20, Height - 20);
+            background.Bounds = new Rectangle(0, 0, Width, Height);
             background.Load(graphics, content, sprite);
+            background.ImageBounds = background.MaxBounds;
         }
 
         protected override void loadpos()

@@ -147,12 +147,12 @@ namespace TBSGame.Controls
             }
 
             Vector2 middle = new Vector2(bounds.X + (Bounds.Width - Font.MeasureString(text).X) / 2, bounds.Y + (Bounds.Height - Font.LineSpacing) / 2 + 1);
-            sprite.DrawString(Font, text, middle, tc);
+            sprite.DrawString(Font, text, middle, tc * Opacity);
 
             if (is_cursor_visible && IsFocused)
             {
                 Vector2 cur_pos = new Vector2(middle.X + Font.MeasureString(Text.Substring(0, pos)).X - 3 + Font.MeasureString(" ").X / 2, bounds.Y + (Bounds.Height - Font.LineSpacing) / 2 + 1);
-                sprite.DrawString(Font, "|", cur_pos, Foreground);
+                sprite.DrawString(Font, "|", cur_pos, Foreground * Opacity);
             }
 
             draw_foreground();

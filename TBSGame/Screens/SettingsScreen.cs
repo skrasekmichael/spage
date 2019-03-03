@@ -35,6 +35,7 @@ namespace TBSGame.Screens
                 graphics.PreferredBackBufferWidth = int.Parse(resolution[0]);
                 graphics.PreferredBackBufferHeight = int.Parse(resolution[1]);
                 graphics.ApplyChanges();
+
                 Reload();
             }));
 

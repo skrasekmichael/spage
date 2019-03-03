@@ -18,7 +18,6 @@ namespace TBSGame.Controls
         public override VerticalAligment VAligment { get; set; } = VerticalAligment.Center;
         public int Space { get; set; } = 10;
         public int LineHeight { get; set; } = 0;
-        public float Opacity { get; set; } = 1f;
 
         private bool IsMultiLine => Text.Split('\n').Length > 1;
 

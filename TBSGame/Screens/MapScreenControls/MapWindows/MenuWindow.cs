@@ -42,10 +42,15 @@ namespace TBSGame.Screens.MapScreenControls.MapWindows
 
         protected override void load()
         {
+            tab.Load(graphics, content, sprite);
+
             Bounds = new Rectangle((Width - 800) / 2, (Height - 600) / 2, 800, 600);
 
             #region system_panel
             system = new Panel();
+
+            TabPanelButton btn_saves = new TabPanelButton(Resources.GetString("system"));
+            tab.Add("system", system, btn_saves);
 
             save_counter = new Label("");
             save_counter.Foreground = Color.Red;
@@ -73,16 +78,13 @@ namespace TBSGame.Screens.MapScreenControls.MapWindows
                 Exit();
             });
 
-            system.Add(save);
-            system.Add(exit);
-            system.Add(retreat);
-            system.Add(save_counter);
-
-            TabPanelButton btn_saves = new TabPanelButton(Resources.GetString("system"));
-            tab.Add("system", system, btn_saves);
+            system.AddRange(new Control[] { save, exit, retreat, save_counter });      
             #endregion
             #region tasks_panel
             tasks = new Panel();
+
+            TabPanelButton btn_tasks = new TabPanelButton(Resources.GetString("tasks"));
+            tab.Add("tasks", tasks, btn_tasks);
 
             Quest[] task_list = map.QuestList;
             tasks_labels = new Label[task_list.Length];
@@ -94,15 +96,11 @@ namespace TBSGame.Screens.MapScreenControls.MapWindows
                 tasks_labels[i] = label;
                 tasks.Add(label);
             }
-
-            TabPanelButton btn_tasks = new TabPanelButton(Resources.GetString("tasks"));
-            tab.Add("tasks", tasks, btn_tasks);
             #endregion
 
             Panel[] panels = new Panel[] { system, tasks };
             TabPanelButton[] btns = new TabPanelButton[] { btn_saves, btn_tasks };
 
-            tab.Load(graphics, content, sprite);
             for (int i = 0; i < panels.Length; i++)
             {
                 panels[i].Bounds = new Rectangle(Bounds.X + w - 1, Bounds.Y, Bounds.Width - w, Bounds.Height); 

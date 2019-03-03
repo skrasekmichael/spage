@@ -91,6 +91,9 @@ namespace TBSGame.Controls
 
         private void load(Control control)
         {
+            if (content == null)
+                Console.WriteLine("");
+
             if (fore_is_changed)
                 control.Foreground = this.Foreground;
             control.Load(graphics, content, sprite, bounds.Location.ToVector2());

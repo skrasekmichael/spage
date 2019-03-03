@@ -37,7 +37,7 @@ namespace TBSGame.Controls
 
         protected override void draw()
         {
-            sprite.Draw(texture, new Rectangle(bounds.X + ImageBounds.X, bounds.Y + ImageBounds.Y, ImageBounds.Width, ImageBounds.Height), Color.White);
+            sprite.Draw(texture, new Rectangle(bounds.X + ImageBounds.X, bounds.Y + ImageBounds.Y, ImageBounds.Width, ImageBounds.Height), Color.White * Opacity);
         }
 
         protected override void load()
@@ -53,15 +53,16 @@ namespace TBSGame.Controls
         private void load_bounds()
         {
             int width = 0, height = 0;
-            if ((double)bounds.Width / texture.Width < (double)bounds.Height / texture.Height)
+
+            if ((double)bounds.Width / bounds.Height > (double)texture.Width / texture.Height)
             {
                 width = bounds.Width;
-                height = width * (texture.Width / texture.Height);
+                height = (int)(width * ((double)texture.Height / texture.Width));
             }
             else
             {
                 height = bounds.Height;
-                width = height * (texture.Height / texture.Width);
+                width = (int)(height * ((double)texture.Width / texture.Height));
             }
 
             MaxBounds = new Rectangle(0, 0, width, height);

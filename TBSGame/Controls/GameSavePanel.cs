@@ -30,12 +30,13 @@ namespace TBSGame.Controls
             Load, Save, LoadSave
         }
 
+        private Panel panel = new Panel(true);
+
         private NormalTextBox[] input = new NormalTextBox[10];
         private MenuButton[] delete_buttons = new MenuButton[10];
-        private MenuButton[] save_buttons;
-        private MenuButton[] load_buttons;
-        private Label[] dates = new Label[10];
-        private Label[] scenarios = new Label[10];
+        private MenuButton[] save_buttons = new MenuButton[10];
+        private MenuButton[] load_buttons = new MenuButton[10];
+        private Label[] labels = new Label[10];
         private string path;
         private Display type;
 
@@ -46,11 +47,6 @@ namespace TBSGame.Controls
         {
             this.path = path;
             this.type = type;
-
-            if (ShowLoad)
-                load_buttons = new MenuButton[10];
-            if (ShowSave)
-                save_buttons = new MenuButton[10];
         }
 
         public void Delete(int index)
@@ -72,8 +68,7 @@ namespace TBSGame.Controls
             }
 
             input[index].SetText(a ? save.Name : "");
-            dates[index].Text = a ? save.SavedAt.ToString("dd.MM.yyyy HH:mm:ss") : "";
-            scenarios[index].Text = a ? save.ScenarioName : "";
+            labels[index].Text = a ? save.ScenarioName + "\n" + save.SavedAt.ToString("dd.MM.yyyy HH:mm:ss") : "";
             delete_buttons[index].IsLocked = !a;
             if (ShowLoad)
                 load_buttons[index].IsLocked = !a;
@@ -81,114 +76,94 @@ namespace TBSGame.Controls
 
         protected override void draw()
         {
-            for (int i = 0; i < 10; i++)
-            {
-                input[i]?.Draw();
-                save_buttons?[i].Draw();
-                load_buttons?[i].Draw();
-                delete_buttons[i].Draw();
-                dates[i].Draw();
-                scenarios[i].Draw();
-            }
+            panel.Draw();
         }
 
         protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
-            for (int i = 0; i < 10; i++)
-            {
-                input[i]?.Update(time, keyboard, mouse);
-                save_buttons?[i].Update(time, keyboard, mouse);
-                load_buttons?[i].Update(time, keyboard, mouse);
-                delete_buttons[i].Update(time, keyboard, mouse);
-                dates[i].Update(time, keyboard, mouse);
-                scenarios[i].Update(time, keyboard, mouse);
-            }
+            panel.Update(time, keyboard, mouse);
         }
 
         public void LoadPostiton()
         {
-            int w = 500;
+            int width = (int)(Width * 0.5f);
+            panel.Bounds = new Rectangle((Width - width) / 2, (Height - 510) / 2, width, 510);
             for (int i = 0; i < 10; i++)
             {
-                Rectangle source = new Rectangle((Width - w) / 2, (Height - 50) / 2 + (i - 5) * 51, w, 50);
-                input[i].Bounds = source;
-                delete_buttons[i].Bounds = new Rectangle(source.X - 155, source.Y, 150, 50);
-                int r = source.X + source.Width + 5;
-                if (ShowSave)
-                {
-                    save_buttons[i].Bounds = new Rectangle(r, source.Y, 150, 50);
-                    r += 155;
-                }
+                delete_buttons[i].Bounds = new Rectangle(0, i * 51, 150, 50);
+                int w = panel.Bounds.Width - 151;
                 if (ShowLoad)
                 {
-                    load_buttons[i].Bounds = new Rectangle(r, source.Y, 150, 50);
-                    r += 155;
+                    w -= 151;
+                    load_buttons[i].Bounds = new Rectangle(151 + w + 1, i * 51, 150, 50);
                 }
-                scenarios[i].Bounds = new Rectangle(r, source.Y, 220 + 5, 25);
-                dates[i].Bounds = new Rectangle(r, source.Y + 20, 220, 25);
+                if (ShowSave)
+                {
+                    w -= 151;
+                    save_buttons[i].Bounds = new Rectangle(151 + w + 1, i * 51, 150, 50);
+                }
+
+                input[i].Bounds = new Rectangle(151, i * 51, w, 50);
+                labels[i].Bounds = new Rectangle(panel.Bounds.Width, i * 51, 300, 50);
             }
         }
 
         protected override void load()
         {
+            panel.Load(graphics, content, sprite);
+
             for (int i = 0; i < 10; i++)
             {
                 NormalTextBox textbox = new NormalTextBox();
-                textbox.Load(graphics, content, sprite);
                 textbox.PlaceHolder = Resources.GetString("empty");
                 textbox.IsLocked = true;
                 textbox.Tag = i;
-                textbox.OnConfirm += new TextBoxConfirmedEventHandler(sender => {
+                textbox.OnConfirm += new TextBoxConfirmedEventHandler(sender =>
+                {
                     ((TextBox)sender).IsLocked = true;
                     int index = (int)((TextBox)sender).Tag;
                     OnSaveGame?.Invoke(this, index, ((TextBox)sender).Text);
                     Reload(index);
                 });
+                panel.Add(textbox);
 
                 MenuButton del_btn = new MenuButton(Resources.GetString("delete"));
-                del_btn.Load(graphics, content, sprite);
                 del_btn.Tag = i;
                 del_btn.IsLocked = true;
                 delete_buttons[i] = del_btn;
                 del_btn.OnControlClicked += new ControlClickedEventHandler(sender => OnDeleteGame?.Invoke(this, (int)((Button)sender).Tag));
+                panel.Add(del_btn);
 
-                Label date = new Label("");
-                date.Load(graphics, content, sprite);
-                date.Font = content.Load<SpriteFont>("fonts/small");
-                date.Foreground = Color.Silver;
-                date.HAligment = HorizontalAligment.Left;
-                dates[i] = date;
+                Label label = new Label("");
+                label.Foreground = Color.Silver;
+                label.HAligment = HorizontalAligment.Left;
+                labels[i] = label;
+                panel.Add(label);
+                label.Font = content.Load<SpriteFont>("fonts/small");
 
-                Label scenario = new Label("");
-                scenario.Load(graphics, content, sprite);
-                scenario.Font = content.Load<SpriteFont>("fonts/small");
-                scenario.Foreground = Color.Silver;
-                scenario.HAligment = HorizontalAligment.Left;
-                scenarios[i] = scenario;
+                MenuButton load_btn = new MenuButton(Resources.GetString("load"));
+                load_btn.Tag = i;
+                load_btn.OnControlClicked += new ControlClickedEventHandler(sender => OnLoadGame?.Invoke(this, (int)((MenuButton)sender).Tag));
+                load_btn.IsLocked = true;
+                load_buttons[i] = load_btn;
+                panel.Add(load_btn);
 
-                if (ShowLoad)
+                if (!ShowLoad)
+                    load_btn.IsVisible = false;
+
+                MenuButton save_btn = new MenuButton(Resources.GetString("save"));
+                save_btn.Tag = i;
+                save_btn.OnControlClicked += new ControlClickedEventHandler(sender =>
                 {
-                    MenuButton load_btn = new MenuButton(Resources.GetString("load"));
-                    load_btn.Load(graphics, content, sprite);
-                    load_btn.Tag = i;
-                    load_btn.OnControlClicked += new ControlClickedEventHandler(sender => OnLoadGame?.Invoke(this, (int)((MenuButton)sender).Tag));
-                    load_btn.IsLocked = true;
-                    load_buttons[i] = load_btn;
-                }
+                    int index = (int)((Button)sender).Tag;
+                    input[index].IsLocked = false;
+                    input[index].Focus();
+                });
+                save_buttons[i] = save_btn;
+                panel.Add(save_btn);
 
-                if (ShowSave)
-                {
-                    MenuButton save_btn = new MenuButton(Resources.GetString("save"));
-                    save_btn.Tag = i;
-                    save_btn.OnControlClicked += new ControlClickedEventHandler(sender =>
-                    {
-                        int index = (int)((Button)sender).Tag;
-                        input[index].IsLocked = false;
-                        input[index].Focus();
-                    });
-                    save_btn.Load(graphics, content, sprite);
-                    save_buttons[i] = save_btn;
-                }
+                if (!ShowSave)
+                    save_btn.IsVisible = false;
 
                 string file = path + i.ToString() + ".dat";
                 if (File.Exists(file))
@@ -197,11 +172,9 @@ namespace TBSGame.Controls
                     if (save != null)
                     {
                         textbox.SetText(save.Name);
-                        date.Text = save.SavedAt.ToString("dd.MM.yyyy HH:mm:ss");
-                        scenario.Text = save.ScenarioName;
+                        label.Text = save.ScenarioName + "\n" + save.SavedAt.ToString("dd.MM.yyyy HH:mm:ss");
                         delete_buttons[i].IsLocked = false;
-                        if (ShowLoad)
-                            load_buttons[i].IsLocked = false;
+                        load_buttons[i].IsLocked = false;
                     }
                 }
                 input[i] = textbox;

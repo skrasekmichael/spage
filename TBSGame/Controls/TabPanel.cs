@@ -19,6 +19,7 @@ namespace TBSGame.Controls
         {
             if (!panels.ContainsKey(key))
             {
+                panel.Load(graphics, content, sprite);
                 panels.Add(key, panel);
                 button.Tag = key;
                 button.OnControlClicked += new ControlClickedEventHandler((obj) =>
