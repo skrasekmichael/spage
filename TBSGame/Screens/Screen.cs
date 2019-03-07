@@ -13,9 +13,9 @@ using MessageBox = TBSGame.MessageBoxes.MessageBox;
 namespace TBSGame.Screens
 {
     public abstract class Screen
-    { 
-        public int Width { get; private set; }
-        public int Height { get; private set; }
+    {
+        public int Width => 1920;
+        public int Height => 1080;
         public bool IsMouseVisible { get; set; } = true;
         public Settings Settings { get; set; }
 
@@ -50,10 +50,6 @@ namespace TBSGame.Screens
             this.sprite = sprite;
             this.driver = driver;
 
-            Width = graphics.PreferredBackBufferWidth;
-            Height = graphics.PreferredBackBufferHeight;
-            sprite.Load();
-
             black = sprite.GetColorFill(Color.Black, Width, Height);
             anim = sprite.GetColorFill(Color.Lime);
 
@@ -66,9 +62,6 @@ namespace TBSGame.Screens
 
         protected void Reload()
         {
-            Width = graphics.PreferredBackBufferWidth;
-            Height = graphics.PreferredBackBufferHeight;
-
             sprite.Load();
             loadpos();
         }

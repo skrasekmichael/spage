@@ -9,13 +9,67 @@ using Microsoft.Xna.Framework.Input;
 
 namespace TBSGame.Controls
 {
+    [Flags]
+    public enum ImageSize
+    {
+        Min, Normal, Max, Special
+    }
+
     public class ImagePanel : Control
     {
-        public Rectangle MaxBounds { get; private set; }
-        public Rectangle ImageBounds { get; set; }
+        private Rectangle min_bounds = Rectangle.Empty, max_bounds = Rectangle.Empty;
+        public Rectangle MaxBounds
+        {
+            get => max_bounds;
+            set
+            {
+                max_bounds = value;
+                if (min_bounds != Rectangle.Empty && (min_bounds.Width > value.Width || min_bounds.Height > value.Height))
+                    min_bounds = value;
 
-        public double WidthCoef => ImageBounds.Width / texture.Width;
-        public double HeightCoef => ImageBounds.Height / texture.Height;
+                base.Bounds = value;
+                if (IsLoaded)
+                    load_bounds();
+            }
+        }
+        public Rectangle MinBounds
+        {
+            get => min_bounds;
+            set
+            {
+                min_bounds = value;
+                if (max_bounds != Rectangle.Empty && (max_bounds.Width < value.Width || MaxBounds.Height < value.Height))
+                    max_bounds = value;
+                if (bounds.Width < value.Width || bounds.Height < value.Height)
+                    base.Bounds = value;
+                if (IsLoaded)
+                    load_bounds();
+            }
+        }
+        public override Rectangle Bounds
+        {
+            get => base.Bounds;
+            set
+            {
+                base.Bounds = value;
+                max_bounds = value;
+                min_bounds = value;
+                if (IsLoaded)
+                    load_bounds();
+            }
+        }
+        public Rectangle ImageBounds { get; private set; }
+
+        private ImageSize size = ImageSize.Normal;
+        public ImageSize ImageSize
+        {
+            get => size; set
+            {
+                size = value;
+                if (IsLoaded)
+                    load_bounds();
+            }
+        }
 
         private Texture2D texture;
         public Texture2D Image
@@ -25,7 +79,8 @@ namespace TBSGame.Controls
             {
                 texture = value;
                 ImageBounds = texture.Bounds;
-                load_bounds();
+                if (IsLoaded)
+                    load_bounds();
             }
         }
 
@@ -47,29 +102,66 @@ namespace TBSGame.Controls
 
         protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
-            load_bounds();
+            load_position();
         }
 
-        private void load_bounds()
+        private void load_size()
         {
-            int width = 0, height = 0;
-
-            if ((double)bounds.Width / bounds.Height > (double)texture.Width / texture.Height)
+            if (bounds.Height != 0)
             {
-                width = bounds.Width;
-                height = (int)(width * ((double)texture.Height / texture.Width));
+
+                int wmax = 0, wmin = 0, hmax = 0, hmin = 0;
+                double w_coef = (double)texture.Height / texture.Width;
+                double h_coef = (double)texture.Width / texture.Height;
+
+                if ((double)bounds.Width / texture.Width > (double)bounds.Height / texture.Height)
+                {
+                    wmin = MinBounds.Width;
+                    hmin = (int)(wmin * w_coef);
+
+                    wmax = MaxBounds.Width;
+                    hmax = (int)(wmax * w_coef);
+                }
+                else
+                {
+                    hmin = MinBounds.Height;
+                    wmin = (int)(hmin * h_coef);
+
+                    hmax = MaxBounds.Height;
+                    wmax = (int)(hmax * h_coef);
+                }
+
+                Rectangle min = new Rectangle(0, 0, wmin, hmin);
+                Rectangle max = new Rectangle(0, 0, wmax, hmax);
+
+                switch (ImageSize)
+                {
+                    case ImageSize.Min:
+                        ImageBounds = min;
+                        break;
+                    case ImageSize.Max:
+                        ImageBounds = max;
+                        break;
+                    case ImageSize.Normal:
+                        if (MinBounds != Rectangle.Empty && (texture.Width < wmin || texture.Height < hmin))
+                            ImageBounds = min;
+                        else if (MaxBounds != Rectangle.Empty && (texture.Width > wmax || texture.Height > hmax))
+                            ImageBounds = max;
+                        else
+                            ImageBounds = texture.Bounds;
+                        break;
+                    case ImageSize.Special:
+                        if (ImageBounds.Width < wmin || ImageBounds.Height < hmin)
+                            ImageBounds = min;
+                        else if (ImageBounds.Width > wmax || ImageBounds.Height > hmax)
+                            ImageBounds = max;
+                        break;
+                }
             }
-            else
-            {
-                height = bounds.Height;
-                width = (int)(height * ((double)texture.Width / texture.Height));
-            }
+        }
 
-            MaxBounds = new Rectangle(0, 0, width, height);
-
-            if (ImageBounds.Width > width || ImageBounds.Height > height)
-                ImageBounds = new Rectangle(0, 0, width, height);
-
+        private void load_position()
+        {
             Rectangle rec = new Rectangle(0, 0, ImageBounds.Width, ImageBounds.Height);
 
             if (VAligment == VerticalAligment.Top)
@@ -87,6 +179,24 @@ namespace TBSGame.Controls
                 rec.X = bounds.Width - ImageBounds.Width;
 
             ImageBounds = rec;
+        }
+
+        private void load_bounds()
+        {
+            load_size();
+            load_position();
+        }
+
+        public void SetSize(double coef)
+        {
+            ImageBounds = new Rectangle(0, 0, (int)(texture.Width * coef), (int)(texture.Height * coef));
+            ImageSize = ImageSize.Special;
+        }
+
+        public void SetSize(Rectangle bounds)
+        {
+            ImageBounds = bounds;
+            ImageSize = ImageSize.Special;
         }
     }
 }

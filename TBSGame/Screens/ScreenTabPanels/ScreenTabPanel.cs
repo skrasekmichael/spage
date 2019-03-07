@@ -32,8 +32,8 @@ namespace TBSGame.Screens.ScreenTabPanels
 
         protected Panel panel = new Panel(true);
 
-        public int Width => graphics.PreferredBackBufferWidth;
-        public int Height => graphics.PreferredBackBufferHeight;
+        public int Width => 1920;
+        public int Height => 1080;
 
         public SpriteFont Font { get; set; }
         public int Index { get; set; }
@@ -57,7 +57,7 @@ namespace TBSGame.Screens.ScreenTabPanels
             panel.Load(graphics, content, sprite);
 
             button.Load(graphics, content, sprite);
-            button.Bounds = new Rectangle(graphics.PreferredBackBufferWidth - 100, 100 * Index, 100, 100);
+            button.Bounds = new Rectangle(Width - 100, 100 * Index, 100, 100);
             button.OnControlClicked += new ControlClickedEventHandler(sender => SelectTab());
 
             load();

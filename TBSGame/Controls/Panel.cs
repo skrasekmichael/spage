@@ -14,6 +14,7 @@ namespace TBSGame.Controls
         public List<Control> Controls { get; private set; } = new List<Control>();
 
         public bool OnlyArea { get; private set; } = false;
+        public bool Desc { get; set; } = false;
 
         private Color _fill = Color.Black;
         public Color Fill
@@ -22,7 +23,7 @@ namespace TBSGame.Controls
             set
             {
                 _fill = value;
-                fill = sprite?.GetColorFill(_fill);
+                sprite?.SetColorFill(ref fill, _fill);
             }
         }
 
@@ -47,6 +48,15 @@ namespace TBSGame.Controls
             Border.Color = Color.Silver;
         }
 
+        public override void Draw()
+        {
+            if (IsVisible)
+            {
+                draw();
+                draw_border();
+            }
+        }
+
         protected override void draw()
         {
             if (!OnlyArea)
@@ -56,15 +66,7 @@ namespace TBSGame.Controls
 
         protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
-            foreach (Control control in Controls)
-            {
-                /*
-                //autoload
-                if (!control.IsLoaded)
-                    load(control);
-                */
-                control.Update(time, keyboard, mouse, bounds.Location.ToVector2());
-            }
+            Controls.ForEach(control => control.Update(time, keyboard, mouse, bounds.Location.ToVector2()));
         }
 
         protected override void load()

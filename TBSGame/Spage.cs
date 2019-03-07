@@ -27,6 +27,11 @@ namespace TBSGame
 
         protected override void Initialize()
         {
+            System.Windows.Forms.Form form = (System.Windows.Forms.Form)System.Windows.Forms.Form.FromHandle(Window.Handle);
+            form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            form.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            form.Location = new System.Drawing.Point(0, 0);
+
             try
             {
                 graphics.PreferredBackBufferWidth = settings.ResolutionWidth;
@@ -38,12 +43,8 @@ namespace TBSGame
                 Error.Log(ex.Message);
             }
 
-            graphics.IsFullScreen = true;
+            //this.IsMouseVisible = true;
             graphics.ApplyChanges();
-            
-            System.Windows.Forms.Form form = (System.Windows.Forms.Form)System.Windows.Forms.Form.FromHandle(Window.Handle);
-            form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            form.WindowState = System.Windows.Forms.FormWindowState.Maximized;
 
             driver = new TextureDriver(Content, sprite);
             screen = new MainMenuScreen();
@@ -108,7 +109,7 @@ namespace TBSGame
             if (this.IsActive)
             {
                 GraphicsDevice.Clear(Color.Black);
-                sprite.Begin();
+                sprite.Begin(SpriteSortMode.Deferred, null, null, null, null, null, sprite.Scale);
 
                 screen.Draw();
 

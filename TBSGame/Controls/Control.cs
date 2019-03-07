@@ -12,17 +12,15 @@ namespace TBSGame.Controls
 {
     public delegate void ControlClickedEventHandler(object sender);
     public delegate void ControlMouseMoveEventHandler(object sender, Point position);
-    public delegate void ControlBoundsChnagedEventHanlder(object sender, Rectangle bounds);
 
     public abstract class Control
     {
         public virtual event ControlClickedEventHandler OnControlClicked;
         public virtual event ControlMouseMoveEventHandler OnMouseMoved;
-        public virtual event ControlBoundsChnagedEventHanlder OnBoundsChaned;
 
         protected GraphicsDeviceManager graphics;
-        protected int Width => graphics.PreferredBackBufferWidth;
-        protected int Height => graphics.PreferredBackBufferHeight;
+        protected int Width => 1920;
+        protected int Height => 1080;
         protected ContentManager content;
         protected CustomSpriteBatch sprite;
         protected Vector2 start = new Vector2(0, 0);
@@ -46,16 +44,7 @@ namespace TBSGame.Controls
         public bool IsMouseOver => is_mouse_hover;
         public object Tag { get; set; }
 
-        private Rectangle _bounds = Rectangle.Empty;
-        public Rectangle Bounds
-        {
-            get => _bounds;
-            set
-            {
-                _bounds = value;
-                OnBoundsChaned?.Invoke(this, value);
-            }
-        }
+        public virtual Rectangle Bounds { get; set; } = Rectangle.Empty;
         protected Rectangle bounds => new Rectangle(Bounds.X + (int)start.X, Bounds.Y + (int)start.Y, Bounds.Width, Bounds.Height);
 
         protected Texture2D frame, frame_over;
@@ -86,7 +75,7 @@ namespace TBSGame.Controls
 
         protected abstract void load();
 
-        public void Draw()
+        public virtual void Draw()
         {
             if (IsVisible)
             {

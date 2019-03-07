@@ -14,8 +14,8 @@ namespace TBSGame.Screens.MapScreenControls
         public int X { get; set; }
         public int Y { get; set; }
 
-        public int Width => graphics.PreferredBackBufferWidth;
-        public int Height => graphics.PreferredBackBufferHeight;
+        public int Width => 1920;
+        public int Height => 1080;
 
         protected CustomSpriteBatch sprite;
         protected GraphicsDeviceManager graphics;

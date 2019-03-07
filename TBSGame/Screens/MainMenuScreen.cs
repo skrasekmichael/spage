@@ -62,14 +62,13 @@ namespace TBSGame.Screens
             background = new ImagePanel(content.Load<Texture2D>("background"));
             background.HAligment = HorizontalAligment.Center;
             background.VAligment = VerticalAligment.Center;
-            background.Bounds = new Rectangle(0, 0, Width, Height);
+            background.MinBounds = new Rectangle(0, 0, Width, Height);
             background.Load(graphics, content, sprite);
-            background.ImageBounds = background.MaxBounds;
         }
 
         protected override void loadpos()
         {
-            int h = 50;
+            int h = 51;
             for (int i = 0; i < buttons.Count; i++)
                 buttons[i].Bounds = new Rectangle((Width - 300) / 2, (Height - h - buttons.Count * h) / 2 + i * h, 300, h - 1);
         }

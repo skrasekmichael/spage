@@ -21,6 +21,7 @@ namespace TBSGame
     {
         private BasicEffect effect;
         private GraphicsDeviceManager manager;
+        public Matrix Scale { get; private set; }
 
         public CustomSpriteBatch(GraphicsDeviceManager manager) : base(manager.GraphicsDevice)
         {
@@ -30,8 +31,12 @@ namespace TBSGame
 
         public void Load()
         {
+            float scale_x = manager.PreferredBackBufferWidth / 1920f;
+            float scale_y = manager.PreferredBackBufferHeight / 1080f;
+            Scale = Matrix.CreateScale(new Vector3(scale_x, scale_y, 1));
+
             effect = new BasicEffect(GraphicsDevice);
-            effect.View = Matrix.CreateLookAt(new Vector3(0, 0, 540), new Vector3(0, 0, 0), Vector3.Up);
+            effect.View = Matrix.CreateLookAt(new Vector3(0, 0, 540), Vector3.Zero, Vector3.Up);
             effect.Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver2, GraphicsDevice.DisplayMode.AspectRatio, 1, 1000);
         }
 

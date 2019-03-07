@@ -14,58 +14,75 @@ namespace TBSGame.Screens
 {
     public class SettingsScreen : Screen
     {
-        private List<Button> buttons = new List<Button>();
-        private int btns = 0;
+        private Panel panel = new Panel();
+        private Panel wide_screen_panel = new Panel();
+        private Panel screen_panel = new Panel();
 
-        public SettingsScreen() : base()
+        protected override void draw()
         {
-            buttons.AddRange(new Button[] 
-            {
-                new MenuButton("1920x1080"),
-                new MenuButton("1680x1050"),
-                new MenuButton("1280x1024"),
-                new MenuButton("800x600")
-            });
+            panel.Draw();
+        }
 
-            btns = buttons.Count;
+        protected override void load(GraphicsDeviceManager graphics, ContentManager content, CustomSpriteBatch sprite)
+        {
+            panel.Load(graphics, content, sprite);
 
-            buttons.ForEach(btn => btn.OnControlClicked += new ControlClickedEventHandler(sender =>
+            panel.Bounds = new Rectangle(10, 10, Width - 20, Height - 20);
+            wide_screen_panel.Bounds = new Rectangle(0, 0, 220, 4 * 51 + 20);
+            screen_panel.Bounds = new Rectangle(240, 0, 220, 4 * 51 + 20);
+
+            panel.Add(screen_panel);
+            panel.Add(wide_screen_panel);
+
+            ControlClickedEventHandler handler = new ControlClickedEventHandler(sender =>
             {
                 string[] resolution = ((MenuButton)sender).Text.Split('x');
                 graphics.PreferredBackBufferWidth = int.Parse(resolution[0]);
                 graphics.PreferredBackBufferHeight = int.Parse(resolution[1]);
                 graphics.ApplyChanges();
-
                 Reload();
-            }));
+            });
+
+            MenuButton[] wide = new MenuButton[]
+            {
+                new MenuButton("1920x1080"),
+                new MenuButton("1600x900"),
+                new MenuButton("1280x720"),
+                new MenuButton("1024x576")
+            };
+
+            MenuButton[] _43 = new MenuButton[] {
+                new MenuButton("1280x960"),
+                new MenuButton("1024x768"),
+                new MenuButton("960x720"),
+                new MenuButton("800x600")
+            };
+
+            for (int i = 0; i < 4; i++)
+            {
+                wide[i].Bounds = new Rectangle(10, 10 + i * 51, 200, 50);
+                wide[i].OnControlClicked += handler;
+                wide_screen_panel.Add(wide[i]);
+
+                _43[i].Bounds = new Rectangle(10, 10 + i * 51, 200, 50);
+                _43[i].OnControlClicked += handler;
+                screen_panel.Add(_43[i]);
+            }
 
             MenuButton back = new MenuButton(Resources.GetString("back"));
             back.OnControlClicked += new ControlClickedEventHandler(sender => this.Dispose(new MainMenuScreen()));
-            buttons.Add(back);
-        }
-
-        protected override void draw()
-        {
-            buttons.ForEach(btn => btn.Draw());
-        }
-
-        protected override void load(GraphicsDeviceManager graphics, ContentManager content, CustomSpriteBatch sprite)
-        {
-            buttons.ForEach(btn => btn.Load(graphics, content, sprite));
+            back.Bounds = new Rectangle(panel.Bounds.Width - 210, panel.Bounds.Height - 60, 200, 50);
+            panel.Add(back);
         }
 
         protected override void loadpos()
         {
-            int h = 50;
-            for (int i = 0; i < btns; i++)
-                buttons[i].Bounds = new Rectangle(50, 50 + i * h, 200, h);
 
-            buttons[btns].Bounds = new Rectangle(Width - 210, Height - h - 10, 200, h);
-        }   
+        }
 
         protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
-            buttons.ForEach(btn => btn.Update(time, keyboard, mouse));
+            panel.Update(time, keyboard, mouse);
         }
     }
 }
