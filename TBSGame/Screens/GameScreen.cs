@@ -45,13 +45,13 @@ namespace TBSGame.Screens
             game_info.Draw();
         }
 
-        protected override void load(GraphicsDeviceManager graphics, ContentManager content, CustomSpriteBatch sprite)
+        protected override void load()
         {
             this.level = Level.Load(path);
             Texture2D map_texture = sprite.GetTexture(level.Map);
 
             game_info.Bounds = new Rectangle(Width - 260, Height - 100, 260, 100);
-            game_info.Load(graphics, content, sprite);
+            game_info.Load(graphics);
             game_info.Fill = new Color(20, 20, 20);
             game_info.Border.Color = Color.Transparent;
             game_info.Foreground = Color.White;
@@ -134,7 +134,7 @@ namespace TBSGame.Screens
             {
                 tab.Index = index;
                 tab.OnSelectedTab += new SelectedTabEventHandler(sender => selected = ((ScreenTabPanel)sender).Index);
-                tab.Load(graphics, content, sprite);
+                tab.Load(graphics);
                 index++;
             }
 

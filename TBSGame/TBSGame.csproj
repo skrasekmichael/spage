@@ -63,6 +63,7 @@
     <Compile Include="CustomSpriteBatch.cs" />
     <Compile Include="Error.cs" />
     <Compile Include="FPSCounter.cs" />
+    <Compile Include="Graphics.cs" />
     <Compile Include="MessageBoxes\YesNoMessageBox.cs" />
     <Compile Include="Screens\AboutScreen.cs" />
     <Compile Include="Screens\GameSavesScreen.cs" />

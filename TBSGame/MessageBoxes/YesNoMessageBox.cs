@@ -31,7 +31,7 @@ namespace TBSGame.MessageBoxes
             text.Bounds = new Rectangle(0, 0, Size.X, Size.Y - 60);
             text.HAligment = HorizontalAligment.Center;
             text.VAligment = VerticalAligment.Center;
-            text.Load(graphics, content, sprite);
+            text.Load(graphics);
             text.Foreground = Color.White;
 
             panel.Add(text);

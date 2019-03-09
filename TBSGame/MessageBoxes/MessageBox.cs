@@ -37,22 +37,18 @@ namespace TBSGame.MessageBoxes
             set => panel.Bounds = new Rectangle((Width - value.X) / 2, (Height - value.Y) / 2, value.X, value.Y);
         }
 
-        protected int Width => graphics.PreferredBackBufferWidth;
-        protected int Height => graphics.PreferredBackBufferHeight;
+        protected int Width => graphics.ScreenWidth;
+        protected int Height => graphics.ScreenHeight;
         protected Dictionary<Button, DialogResult> buttons = new Dictionary<Button, DialogResult>();
-        protected GraphicsDeviceManager graphics;
-        protected ContentManager content;
-        protected CustomSpriteBatch sprite;
+        protected Graphics graphics;
         protected Panel panel;
 
-        public void Load(GraphicsDeviceManager graphics, ContentManager content, CustomSpriteBatch sprite)
+        public void Load(Graphics graphics)
         {
             this.graphics = graphics;
-            this.content = content;
-            this.sprite = sprite;
 
             panel = new Panel();
-            panel.Load(graphics, content, sprite);
+            panel.Load(graphics);
             panel.Fill = Color.Black;
             if (Size == new Point(0, 0))
                 Size = new Point(400, 200);
@@ -61,7 +57,7 @@ namespace TBSGame.MessageBoxes
 
             foreach (KeyValuePair<Button, DialogResult> kvp in buttons)
             {
-                kvp.Key.Load(graphics, content, sprite);
+                kvp.Key.Load(graphics);
                 kvp.Key.OnControlClicked += new ControlClickedEventHandler(sender => Close(kvp.Value));
                 panel.Add(kvp.Key);
             }

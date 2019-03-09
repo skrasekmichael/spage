@@ -18,11 +18,13 @@ namespace TBSGame.Screens.GameScreenControls
         private Panel panel = new Panel();
         private List<Label> labels = new List<Label>();
         public MenuButton Recruit { get; private set; }
+        public MenuButton Cancel { get; private set; }
 
         public UnitBuyBox(Unit unit)
         {
             this.Unit = unit;
             Recruit = new MenuButton(Resources.GetString("recruit"));
+            Cancel = new MenuButton(Resources.GetString("cancel"));
         }
 
         protected override void draw()
@@ -41,14 +43,16 @@ namespace TBSGame.Screens.GameScreenControls
             }
 
             Recruit.Bounds = new Rectangle(10, bounds.Height - 60, 200, 50);
+            Cancel.Bounds = new Rectangle(220, bounds.Height - 60, 200, 50);
 
             Reload(Unit);
 
             panel.Foreground = Color.White;
             panel.Bounds = this.bounds;
-            panel.Load(graphics, content, sprite);
+            panel.Load(graphics);
             panel.AddRange(labels);
             panel.Add(Recruit);
+            panel.Add(Cancel);
         }
 
         protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)

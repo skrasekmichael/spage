@@ -49,7 +49,7 @@ namespace TBSGame.Screens.MapScreenControls
                 driver.LoadUnit(Unit.Texture);
             }
 
-            info.Load(graphics, content, sprite, driver, font);
+            info.Load(graphics, font);
 
             if (driver["pointer"] == null)
             {
@@ -94,7 +94,7 @@ namespace TBSGame.Screens.MapScreenControls
                         if (this.Unit.IsRanged)
                         {
                             BallisticTrajectory = new BallisticTrajectoryControl(map, engine, new Point(X, Y), new Point(enemy.X, enemy.Y), this.bounds.Height / 3, enemy.bounds.Height / 3);
-                            BallisticTrajectory.Load(graphics, content, sprite, driver, font);
+                            BallisticTrajectory.Load(graphics, font);
                         }
 
                         Unit.Stamina -= Unit.StaminaPerAttack;

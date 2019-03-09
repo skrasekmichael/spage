@@ -14,19 +14,17 @@ namespace TBSGame.Screens
 {
     public abstract class Screen
     {
-        public int Width => 1920;
-        public int Height => 1080;
+        public int Width => graphics.ScreenWidth;
+        public int Height => graphics.ScreenHeight;
         public bool IsMouseVisible { get; set; } = true;
         public Settings Settings { get; set; }
 
         protected bool starting = true, ending = false;
         protected float end_coef = 0f, start_coef = 1f, display_coef = 0f;
-        protected TextureDriver driver;
-        protected GraphicsDeviceManager graphics;
-        protected ContentManager content;
-        protected CustomSpriteBatch sprite;
+        protected ContentManager content => graphics.Content;
+        protected CustomSpriteBatch sprite => graphics.Sprite;
+        protected Graphics graphics { get; private set; }
         protected Texture2D black, anim;
-        protected SpriteFont font, small;
 
         private Task loading;
         private TimeSpan start_ending = TimeSpan.Zero, start_starting = TimeSpan.Zero, start_animating = TimeSpan.Zero, 
@@ -38,25 +36,19 @@ namespace TBSGame.Screens
         private int dir = 0;
         private MessageBox message = null;
 
-        protected abstract void load(GraphicsDeviceManager graphics, ContentManager content, CustomSpriteBatch sprite);
+        protected abstract void load();
         protected abstract void update(GameTime time, KeyboardState keyboard, MouseState mouse);
         protected abstract void draw();
         protected abstract void loadpos();
 
-        public void Load(GraphicsDeviceManager graphics, ContentManager content, CustomSpriteBatch sprite, TextureDriver driver)
+        public void Load(Graphics graphics)
         {
             this.graphics = graphics;
-            this.content = content;
-            this.sprite = sprite;
-            this.driver = driver;
 
             black = sprite.GetColorFill(Color.Black, Width, Height);
             anim = sprite.GetColorFill(Color.Lime);
 
-            font = content.Load<SpriteFont>("fonts/text");
-            small = content.Load<SpriteFont>("fonts/small");
-
-            load(graphics, content, sprite);
+            load();
             loadpos();
         }
 
@@ -164,7 +156,7 @@ namespace TBSGame.Screens
         private void set()
         {
             if (next_screen != null)
-                next_screen.Load(graphics, content, sprite, driver);
+                next_screen.Load(graphics);
         }
 
         public void Draw()
@@ -221,7 +213,7 @@ namespace TBSGame.Screens
         public void ShowMessage(MessageBox message)
         {
             this.message = message;
-            message.Load(graphics, content, sprite);
+            message.Load(graphics);
         }
 
         public void Dispose(Screen next)

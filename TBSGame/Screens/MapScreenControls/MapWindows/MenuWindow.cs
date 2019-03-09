@@ -42,8 +42,7 @@ namespace TBSGame.Screens.MapScreenControls.MapWindows
 
         protected override void load()
         {
-            tab.Load(graphics, content, sprite);
-
+            tab.Load(graphics);
             Bounds = new Rectangle((Width - 800) / 2, (Height - 600) / 2, 800, 600);
 
             #region system_panel

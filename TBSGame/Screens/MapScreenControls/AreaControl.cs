@@ -125,7 +125,7 @@ namespace TBSGame.Screens.MapScreenControls
                 if (UnitControl == null)
                 {
                     UnitControl = new UnitControl(unit, X, Y);
-                    UnitControl.Load(graphics, content, sprite, driver, font);
+                    UnitControl.Load(graphics, font);
                     UnitControl.BaseIndex = this.Index;
                 }
 
@@ -145,7 +145,7 @@ namespace TBSGame.Screens.MapScreenControls
                 if (Object == null)
                 {
                     Object = new MapObjectControl(obj, X, Y);
-                    Object.Load(graphics, content, sprite, driver, font);
+                    Object.Load(graphics, font);
                 }
 
                 Object.Update(map, engine);

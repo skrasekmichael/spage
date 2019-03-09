@@ -55,7 +55,7 @@ namespace TBSGame.Controls
 
         protected override void load()
         {
-            Label.Load(graphics, content, sprite);
+            Label.Load(graphics);
             Label.Bounds = this.bounds;
         }
     }

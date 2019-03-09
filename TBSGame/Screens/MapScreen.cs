@@ -187,7 +187,7 @@ namespace TBSGame.Screens
                 }
             });
 
-            load();
+            _load();
         }
 
         private void deselect()
@@ -220,7 +220,7 @@ namespace TBSGame.Screens
             if (a.UnitControl != null)
             {
                 sunit = new UnitDetailControl(a.UnitControl.Unit);
-                sunit.Load(graphics, content, sprite, driver, small);
+                sunit.Load(graphics, graphics.Small);
 
                 var mob = engine.GetMobility(a.X, a.Y);
                 engine.Mobility = mob;
@@ -232,7 +232,7 @@ namespace TBSGame.Screens
                 sunit = null;
         }
 
-        private void load()
+        private void _load()
         {
             int index = 0;
             for (int x = map.Width - 1; x >= 0; x--)
@@ -266,7 +266,7 @@ namespace TBSGame.Screens
                                         if (selected_units.Count > 0)
                                         {
                                             sunit = new UnitDetailControl(selected_units[0]);
-                                            sunit.Load(graphics, content, sprite, driver, small);
+                                            sunit.Load(graphics, graphics.Small);
                                             buttons[0].IsLocked = true;
                                         }
                                         else
@@ -317,7 +317,7 @@ namespace TBSGame.Screens
                                 if (hunit == null || (hunit.X != area.X && hunit.Y != area.Y))
                                 {
                                     hunit = new UnitDetailControl(area.UnitControl.Unit);
-                                    hunit.Load(graphics, content, sprite, driver, small);
+                                    hunit.Load(graphics, graphics.Small);
                                 }
                             }
                         }
@@ -378,26 +378,26 @@ namespace TBSGame.Screens
             }
         }
         
-        protected override void load(GraphicsDeviceManager graphics, ContentManager content, CustomSpriteBatch sprite)
+        protected override void load()
         {
             enemysighted = content.Load<SoundEffect>("Sounds/enemysighted");
 
-            windows.ForEach(w => w.Load(graphics, content, sprite, driver, font));
-            areas.ForEach(area => area.Load(graphics, content, sprite, driver, small));
+            windows.ForEach(w => w.Load(graphics, graphics.Normal));
+            areas.ForEach(area => area.Load(graphics, graphics.Small));
 
             bar = sprite.GetColorFill(new Color(90, 90, 90));
             for (int i = 0; i < buttons.Count; i++)
             { 
-                buttons[i].Load(graphics, content, sprite);
+                buttons[i].Load(graphics);
                 buttons[i].Bounds = new Rectangle(Width - (i + 1) * 80, Height - 75, 80, 75);
             }
 
-            enemy_turn.Load(graphics, content, sprite);
+            enemy_turn.Load(graphics);
             enemy_turn.Bounds = new Rectangle(0, Height - 150, Width, 150);
-            enemy_turn.Font = font;
+            enemy_turn.Font = graphics.Normal;
 
             sunit = new UnitDetailControl(selected_units[0]);
-            sunit.Load(graphics, content, sprite, driver, small);
+            sunit.Load(graphics, graphics.Small);
         }
 
         protected override void loadpos()

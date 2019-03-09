@@ -23,9 +23,9 @@ namespace TBSGame.Screens
             panel.Draw();
         }
 
-        protected override void load(GraphicsDeviceManager graphics, ContentManager content, CustomSpriteBatch sprite)
+        protected override void load()
         {
-            panel.Load(graphics, content, sprite);
+            panel.Load(graphics);
 
             panel.Bounds = new Rectangle(10, 10, Width - 20, Height - 20);
             wide_screen_panel.Bounds = new Rectangle(0, 0, 220, 4 * 51 + 20);
@@ -37,9 +37,9 @@ namespace TBSGame.Screens
             ControlClickedEventHandler handler = new ControlClickedEventHandler(sender =>
             {
                 string[] resolution = ((MenuButton)sender).Text.Split('x');
-                graphics.PreferredBackBufferWidth = int.Parse(resolution[0]);
-                graphics.PreferredBackBufferHeight = int.Parse(resolution[1]);
-                graphics.ApplyChanges();
+                graphics.GraphicsDeviceManager.PreferredBackBufferWidth = int.Parse(resolution[0]);
+                graphics.GraphicsDeviceManager.PreferredBackBufferHeight = int.Parse(resolution[1]);
+                graphics.GraphicsDeviceManager.ApplyChanges();
                 Reload();
             });
 

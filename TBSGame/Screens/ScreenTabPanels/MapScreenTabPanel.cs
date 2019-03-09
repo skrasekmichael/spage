@@ -109,6 +109,8 @@ namespace TBSGame.Screens.ScreenTabPanels
             units_panel.Bounds = new Rectangle(map_panel.Bounds.Width + 20, 10, panel.Bounds.Width - map_panel.Bounds.Width - 30, panel.Bounds.Height - 20);
             panel.AddRange(new[] { map_panel, units_panel });
 
+            units_panel.Description = Resources.GetString("units");
+
             units_panel.IsVisible = false;
 
             load_units();

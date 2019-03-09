@@ -17,12 +17,9 @@ namespace TBSGame.Screens.MapScreenControls.MapWindows
 
         private VertexPositionColorTexture[] bg;
 
-        public override void Load(GraphicsDeviceManager graphics, ContentManager content, CustomSpriteBatch sprite, TextureDriver driver, SpriteFont font)
+        public override void Load(Graphics graphics, SpriteFont font)
         {
             this.graphics = graphics;
-            this.content = content;
-            this.sprite = sprite;
-            this.driver = driver;
             this.font = font;
 
             black = sprite.GetColorFill(Color.Black);

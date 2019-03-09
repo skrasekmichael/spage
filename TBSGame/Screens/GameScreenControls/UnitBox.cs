@@ -97,7 +97,7 @@ namespace TBSGame.Screens.GameScreenControls
             rounds.Foreground = Color.White;
 
             panel.Bounds = this.bounds;
-            panel.Load(graphics, content, sprite);
+            panel.Load(graphics);
             panel.AddRange(new Control[] { check, label, icon, rounds });
            /* panel.Controls.ForEach(c =>
             {

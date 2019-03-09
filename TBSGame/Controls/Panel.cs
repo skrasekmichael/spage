@@ -15,6 +15,8 @@ namespace TBSGame.Controls
 
         public bool OnlyArea { get; private set; } = false;
         public bool Desc { get; set; } = false;
+        public string Description { get; set; } = "";
+        public bool DescConstantly { get; set; } = false;
 
         private Color _fill = Color.Black;
         public Color Fill
@@ -23,7 +25,7 @@ namespace TBSGame.Controls
             set
             {
                 _fill = value;
-                sprite?.SetColorFill(ref fill, _fill);
+                graphics?.Sprite.SetColorFill(ref fill, _fill);
             }
         }
 
@@ -39,17 +41,27 @@ namespace TBSGame.Controls
             }
         }
 
-        private Texture2D fill;
+        private Texture2D fill, bg_fill;
 
         public Panel(bool only = false)
         {
             OnlyArea = only;
             Border.IsVisible = !only;
             Border.Color = Color.Silver;
+            Desc = only;
         }
 
         public override void Draw()
         {
+            if (Desc)
+                sprite.Draw(bg_fill, bounds, Color.White * 0.4f);
+
+            if (DescConstantly || !IsVisible)
+            {
+                if (Desc)
+                    sprite.DrawString(Font, Description, new Vector2(bounds.X + 20, bounds.Y + 20), Color.White * 0.4f);
+            }
+
             if (IsVisible)
             {
                 draw();
@@ -73,8 +85,8 @@ namespace TBSGame.Controls
         {
             Border.MouseOverColor = Border.Color;
 
-            if (!OnlyArea)
-                fill = sprite.GetColorFill(Fill);
+            bg_fill = sprite.GetColorFill(new Color(40, 40, 40));
+            fill = sprite.GetColorFill(Fill);
 
             Controls.ForEach(load);
         }
@@ -98,7 +110,7 @@ namespace TBSGame.Controls
 
             if (fore_is_changed)
                 control.Foreground = this.Foreground;
-            control.Load(graphics, content, sprite, bounds.Location.ToVector2());
+            control.Load(graphics, bounds.Location.ToVector2());
         }
     }
 }

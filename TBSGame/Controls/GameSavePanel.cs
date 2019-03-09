@@ -110,7 +110,7 @@ namespace TBSGame.Controls
 
         protected override void load()
         {
-            panel.Load(graphics, content, sprite);
+            panel.Load(graphics);
 
             for (int i = 0; i < 10; i++)
             {
@@ -139,7 +139,7 @@ namespace TBSGame.Controls
                 label.HAligment = HorizontalAligment.Left;
                 labels[i] = label;
                 panel.Add(label);
-                label.Font = content.Load<SpriteFont>("fonts/small");
+                label.Font = graphics.Small;
 
                 MenuButton load_btn = new MenuButton(Resources.GetString("load"));
                 load_btn.Tag = i;

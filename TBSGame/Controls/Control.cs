@@ -18,11 +18,11 @@ namespace TBSGame.Controls
         public virtual event ControlClickedEventHandler OnControlClicked;
         public virtual event ControlMouseMoveEventHandler OnMouseMoved;
 
-        protected GraphicsDeviceManager graphics;
-        protected int Width => 1920;
-        protected int Height => 1080;
-        protected ContentManager content;
-        protected CustomSpriteBatch sprite;
+        protected CustomSpriteBatch sprite => graphics.Sprite;
+        protected Graphics graphics { get; private set; }
+
+        protected int Width => graphics.ScreenWidth;
+        protected int Height => graphics.ScreenHeight;
         protected Vector2 start = new Vector2(0, 0);
         protected bool is_mouse_hover = false, is_mouse_down = false;
 
@@ -52,26 +52,22 @@ namespace TBSGame.Controls
 
         public void SetPos(Vector2 p) => start = p;
 
-        public void Load(GraphicsDeviceManager graphics, ContentManager content, CustomSpriteBatch sprite, Vector2? start = null)
+        public void Load(Graphics graphics, Vector2? start = null)
         {
             this.graphics = graphics;
-            this.content = content;
-            this.sprite = sprite;
+            Font = graphics.Normal;
 
             if (start == null)
                 this.start = new Vector2(0, 0);
             else
                 this.start = start.Value;
 
-            this.Font = load_font();
             frame = sprite.GetColorFill(Border.Color);
             frame_over = sprite.GetColorFill(Border.MouseOverColor);
 
             load();
             IsLoaded = true;
         }
-
-        protected virtual SpriteFont load_font() => content.Load<SpriteFont>("fonts/text");
 
         protected abstract void load();
 

@@ -14,23 +14,20 @@ namespace TBSGame.Screens.MapScreenControls
         public int X { get; set; }
         public int Y { get; set; }
 
-        public int Width => 1920;
-        public int Height => 1080;
+        public int Width => graphics.ScreenWidth;
+        public int Height => graphics.ScreenHeight;
 
-        protected CustomSpriteBatch sprite;
-        protected GraphicsDeviceManager graphics;
-        protected ContentManager content;
-        protected TextureDriver driver;
+        protected TextureDriver driver => graphics.TextureDriver;
+        protected ContentManager content => graphics.Content;
+        protected CustomSpriteBatch sprite => graphics.Sprite;
+        protected Graphics graphics { get; set; }
         protected SpriteFont font;
 
         protected Color shadow = Color.Gray;
 
-        public virtual void Load(GraphicsDeviceManager graphics, ContentManager content, CustomSpriteBatch sprite, TextureDriver driver, SpriteFont font)
+        public virtual void Load(Graphics graphics, SpriteFont font)
         {
             this.graphics = graphics;
-            this.content = content;
-            this.sprite = sprite;
-            this.driver = driver;
             this.font = font;
 
             load();

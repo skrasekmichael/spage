@@ -10,17 +10,18 @@ namespace TBSGame
 {
     public class Spage : Game
     {
-        GraphicsDeviceManager graphics;
+        GraphicsDeviceManager manager;
         CustomSpriteBatch sprite;
         Screen screen;
         Settings settings;
         TextureDriver driver;
         Texture2D cursor;
         FPSCounter fps = new FPSCounter();
+        Graphics graphics = new Graphics();
 
         public Spage(Settings settings)
         {
-            graphics = new GraphicsDeviceManager(this);
+            manager = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             this.settings = settings;
         }
@@ -34,8 +35,8 @@ namespace TBSGame
 
             try
             {
-                graphics.PreferredBackBufferWidth = settings.ResolutionWidth;
-                graphics.PreferredBackBufferHeight = settings.ResolutionHeight;
+                manager.PreferredBackBufferWidth = settings.ResolutionWidth;
+                manager.PreferredBackBufferHeight = settings.ResolutionHeight;
             }
             catch (Exception ex)
             {
@@ -44,7 +45,7 @@ namespace TBSGame
             }
 
             //this.IsMouseVisible = true;
-            graphics.ApplyChanges();
+            manager.ApplyChanges();
 
             driver = new TextureDriver(Content, sprite);
             screen = new MainMenuScreen();
@@ -54,11 +55,13 @@ namespace TBSGame
         }
         protected override void LoadContent()
         {
-            sprite = new CustomSpriteBatch(graphics);
+            sprite = new CustomSpriteBatch(manager);
             fps.Load(Content);
 
+            graphics.Load(manager, Content, sprite, driver);
+
             cursor = Content.Load<Texture2D>("cursor");
-            screen.Load(graphics, Content, sprite, driver);
+            screen.Load(graphics);
         }
 
         protected override void UnloadContent()

@@ -31,12 +31,12 @@ namespace TBSGame.Screens
             back.Draw();
         }
 
-        protected override void load(GraphicsDeviceManager graphics, ContentManager content, CustomSpriteBatch sprite)
+        protected override void load()
         {
-            back.Load(graphics, content, sprite);
+            back.Load(graphics);
 
             saves = new GameSavePanel(Settings.GameSaves, GameSavePanel.Display.Load);
-            saves.Load(graphics, content, sprite);
+            saves.Load(graphics);
             saves.OnLoadGame += new LoadGameEventHandler((sender, i) =>
              {
                  GameSave game = GameSave.Load(Settings.GameSaves + i.ToString() + ".dat");

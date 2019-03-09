@@ -56,14 +56,14 @@ namespace TBSGame.Screens
             buttons.ForEach(btn => btn.Draw());
         }
 
-        protected override void load(GraphicsDeviceManager graphics, ContentManager content, CustomSpriteBatch sprite)
+        protected override void load()
         {
-            buttons.ForEach(btn => btn.Load(graphics, content, sprite));
+            buttons.ForEach(btn => btn.Load(graphics));
             background = new ImagePanel(content.Load<Texture2D>("background"));
             background.HAligment = HorizontalAligment.Center;
             background.VAligment = VerticalAligment.Center;
             background.MinBounds = new Rectangle(0, 0, Width, Height);
-            background.Load(graphics, content, sprite);
+            background.Load(graphics);
         }
 
         protected override void loadpos()

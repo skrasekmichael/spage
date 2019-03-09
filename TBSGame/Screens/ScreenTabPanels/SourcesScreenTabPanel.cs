@@ -53,28 +53,28 @@ namespace TBSGame.Screens.ScreenTabPanels
             resize = new Rectangle(0, 0, (int)size, (int)(coef * MapTexture.Height));
             resize = new Rectangle((panel.Bounds.Width - resize.Width) / 2, (panel.Bounds.Height - resize.Height) / 2, resize.Width, resize.Height);
 
-            SpriteFont font = content.Load<SpriteFont>("fonts/small");
             for (int i = 0; i < level.Maps.Count; i++)
             {
                 LevelMap lm = level.Maps[i];
                 if (lm.Player == 1 && game.Info[lm.Name].RoundsToDeplete > 0)
                     total_income += lm.Sources;
                 System.Drawing.Point center = lm.Center;
-                Label label = new Label($"{lm.Sources.ToString()} ({game.Info[lm.Name].RoundsToDeplete.ToString()})")
+                Label label = new Label($"{lm.Sources.ToString()}({game.Info[lm.Name].RoundsToDeplete.ToString()})")
                 {
                     Bounds = new Rectangle(resize.Left + (int)(center.X * coef) - 35, resize.Top + (int)(center.Y * coef) - 20, 80, 50),
                     Space = 0,
                     IsVisible = lm.Player == 1 && lm.Rounds > 0,
                     Foreground = Color.Lime
                 };
-                label.Load(graphics, content, sprite);
-                label.Font = font;
+                label.Font = graphics.Small;
+                label.Load(graphics);
                 labels.Add(label);
             }
 
             game.Income = total_income - game.Research * 3;
 
             switch_panel.Bounds = new Rectangle(resize.X, resize.Y + resize.Height, resize.Width, 100);
+            switch_panel.Desc = false;
 
             bar_panel1.Border.IsVisible = false;
             bar_panel1.Fill = Color.Lime;
@@ -154,7 +154,7 @@ namespace TBSGame.Screens.ScreenTabPanels
                 LevelMap lm = level.Maps[i];
                 labels[i].IsVisible = lm.Player == 1 && game.Info[lm.Name].RoundsToDeplete > 0;
                 labels[i].Update(time, keyboard, mouse);
-                labels[i].Text = $"{lm.Sources.ToString()} ({game.Info[lm.Name].RoundsToDeplete.ToString()})";
+                labels[i].Text = $"{lm.Sources.ToString()}({game.Info[lm.Name].RoundsToDeplete.ToString()})";
                 if (lm.Player == 1 && game.Info[lm.Name].RoundsToDeplete > 0)
                     total_income += lm.Sources;
             }

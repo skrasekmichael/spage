@@ -19,10 +19,10 @@ namespace TBSGame.Screens
             label.Draw();
         }
 
-        protected override void load(GraphicsDeviceManager graphics, ContentManager content, CustomSpriteBatch sprite)
+        protected override void load()
         {
             label = new Label(Resources.GetString("about_text"));
-            label.Load(graphics, content, sprite);
+            label.Load(graphics);
             label.Foreground = Color.Silver;
             label.LineHeight = 20;
             label.VAligment = VerticalAligment.Center;

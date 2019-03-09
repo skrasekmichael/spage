@@ -23,17 +23,17 @@ namespace TBSGame.Screens.ScreenTabPanels
             OnSelectedTab?.Invoke(this);
         }
 
-        protected GraphicsDeviceManager graphics;
-        protected ContentManager content;
-        protected CustomSpriteBatch sprite;
+        protected ContentManager content => graphics.Content;
+        protected CustomSpriteBatch sprite => graphics.Sprite;
+        protected Graphics graphics { get; private set; }
         protected GameButton button;
         protected Settings settings;
         protected GameSave game;
 
         protected Panel panel = new Panel(true);
 
-        public int Width => 1920;
-        public int Height => 1080;
+        public int Width => graphics.ScreenWidth;
+        public int Height => graphics.ScreenHeight;
 
         public SpriteFont Font { get; set; }
         public int Index { get; set; }
@@ -46,17 +46,14 @@ namespace TBSGame.Screens.ScreenTabPanels
             this.settings = settings;
         }
 
-        public void Load(GraphicsDeviceManager graphics, ContentManager content, CustomSpriteBatch sprite)
+        public void Load(Graphics graphics)
         {
             this.graphics = graphics;
-            this.content = content;
-            this.sprite = sprite;
-            this.Font = content.Load<SpriteFont>("fonts/text");
 
             panel.Bounds = new Rectangle(0, 0, Width - 100, Height);
-            panel.Load(graphics, content, sprite);
+            panel.Load(graphics);
 
-            button.Load(graphics, content, sprite);
+            button.Load(graphics);
             button.Bounds = new Rectangle(Width - 100, 100 * Index, 100, 100);
             button.OnControlClicked += new ControlClickedEventHandler(sender => SelectTab());
 

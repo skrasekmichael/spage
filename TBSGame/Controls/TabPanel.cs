@@ -19,9 +19,10 @@ namespace TBSGame.Controls
         {
             if (!panels.ContainsKey(key))
             {
-                panel.Load(graphics, content, sprite);
+                panel.Load(graphics);
                 panels.Add(key, panel);
                 button.Tag = key;
+                button.Load(graphics);
                 button.OnControlClicked += new ControlClickedEventHandler((obj) =>
                 {
                     TabPanelButton sender = (TabPanelButton)obj;
@@ -56,8 +57,11 @@ namespace TBSGame.Controls
 
         protected override void load()
         {
-            buttons.Values.ToList().ForEach(btn => btn.Load(graphics, content, sprite));
-            panels.Values.ToList().ForEach(p => p.Load(graphics, content, sprite));
+            for (int i = 0; i < buttons.Count; i++)
+            {
+                buttons.Values.ElementAt(i).Load(graphics);
+                panels.Values.ElementAt(i).Load(graphics);
+            }
         }
 
         protected override void draw()
@@ -68,8 +72,8 @@ namespace TBSGame.Controls
 
         protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
-            buttons.Values.ToList().ForEach(btn => btn.Update(time, keyboard, mouse));
             panels[selected].Update(time, keyboard, mouse);
+            buttons.Values.ToList().ForEach(btn => btn.Update(time, keyboard, mouse));
         }
     }
 }

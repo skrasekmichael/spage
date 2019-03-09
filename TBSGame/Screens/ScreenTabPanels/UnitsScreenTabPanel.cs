@@ -19,9 +19,9 @@ namespace TBSGame.Screens.ScreenTabPanels
         private List<UnitBox> units = new List<UnitBox>();
         private UnitBuyBox buy;
 
-        private Panel buy_unist_panel = new Panel();
-        private Panel units_panel = new Panel();
-        private Panel info_panel = new Panel();
+        private Panel buy_unist_panel = new Panel(true);
+        private Panel units_panel = new Panel(true);
+        private Panel info_panel = new Panel(true);
 
         public UnitsScreenTabPanel(Settings settings, GameSave game, string icon) : base(settings, game, icon)
         {
@@ -46,6 +46,11 @@ namespace TBSGame.Screens.ScreenTabPanels
 
         protected override void load()
         {
+            info_panel.Description = Resources.GetString("units_info");
+            info_panel.DescConstantly = true;
+            units_panel.Description = Resources.GetString("units");
+            buy_unist_panel.Description = Resources.GetString("available_units");
+
             units_panel.Bounds = new Rectangle(10, 10, (int)(panel.Bounds.Width * 0.6f), panel.Bounds.Height - 20);
             buy_unist_panel.Bounds = new Rectangle(units_panel.Bounds.Width + 20, 10, panel.Bounds.Width - units_panel.Bounds.Width - 30, panel.Bounds.Height - 430);
             info_panel.Bounds = new Rectangle(units_panel.Bounds.Width + 20, panel.Bounds.Height - 410, buy_unist_panel.Bounds.Width, 400);
@@ -65,6 +70,11 @@ namespace TBSGame.Screens.ScreenTabPanels
                 game.Sources -= unit.Price;
                 buy.Recruit.IsLocked = game.Sources < buy.Unit.Price;
                 load_units();
+            });
+            buy.Cancel.OnControlClicked += new ControlClickedEventHandler(sender =>
+            {
+                buy_units.ForEach(u => u.IsChecked = false);
+                buy.IsVisible = false;
             });
 
             info_panel.Add(buy);
