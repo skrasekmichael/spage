@@ -33,7 +33,7 @@ namespace TBSGame.Controls.Buttons
         protected override void load()
         {
             base.load();
-            icon = content.Load<Texture2D>($"icons/{ic}");
+            icon = graphics.Content.Load<Texture2D>($"icons/{ic}");
             hover_icon = sprite.Tint(icon, Tint);
             locked = sprite.Tint(icon, Color.Silver);
 

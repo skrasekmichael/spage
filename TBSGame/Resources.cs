@@ -32,7 +32,7 @@ namespace TBSGame
 
                     string[] split = line.Split(':');
                     key = split[0].Trim().Substring(1);
-                    data = split[1].Trim() + "\n";
+                    data = string.Join(":", split.ToList().GetRange(1, split.Length - 1).ToArray()).Trim() + "\n";
                 }
                 else
                     data += line + "\n";

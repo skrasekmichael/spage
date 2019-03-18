@@ -112,7 +112,7 @@ namespace TBSGame
             if (this.IsActive)
             {
                 GraphicsDevice.Clear(Color.Black);
-                sprite.Begin(SpriteSortMode.Deferred, null, null, null, null, null, sprite.Scale);
+                sprite.Begin(SpriteSortMode.Immediate, null, null, null, null, null, sprite.Scale);
 
                 screen.Draw();
 

@@ -25,9 +25,9 @@ namespace TBSGame.Controls
         public event DeleteGameEventHandler OnDeleteGame;
 
         [Flags]
-        public enum Display
+        public enum Display : int
         {
-            Load, Save, LoadSave
+            Load = 0, Save = 1, LoadSave = 2
         }
 
         private Panel panel = new Panel(true);
@@ -106,6 +106,7 @@ namespace TBSGame.Controls
                 input[i].Bounds = new Rectangle(151, i * 51, w, 50);
                 labels[i].Bounds = new Rectangle(panel.Bounds.Width, i * 51, 300, 50);
             }
+            this.Bounds = panel.Bounds;
         }
 
         protected override void load()

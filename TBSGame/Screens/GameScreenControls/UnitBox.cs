@@ -141,7 +141,7 @@ namespace TBSGame.Screens.GameScreenControls
                 if (name == null)
                     textures.Add(new Texture2D(graphics.GraphicsDevice, 1, 1));
                 else
-                    textures.Add(sprite.Tint(content.Load<Texture2D>("icons/" + name), Color.Crimson));
+                    textures.Add(sprite.Tint(graphics.Content.Load<Texture2D>("icons/" + name), Color.Crimson));
             }
         }
     }

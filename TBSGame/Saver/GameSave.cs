@@ -16,7 +16,7 @@ namespace TBSGame.Saver
         public Dictionary<string, MapInfo> Info { get; set; }
         public List<Unit> Units { get; set; } = null;
         public string Name { get; set; } = "default";
-        public int Sources { get; set; } = 0;
+        public int Sources { get; set; } = 200;
         public int Round { get; set; } = 0;
         public int Research { get; set; } = 0;
         public int Income { get; set; } = 0;

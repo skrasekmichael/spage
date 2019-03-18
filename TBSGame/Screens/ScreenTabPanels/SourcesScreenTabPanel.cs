@@ -48,10 +48,10 @@ namespace TBSGame.Screens.ScreenTabPanels
         {
             set_map(Color.DarkGreen, 0.7f, Color.Black, 0.7f);
 
-            float size = panel.Bounds.Width * 0.4f;
+            float size = Panel.Bounds.Width * 0.4f;
             float coef = size / MapTexture.Width;
             resize = new Rectangle(0, 0, (int)size, (int)(coef * MapTexture.Height));
-            resize = new Rectangle((panel.Bounds.Width - resize.Width) / 2, (panel.Bounds.Height - resize.Height) / 2, resize.Width, resize.Height);
+            resize = new Rectangle((Panel.Bounds.Width - resize.Width) / 2, (Panel.Bounds.Height - resize.Height) / 2, resize.Width, resize.Height);
 
             for (int i = 0; i < level.Maps.Count; i++)
             {
@@ -66,8 +66,8 @@ namespace TBSGame.Screens.ScreenTabPanels
                     IsVisible = lm.Player == 1 && lm.Rounds > 0,
                     Foreground = Color.Lime
                 };
-                label.Font = graphics.Small;
                 label.Load(graphics);
+                label.Font = graphics.Small;
                 labels.Add(label);
             }
 
@@ -84,7 +84,7 @@ namespace TBSGame.Screens.ScreenTabPanels
 
             total = new Label(total_income.ToString())
             {
-                Bounds = new Rectangle((switch_panel.Bounds.Width - 100) / 2, (switch_panel.Bounds.Height - 50) / 2, 100, 50),
+                Bounds = new Rectangle((switch_panel.Bounds.Width - 100) / 2, (switch_panel.Bounds.Height - 50) / 2 - 5, 100, 50),
                 Foreground = Color.White
             };
 
@@ -142,7 +142,7 @@ namespace TBSGame.Screens.ScreenTabPanels
                     game.Research -= 1;
             });
 
-            panel.Add(switch_panel);
+            Panel.Add(switch_panel);
             switch_panel.AddRange(new Control[] { researchs, sources, r, g, source_label, research_label, total, bar_panel1, bar_panel2 });
         }
 

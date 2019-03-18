@@ -26,6 +26,7 @@ namespace TBSGame.Controls
         protected Vector2 start = new Vector2(0, 0);
         protected bool is_mouse_hover = false, is_mouse_down = false;
 
+        public string Name { get; set; }
         public virtual SpriteFont Font { get; set; }
         public virtual HorizontalAligment HAligment { get; set; } = HorizontalAligment.Left;
         public virtual VerticalAligment VAligment { get; set; } = VerticalAligment.Top;

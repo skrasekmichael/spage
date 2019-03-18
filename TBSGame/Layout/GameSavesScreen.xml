@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<layout width="1920" height="1080">
+    <childs>
+        <GameSavePanel name="saves">
+            <arguments>
+                <argument convert="var">saves_path</argument>
+                <argument convert="int">0</argument>
+            </arguments>
+        </GameSavePanel>
+        <Buttons.MenuButton name="back" x="1700" y="1000" width="200" height="50">
+            <arguments>
+                <argument convert="string">#back</argument>
+            </arguments>
+        </Buttons.MenuButton>
+    </childs>
+</layout>
+

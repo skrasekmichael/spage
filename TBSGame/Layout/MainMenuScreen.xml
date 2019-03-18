@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<layout width="1920" height="1080">
+    <childs>
+        <Panel name="panel" x="810" y="387" width="300" height="305">
+            <arguments>
+                <argument convert="bool">true</argument>
+            </arguments>
+            <properties>
+                <property type="Opacity" convert="float">0,8</property>
+            </properties>
+            <childs>
+                <Buttons.MenuButton name="btn_campaign" x="0" y="0" width="300" height="50">
+                    <arguments>
+                        <argument convert="string">#campaign</argument>
+                    </arguments>
+                </Buttons.MenuButton>
+                <Buttons.MenuButton name="btn_custom" x="0" y="51" width="300" height="50">
+                    <arguments>
+                        <argument convert="string">#custom_scenario</argument>
+                    </arguments>
+                    <properties>
+                        <property type="IsLocked" convert="bool">true</property>
+                    </properties>
+                </Buttons.MenuButton>
+                <Buttons.MenuButton name="btn_loadgame" x="0" y="102" width="300" height="50">
+                    <arguments>
+                        <argument convert="string">#loadgame</argument>
+                    </arguments>
+                </Buttons.MenuButton>
+                <Buttons.MenuButton name="btn_about" x="0" y="153" width="300" height="50">
+                    <arguments>
+                        <argument convert="string">#about</argument>
+                    </arguments>
+                </Buttons.MenuButton>
+                <Buttons.MenuButton name="btn_settings" x="0" y="204" width="300" height="50">
+                    <arguments>
+                        <argument convert="string">#settings</argument>
+                    </arguments>
+                </Buttons.MenuButton>
+                <Buttons.MenuButton name="btn_exit" x="0" y="255" width="300" height="50">
+                    <arguments>
+                        <argument convert="string">#exit</argument>
+                    </arguments>
+                </Buttons.MenuButton>
+            </childs>
+        </Panel>
+    </childs>
+</layout>

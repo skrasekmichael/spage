@@ -12,10 +12,10 @@ using System.Threading.Tasks;
 namespace TBSGame
 {
     [Flags]
-    public enum HorizontalAligment { Left = 0, Center = 1, Right = 2 }
+    public enum HorizontalAligment : int { Left = 0, Center = 1, Right = 2 }
 
     [Flags]
-    public enum VerticalAligment { Top = 0, Center = 1, Bottom = 2 }
+    public enum VerticalAligment : int { Top = 0, Center = 1, Bottom = 2 }
 
     public class CustomSpriteBatch : SpriteBatch
     {

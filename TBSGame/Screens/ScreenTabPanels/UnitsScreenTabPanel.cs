@@ -51,10 +51,10 @@ namespace TBSGame.Screens.ScreenTabPanels
             units_panel.Description = Resources.GetString("units");
             buy_unist_panel.Description = Resources.GetString("available_units");
 
-            units_panel.Bounds = new Rectangle(10, 10, (int)(panel.Bounds.Width * 0.6f), panel.Bounds.Height - 20);
-            buy_unist_panel.Bounds = new Rectangle(units_panel.Bounds.Width + 20, 10, panel.Bounds.Width - units_panel.Bounds.Width - 30, panel.Bounds.Height - 430);
-            info_panel.Bounds = new Rectangle(units_panel.Bounds.Width + 20, panel.Bounds.Height - 410, buy_unist_panel.Bounds.Width, 400);
-            panel.AddRange(new[] { buy_unist_panel, units_panel, info_panel });
+            units_panel.Bounds = new Rectangle(10, 10, (int)(Panel.Bounds.Width * 0.6f), Panel.Bounds.Height - 20);
+            buy_unist_panel.Bounds = new Rectangle(units_panel.Bounds.Width + 20, 10, Panel.Bounds.Width - units_panel.Bounds.Width - 30, Panel.Bounds.Height - 430);
+            info_panel.Bounds = new Rectangle(units_panel.Bounds.Width + 20, Panel.Bounds.Height - 410, buy_unist_panel.Bounds.Width, 400);
+            Panel.AddRange(new[] { buy_unist_panel, units_panel, info_panel });
 
             load_buy();
             load_units();

@@ -73,6 +73,7 @@ namespace TBSGame.Controls
         {
             if (!OnlyArea)
                 sprite.Draw(fill, bounds, Color.White);
+
             Controls.ForEach(c => c.Draw());
         }
 
@@ -85,7 +86,7 @@ namespace TBSGame.Controls
         {
             Border.MouseOverColor = Border.Color;
 
-            bg_fill = sprite.GetColorFill(new Color(40, 40, 40));
+            bg_fill = sprite.GetColorFill(new Color(50, 50, 50));
             fill = sprite.GetColorFill(Fill);
 
             Controls.ForEach(load);
@@ -105,12 +106,27 @@ namespace TBSGame.Controls
 
         private void load(Control control)
         {
-            if (content == null)
-                Console.WriteLine("");
-
             if (fore_is_changed)
                 control.Foreground = this.Foreground;
+
+            control.Opacity *= this.Opacity;
             control.Load(graphics, bounds.Location.ToVector2());
+        }
+
+        public Control GetControl(string name)
+        {
+            Queue<Control> controls = new Queue<Control>(this.Controls); 
+            while (controls.Count > 0)
+            {
+                Control control = controls.Dequeue();
+                if (control.Name == name)
+                    return control;
+
+                if (control.GetType() == typeof(Panel))
+                    ((Panel)control).Controls.ForEach(c => controls.Enqueue(c));
+            }
+
+            return null;
         }
     }
 }

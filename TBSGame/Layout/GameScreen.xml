@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<layout width="1920" height="1080">
+    <childs>
+        <Panel name="panel" x="0" y="0" width="1820" height="1080">
+            <arguments>
+                <argument convert="bool">true</argument>
+            </arguments>
+            <properties>
+                <property type="Desc" convert="bool">false</property>
+            </properties>
+        </Panel>
+        <Panel name="bar" x="1820" y="0" width="100" height="980">
+            <arguments>
+                <argument convert="bool">false</argument>
+            </arguments>
+            <properties>
+                <property type="Fill" convert="rgb">20;20;20</property>
+                <property type="Border.IsVisible" convert="bool">false</property>
+                <property type="Border.Left" convert="bool">true</property>
+            </properties>
+        </Panel>
+        <Panel name="game_info" x="1620" y="980" width="200" height="100">
+            <arguments>
+                <argument convert="bool">false</argument>
+            </arguments>
+            <properties>
+                <property type="Fill" convert="rgb">20;20;20</property>
+                <property type="Foreground" convert="colorname">White</property>
+                <property type="Border.Right" convert="bool">false</property>
+                <property type="Border.Bottom" convert="bool">false</property>
+            </properties>
+            <childs>
+                <Buttons.GameButton name="next_turn" x="200" y="0" width="100" height="100">
+                    <arguments>
+                        <argument convert="string">ok</argument>
+                        <argument convert="string">ok</argument>
+                    </arguments>
+                </Buttons.GameButton>
+                <Label name="round" x="0" y="0" width="200" height="50">
+                    <arguments>
+                        <argument convert="string">text</argument>
+                    </arguments>
+                    <properties>
+                        <property type="HAligment" convert="int">0</property>
+                    </properties>
+                </Label>
+                <Label name="resources" x="0" y="50" width="200" height="50">
+                    <arguments>
+                        <argument convert="string">text</argument>
+                    </arguments>
+                    <properties>
+                        <property type="HAligment" convert="int">0</property>
+                    </properties>
+                </Label>
+            </childs>
+        </Panel>
+    </childs>
+</layout>

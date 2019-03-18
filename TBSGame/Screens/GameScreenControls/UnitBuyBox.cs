@@ -37,7 +37,7 @@ namespace TBSGame.Screens.GameScreenControls
             for (int i = 0; i < 6; i++)
             {
                 Label l = new Label("");
-                l.Bounds = new Rectangle(0, i * 30, 300, 30);
+                l.Bounds = new Rectangle(5, 10 + i * 31, 350, 30);
                 l.HAligment = HorizontalAligment.Left;
                 labels.Add(l);
             }
@@ -48,6 +48,8 @@ namespace TBSGame.Screens.GameScreenControls
             Reload(Unit);
 
             panel.Foreground = Color.White;
+            panel.Fill = new Color(50, 50, 50);
+            panel.Border.IsVisible = false;
             panel.Bounds = this.bounds;
             panel.Load(graphics);
             panel.AddRange(labels);

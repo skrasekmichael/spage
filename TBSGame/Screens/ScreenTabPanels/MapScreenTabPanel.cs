@@ -105,9 +105,9 @@ namespace TBSGame.Screens.ScreenTabPanels
             shadow = new Texture2D(graphics.GraphicsDevice, bounds.Width, bounds.Height);
             selected_map = new Texture2D(graphics.GraphicsDevice, bounds.Width, bounds.Height);
 
-            map_panel.Bounds = new Rectangle(10, 10, (int)(panel.Bounds.Width * 0.5f), panel.Bounds.Height - 20);
-            units_panel.Bounds = new Rectangle(map_panel.Bounds.Width + 20, 10, panel.Bounds.Width - map_panel.Bounds.Width - 30, panel.Bounds.Height - 20);
-            panel.AddRange(new[] { map_panel, units_panel });
+            map_panel.Bounds = new Rectangle(10, 10, (int)(Panel.Bounds.Width * 0.5f), Panel.Bounds.Height - 20);
+            units_panel.Bounds = new Rectangle(map_panel.Bounds.Width + 20, 10, Panel.Bounds.Width - map_panel.Bounds.Width - 30, Panel.Bounds.Height - 20);
+            Panel.AddRange(new[] { map_panel, units_panel });
 
             units_panel.Description = Resources.GetString("units");
 

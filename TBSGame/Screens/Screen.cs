@@ -8,7 +8,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TBSGame.MessageBoxes;
+using TBSGame.Controls;
 using MessageBox = TBSGame.MessageBoxes.MessageBox;
+using System.Reflection;
+using System.IO;
 
 namespace TBSGame.Screens
 {
@@ -25,6 +28,7 @@ namespace TBSGame.Screens
         protected CustomSpriteBatch sprite => graphics.Sprite;
         protected Graphics graphics { get; private set; }
         protected Texture2D black, anim;
+        protected Panel parent = new Panel(true) { Desc = false };
 
         private Task loading;
         private TimeSpan start_ending = TimeSpan.Zero, start_starting = TimeSpan.Zero, start_animating = TimeSpan.Zero, 
@@ -36,17 +40,32 @@ namespace TBSGame.Screens
         private int dir = 0;
         private MessageBox message = null;
 
-        protected abstract void load();
-        protected abstract void update(GameTime time, KeyboardState keyboard, MouseState mouse);
-        protected abstract void draw();
-        protected abstract void loadpos();
+        protected virtual void load() { }
+        protected virtual void update(GameTime time, KeyboardState keyboard, MouseState mouse) { }
+        protected virtual void draw() { }
+        protected virtual void draw_background() { }
+        protected virtual void loadpos() { }
 
         public void Load(Graphics graphics)
         {
             this.graphics = graphics;
+            parent.Bounds = new Rectangle(0, 0, Width, Height);
 
             black = sprite.GetColorFill(Color.Black, Width, Height);
             anim = sprite.GetColorFill(Color.Lime);
+
+            parent.Load(graphics);
+
+            Assembly assembly = Assembly.GetCallingAssembly();
+            string res = "TBSGame.Layout." + this.GetType().Name + ".xml";
+
+            Stream stream = assembly.GetManifestResourceStream(res);
+
+            if (stream != null)
+            {
+                Layout layout = new Layout(Settings, stream);
+                layout.Load(graphics, parent);
+            }
 
             load();
             loadpos();
@@ -127,7 +146,10 @@ namespace TBSGame.Screens
                 }
 
                 if (message == null)
+                {
+                    parent.Update(time, keyboard, mouse);
                     update(time, keyboard, mouse);
+                }
                 else
                 {
                     if (!message.IsVisible)
@@ -201,6 +223,8 @@ namespace TBSGame.Screens
             }
             else
             {
+                draw_background();
+                parent.Draw();
                 draw();
                 if (message != null && message.IsVisible)
                     message.Draw();

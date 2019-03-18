@@ -21,6 +21,7 @@ namespace TBSGame.Screens.ScreenTabPanels
         private void SelectTab()
         {
             OnSelectedTab?.Invoke(this);
+            Panel.IsVisible = true;
         }
 
         protected ContentManager content => graphics.Content;
@@ -30,7 +31,7 @@ namespace TBSGame.Screens.ScreenTabPanels
         protected Settings settings;
         protected GameSave game;
 
-        protected Panel panel = new Panel(true);
+        public Panel Panel = new Panel(true);
 
         public int Width => graphics.ScreenWidth;
         public int Height => graphics.ScreenHeight;
@@ -46,12 +47,14 @@ namespace TBSGame.Screens.ScreenTabPanels
             this.settings = settings;
         }
 
-        public void Load(Graphics graphics)
+        public void Load(Graphics graphics, Panel parent)
         {
             this.graphics = graphics;
 
-            panel.Bounds = new Rectangle(0, 0, Width - 100, Height);
-            panel.Load(graphics);
+            Panel.Bounds = new Rectangle(0, 0, Width - 100, Height);
+            Panel.Desc = false;
+            Panel.IsVisible = false;
+            ((Panel)parent.GetControl("panel")).Add(Panel);
 
             button.Load(graphics);
             button.Bounds = new Rectangle(Width - 100, 100 * Index, 100, 100);
@@ -68,7 +71,7 @@ namespace TBSGame.Screens.ScreenTabPanels
 
         public void Update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
-            panel.Update(time, keyboard, mouse);
+            this.Panel.IsVisible = true;
             update(time, keyboard, mouse);
         }
 
@@ -78,7 +81,6 @@ namespace TBSGame.Screens.ScreenTabPanels
 
         public void Draw()
         {
-            panel.Draw();
             draw();
         }
 
