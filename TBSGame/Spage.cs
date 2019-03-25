@@ -28,7 +28,7 @@ namespace TBSGame
 
         protected override void Initialize()
         {
-            System.Windows.Forms.Form form = (System.Windows.Forms.Form)System.Windows.Forms.Form.FromHandle(Window.Handle);
+            System.Windows.Forms.Form form = (System.Windows.Forms.Form)System.Windows.Forms.Control.FromHandle(Window.Handle);
             form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             form.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             form.Location = new System.Drawing.Point(0, 0);
@@ -112,7 +112,7 @@ namespace TBSGame
             if (this.IsActive)
             {
                 GraphicsDevice.Clear(Color.Black);
-                sprite.Begin(SpriteSortMode.Immediate, null, null, null, null, null, sprite.Scale);
+                sprite.Begin(SpriteSortMode.Deferred, null, null, null, null, null, sprite.Scale);
 
                 screen.Draw();
 

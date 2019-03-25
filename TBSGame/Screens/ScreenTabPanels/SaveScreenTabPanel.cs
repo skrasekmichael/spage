@@ -22,34 +22,18 @@ namespace TBSGame.Screens.ScreenTabPanels
 
         public SaveScreenTabPanel(Settings settings, GameSave game, string icon) : base(settings, game, icon)
         {
-            Saves = new GameSavePanel(settings.GameSaves, GameSavePanel.Display.LoadSave);
-            Exit = new MenuButton(Resources.GetString("exit"));
-        }
 
-        protected override void draw()
-        {
-            
         }
 
         protected override void load()
         {
-            Panel.Add(Saves);
-            Panel.Add(Exit);
-        }
-
-        protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
-        {
-            Exit.Bounds = new Rectangle(Saves.Bounds.X + Saves.Bounds.Width - 200, Saves.Bounds.Y + Saves.Bounds.Height + 20, 200, 50);
+            Saves = (GameSavePanel)Panel.GetControl("saves");
+            Exit = (MenuButton)Panel.GetControl("exit");
         }
 
         public override void LoadPosition()
         {
             Saves.LoadPostiton();
-        }
-
-        public override void Reload()
-        {
-            
         }
     }
 }

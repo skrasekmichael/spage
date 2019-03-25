@@ -8,6 +8,7 @@ using System.Xml;
 using Microsoft.Xna.Framework;
 using System.Reflection;
 using System.IO;
+using System.Data;
 
 namespace TBSGame
 {
@@ -36,66 +37,110 @@ namespace TBSGame
         {
             foreach (XmlNode node in childs)
             {
-                Type type = Type.GetType("TBSGame.Controls." + node.Name + ", TBSGame");
-
-                List<object> args = new List<object>();
-                foreach (XmlNode attr in node["arguments"].ChildNodes)
+                if (node.Name == "define")
                 {
-                    string convert = attr.Attributes["convert"].Value;
-                    string val = attr.FirstChild.Value;
+                    Type type = Type.GetType("TBSGame.Controls." + node.Attributes["type"].Value + ", TBSGame");
+                    int from = node.Attributes["from"] == null ? -1 : int.Parse(node.Attributes["from"].Value);
+                    int to = node.Attributes["to"] == null ? -1 : int.Parse(node.Attributes["to"].Value);
 
-                    object obj = parse(val, convert);
-                    args.Add(obj);
-                }
-
-                Control control = (Control)type.GetConstructors()[0].Invoke(args.ToArray());
-                control.Name = node.Attributes["name"].Value;
-                control.Bounds = new Rectangle
-                (
-                    node.Attributes["x"] != null ? int.Parse(node.Attributes["x"].Value) : 0,
-                    node.Attributes["y"] != null ? int.Parse(node.Attributes["y"].Value) : 0,
-                    node.Attributes["width"] != null ? int.Parse(node.Attributes["width"].Value) : 0,
-                    node.Attributes["height"] != null ? int.Parse(node.Attributes["height"].Value) : 0
-                );
-
-                if (node["properties"] != null)
-                {
-                    foreach (XmlNode prop in node["properties"].ChildNodes)
+                    foreach (XmlNode prop in node.ChildNodes)
                     {
                         string ptype = prop.Attributes["type"].Value;
                         string convert = prop.Attributes["convert"].Value;
                         string val = prop.FirstChild.Value.Trim();
 
-                        object obj = parse(val, convert);
-                        set_value(control, ptype.Split('.'), obj);
-                       // type.GetProperty(ptype).SetValue(control, obj);
+                        if (convert != "exp")
+                        {
+                            object obj = parse(val, convert);
+                            parent.Defines.Add(new ControlDefine(obj)
+                            {
+                                ControlType = type,
+                                Property = ptype,
+                                From = from,
+                                To = to
+                            });
+                        }
+                        else
+                        {
+                            parent.Defines.Add(new ControlDefine(val, true)
+                            {
+                                ControlType = type,
+                                Property = ptype,
+                                From = from,
+                                To = to
+                            });
+                        }
                     }
                 }
-
-                parent.Add(control);
-                if (control.GetType() == typeof(Panel))
+                else
                 {
-                    if (node["childs"] != null)
-                        load((Panel)control, node["childs"].ChildNodes);
+                    Type type = Type.GetType("TBSGame.Controls." + node.Name + ", TBSGame");
+
+                    List<object> args = new List<object>();
+                    foreach (XmlNode attr in node["arguments"].ChildNodes)
+                    {
+                        string convert = attr.Attributes["convert"].Value;
+                        string val = convert == "null" ? "null" : attr.FirstChild.Value;
+
+                        object obj = parse(val, convert);
+                        args.Add(obj);
+                    }
+
+                    Control control = (Control)type.GetConstructors()[0].Invoke(args.ToArray());
+                    control.Name = node.Attributes["name"] == null ? null : node.Attributes["name"].Value;
+                    control.Bounds = parse_bounds(parent, node);
+
+                    if (node["properties"] != null)
+                    {
+                        foreach (XmlNode prop in node["properties"].ChildNodes)
+                        {
+                            string ptype = prop.Attributes["type"].Value;
+                            string convert = prop.Attributes["convert"].Value;
+                            string val = prop.FirstChild.Value.Trim();
+
+                            if (convert != "exp")
+                                control.SetValue(ptype.Split('.'), parse(val, convert));
+                            else
+                                control.SetValue(ptype.Split('.'), eval(parent, val));
+                        }
+                    }
+
+                    parent.Add(control);
+                    if (control.GetType() == typeof(Panel))
+                    {
+                        if (node["childs"] != null)
+                            load((Panel)control, node["childs"].ChildNodes);
+                    }
                 }
             }
         }
-        
-        private object set_value(object obj, string[] name, object val, int index = 0)
+
+        private int eval(Panel parent, string expression)
         {
-            PropertyInfo info = obj.GetType().GetProperty(name[index]);
-            if (index == name.Length - 1)
+            expression = expression.Replace("W", parent.Bounds.Width.ToString());
+            expression = expression.Replace("H", parent.Bounds.Height.ToString());
+            return (int)double.Parse(new DataTable().Compute(expression, "").ToString());
+        }
+
+        private Rectangle parse_bounds(Panel parent, XmlNode node)
+        {
+            int get_val(XmlNode xn)
             {
-                info.SetValue(obj, val);
-                return obj;
+                if (xn == null)
+                    return 0;
+
+                return eval(parent, xn.Value);
             }
-            else
-            {
-                object no = info.GetValue(obj);
-                object ret = set_value(no, name, val, index + 1);
-                info.SetValue(obj, ret);
-                return obj;
-            }
+
+            Rectangle bounds = new Rectangle
+            (
+                get_val(node.Attributes["x"]),
+                get_val(node.Attributes["y"]),
+                get_val(node.Attributes["width"]),
+                get_val(node.Attributes["height"])
+            );
+
+            return bounds;
         }
 
         private object parse(string data, string type)
@@ -134,6 +179,36 @@ namespace TBSGame
             }
 
             return null;
+        }
+    }
+
+    public class ControlDefine
+    {
+        private object value;
+        private bool exp;
+
+        public Type ControlType { get; set; }
+        public string Property { get; set; }
+        public int From { get; set; } = -1;
+        public int To { get; set; } = -1;
+        public bool HasRange => !(From == -1 || To == -1);
+
+        public ControlDefine(object val, bool exp = false)
+        {
+            this.value = val;
+            this.exp = exp;
+        }
+
+        public object GetValue(Panel parent, int index = 0)
+        {
+            if (!exp)
+                return value;
+
+            string expression = (string)value;
+            expression = expression.Replace("i", index.ToString());
+            expression = expression.Replace("W", parent.Bounds.Width.ToString());
+            expression = expression.Replace("H", parent.Bounds.Height.ToString());
+            return (int)double.Parse(new DataTable().Compute(expression, "").ToString());
         }
     }
 }

@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 using MapDriver;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using TBSGame.Controls;
 using TBSGame.Controls.Buttons;
 
-namespace TBSGame.Screens.GameScreenControls
+namespace TBSGame.Controls.GameScreen
 {
     public class UnitBuyBox : Control
     {

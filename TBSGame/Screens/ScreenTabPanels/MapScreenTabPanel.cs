@@ -11,8 +11,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using TBSGame.Controls;
 using TBSGame.Controls.Buttons;
+using TBSGame.Controls.GameScreen;
 using TBSGame.Saver;
-using TBSGame.Screens.GameScreenControls;
 
 namespace TBSGame.Screens.ScreenTabPanels
 {

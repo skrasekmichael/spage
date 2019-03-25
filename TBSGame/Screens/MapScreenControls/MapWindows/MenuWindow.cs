@@ -151,7 +151,7 @@ namespace TBSGame.Screens.MapScreenControls.MapWindows
 
                     save_row.Add(name);
                     save_row.Add(load);
-                    system.Add(save_row, false);
+                    system.Add(save_row, 0, false);
                     tab.Update(time, keyboard, mouse);
                 }
 

@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<layout width="1920" height="1080">
+    <childs>
+        <Panel name="image" x="(W-800)/2" y="(H-600)/2" width="800" height="600">
+            <arguments>
+                <argument convert="bool">true</argument>
+            </arguments>
+            <childs>
+                <define type="Label">
+                    <property type="Space" convert="int">0</property>
+                    <property type="Foreground" convert="colorname">Lime</property>
+                    <property type="Font" convert="font">small</property>
+                </define>
+            </childs>
+        </Panel>
+        <Panel name="switch" x="(W-800)/2" y="(H-600)/2+601" width="800" height="100">
+            <arguments>
+                <argument convert="bool">true</argument>
+            </arguments>
+            <childs>
+                <Label name="total" x="(W-100)/2" y="(H-50)/2-5" width="100" height="50">
+                    <arguments>
+                        <argument convert="string">0</argument>
+                    </arguments>
+                    <properties>
+                        <property type="Foreground" convert="colorname">White</property>
+                    </properties>
+                </Label>
+                <Label x="W-150" y="0" width="150" height="50">
+                    <arguments>
+                        <argument convert="string">#gold</argument>
+                    </arguments>
+                    <properties>
+                        <property type="Foreground" convert="colorname">Gold</property>
+                        <property type="VAligment" convert="int">2</property>
+                        <property type="Space" convert="int">0</property>
+                    </properties>
+                </Label>
+                <Label name="income_label" x="W-150" y="50" width="150" height="50">
+                    <arguments>
+                        <argument convert="string">0</argument>
+                    </arguments>
+                    <properties>
+                        <property type="Foreground" convert="colorname">Gold</property>
+                        <property type="VAligment" convert="int">0</property>
+                        <property type="Space" convert="int">0</property>
+                    </properties>
+                </Label>
+                <Label x="0" y="0" width="150" height="50">
+                    <arguments>
+                        <argument convert="string">#research</argument>
+                    </arguments>
+                    <properties>
+                        <property type="Foreground" convert="colorname">Lime</property>
+                        <property type="VAligment" convert="int">2</property>
+                        <property type="Space" convert="int">0</property>
+                    </properties>
+                </Label>
+                <Label name="research_label" x="0" y="50" width="150" height="50">
+                    <arguments>
+                        <argument convert="string">0</argument>
+                    </arguments>
+                    <properties>
+                        <property type="Foreground" convert="colorname">Lime</property>
+                        <property type="VAligment" convert="int">0</property>
+                        <property type="Space" convert="int">0</property>
+                    </properties>
+                </Label>
+                <Buttons.MenuButton name="btn_research" x="150" y="25" width="50" height="50">
+                    <arguments>
+                        <argument convert="string">+</argument>
+                    </arguments>
+                    <properties>
+                        <property type="MouseOverFill" convert="colorname">Lime</property>
+                    </properties>
+                </Buttons.MenuButton>
+                <Buttons.MenuButton name="btn_income" x="W-200" y="25" width="50" height="50">
+                    <arguments>
+                        <argument convert="string">+</argument>
+                    </arguments>
+                    <properties>
+                        <property type="MouseOverFill" convert="colorname">Gold</property>
+                    </properties>
+                </Buttons.MenuButton>
+                <Panel name="bar1">
+                    <arguments>
+                        <argument convert="bool">false</argument>
+                    </arguments>
+                    <properties>
+                        <property type="Border.IsVisible" convert="bool">false</property>
+                        <property type="Fill" convert="colorname">Lime</property>
+                    </properties>
+                </Panel>
+                <Panel name="bar2">
+                    <arguments>
+                        <argument convert="bool">false</argument>
+                    </arguments>
+                    <properties>
+                        <property type="Border.IsVisible" convert="bool">false</property>
+                        <property type="Fill" convert="colorname">Gold</property>
+                    </properties>
+                </Panel>
+            </childs>
+        </Panel>
+    </childs>
+</layout>

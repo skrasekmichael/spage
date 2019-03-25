@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using TBSGame.Controls;
 using TBSGame.Controls.Buttons;
+using TBSGame.Controls.GameScreen;
 using TBSGame.MessageBoxes;
 using TBSGame.Saver;
 using TBSGame.Screens.ScreenTabPanels;
@@ -25,6 +26,8 @@ namespace TBSGame.Screens
         private int selected = 0;
         private GameSave game;
 
+        private List<UnitBox> units = new List<UnitBox>();
+        private Panel units_panel;
         private Label resources, round;
 
         public GameScreen(GameSave game)
@@ -44,6 +47,7 @@ namespace TBSGame.Screens
             this.level = Level.Load(path);
             Texture2D map_texture = sprite.GetTexture(level.Map);
 
+            units_panel = (Panel)parent.Remove("units");
             resources = (Label)parent.GetControl("resources");
             round = (Label)parent.GetControl("round");
 
@@ -74,13 +78,38 @@ namespace TBSGame.Screens
 
             UnitsScreenTabPanel units = new UnitsScreenTabPanel(Settings, game, "barracks");
 
-            ResearchScreenTabPanel research = new ResearchScreenTabPanel(Settings, game, "anvil");
+            UpgradesScreenTabPanel upgrades = new UpgradesScreenTabPanel(Settings, game, "anvil");
+
+            ResearchScreenTabPanel research = new ResearchScreenTabPanel(Settings, game, "scroll");
 
             SourcesScreenTabPanel sources = new SourcesScreenTabPanel(Settings, game, level, "income");
             sources.MapTexture = map_texture;
 
-            #region _saves_
             SaveScreenTabPanel save = new SaveScreenTabPanel(Settings, game, "gamesave");
+
+            tabs = new ScreenTabPanel[] { map, units, upgrades, research, sources, save };
+
+            int index = 0;
+            foreach (ScreenTabPanel tab in tabs)
+            {
+                tab.Index = index;
+                tab.OnSelectedTab += new SelectedTabEventHandler(sender => {
+                    ScreenTabPanel stp = (ScreenTabPanel)sender;
+                    selected = stp.Index;
+                    foreach (ScreenTabPanel _tab in tabs.Where(t => t.Index != index))
+                        _tab.Panel.IsVisible = false;
+                });
+                tab.OnRefresh += new RefreshDataEventHandlet(sender =>
+                {
+                    load_units();
+                    foreach (ScreenTabPanel _tab in tabs)
+                        _tab.Reload();
+                });
+                tab.Load(graphics, parent);
+                index++;
+            }
+
+            #region _saves_
             save.Saves.OnSaveGame += new SaveGameEventHandler((sender, i, name) =>
             {
                 this.game.Name = name;
@@ -116,21 +145,9 @@ namespace TBSGame.Screens
             });
             #endregion
 
-            tabs = new ScreenTabPanel[] { map, units, research, sources, save };
-
-            int index = 0;
-            foreach (ScreenTabPanel tab in tabs)
-            {
-                tab.Index = index;
-                tab.OnSelectedTab += new SelectedTabEventHandler(sender => {
-                    ScreenTabPanel stp = (ScreenTabPanel)sender;
-                    selected = stp.Index;
-                    foreach (ScreenTabPanel _tab in tabs.Where(t => t.Index != index))
-                        _tab.Panel.IsVisible = false;
-                });
-                tab.Load(graphics, parent);
-                index++;
-            }
+            load_units();
+            units.LoadUnitsPanel(units_panel);
+            upgrades.LoadUnitsPanel(units_panel);
         }
 
         protected override void loadpos()
@@ -154,7 +171,9 @@ namespace TBSGame.Screens
                 game.Researching.Done += game.Research;
                 if (game.Researching.Done >= game.Researching.ResearchDifficulty)
                 {
-                    game.Researches.Add(game.GetType());
+                    InfoMessageBox message = new InfoMessageBox(Resources.GetString("resdone", new string[] { Resources.GetString(game.Researching.GetType().Name) }));
+                    this.ShowMessage(message);
+                    game.Researches.Add(game.Researching.GetType());
                     game.Researching = null;
                 }
             }
@@ -184,6 +203,34 @@ namespace TBSGame.Screens
 
             foreach (ScreenTabPanel tab in tabs)
                 tab.Reload();
+
+            load_units();
+        }
+
+        private void load_units()
+        {
+            int index = 0;
+            foreach (Unit unit in game.Units)
+            {
+                UnitBox unitbox;
+                if (index < units.Count)
+                {
+                    unitbox = units[index];
+                    unitbox.Unit = unit;
+                }
+                else
+                {
+                    unitbox = new UnitBox(unit);
+                    units.Add(unitbox);
+                    units_panel.Add(unitbox, index);
+                }
+
+                unitbox.OnControlClicked += new ControlClickedEventHandler(sender =>
+                {
+                    units.ForEach(u => u.IsChecked = false);
+                });
+                index++;
+            }
         }
     }
 }

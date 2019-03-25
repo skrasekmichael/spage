@@ -7,10 +7,8 @@ using MapDriver;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using TBSGame.Controls;
-using TBSGame.Controls.Buttons;
 
-namespace TBSGame.Screens.GameScreenControls
+namespace TBSGame.Controls.GameScreen
 {
     public class UnitBox : Control
     {
@@ -99,11 +97,6 @@ namespace TBSGame.Screens.GameScreenControls
             panel.Bounds = this.bounds;
             panel.Load(graphics);
             panel.AddRange(new Control[] { check, label, icon, rounds });
-           /* panel.Controls.ForEach(c =>
-            {
-                c.Border.IsVisible = true;
-                c.Border.Color = Color.Yellow;
-            });*/
         }
 
         private string get_level()

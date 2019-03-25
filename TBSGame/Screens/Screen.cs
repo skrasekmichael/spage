@@ -60,7 +60,6 @@ namespace TBSGame.Screens
             string res = "TBSGame.Layout." + this.GetType().Name + ".xml";
 
             Stream stream = assembly.GetManifestResourceStream(res);
-
             if (stream != null)
             {
                 Layout layout = new Layout(Settings, stream);

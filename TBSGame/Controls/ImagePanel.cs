@@ -84,6 +84,8 @@ namespace TBSGame.Controls
             }
         }
 
+        public double Coef => (double)ImageBounds.Width / texture.Width;
+
         public ImagePanel(Texture2D texture)
         {
             this.texture = texture;

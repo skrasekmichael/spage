@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<layout width="1920" height="1080">
+    <childs>
+        <Panel name="units_area" x="10" y="10" width="0.8*W-20" height="H-20">
+            <arguments>
+                <argument convert="bool">false</argument>
+            </arguments>
+            <properties>
+                <property type="Border.IsVisible" convert="bool">false</property>
+            </properties>
+        </Panel>
+    </childs>
+</layout>

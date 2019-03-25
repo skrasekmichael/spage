@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -56,7 +57,8 @@ namespace TBSGame.Controls
         public void Load(Graphics graphics, Vector2? start = null)
         {
             this.graphics = graphics;
-            Font = graphics.Normal;
+            if (Font == null)
+                Font = graphics.Normal;
 
             if (start == null)
                 this.start = new Vector2(0, 0);
@@ -133,6 +135,35 @@ namespace TBSGame.Controls
 
                 update(gametime, keyboard, mouse);
             }
+        }
+
+        public object SetValue(string[] name, object val)
+        {
+            object set_val(object obj, int index)
+            {
+                PropertyInfo info = obj.GetType().GetProperty(name[index]);
+                if (info == null)
+                {
+                    FieldInfo field = obj.GetType().GetField(name[index]);
+                    field.SetValue(obj, val);
+                    return obj;
+                }
+
+                if (index == name.Length - 1)
+                {
+                    info.SetValue(obj, val);
+                    return obj;
+                }
+                else
+                {
+                    object no = info.GetValue(obj);
+                    object ret = set_val(no, index + 1);
+                    info.SetValue(obj, ret);
+                    return obj;
+                }
+            }
+
+            return set_val(this, 0);
         }
     }
 

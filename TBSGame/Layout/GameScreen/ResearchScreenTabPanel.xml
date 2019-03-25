@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<layout width="1920" height="1080">
+    <childs>
+        <Panel name="researching" x="(W-800)/2" y="100" width="800" height="130">
+            <arguments>
+                <argument convert="bool">true</argument>
+            </arguments>
+            <properties>
+                <property type="DescConstantly" convert="bool">false</property>
+            </properties>
+            <childs>
+                <Panel name="bar_frame" x="10" y="10" width="W-20" height="50">
+                    <arguments>
+                        <argument convert="bool">false</argument>
+                    </arguments>
+                    <properties>
+                        <property type="Border.Color" convert="colorname">White</property>
+                        <property type="Fill" convert="rgb">30;30;30</property>
+                    </properties>
+                </Panel>
+                <Panel name="bar_fill" x="10" y="10" width="0" height="50">
+                    <arguments>
+                        <argument convert="bool">false</argument>
+                    </arguments>
+                    <properties>
+                        <property type="Border.IsVisible" convert="bool">false</property>
+                        <property type="Fill" convert="colorname">Crimson</property>
+                    </properties>
+                </Panel>
+                <Label name="percent" x="10" y="70" width="W-20" height="50">
+                    <arguments>
+                        <argument convert="string">0%</argument>
+                    </arguments>
+                    <properties>
+                        <property type="HAligment" convert="int">2</property>
+                        <property type="Foreground" convert="colorname">White</property>
+                    </properties>
+                </Label>
+                <Label name="points" x="10" y="70" width="W-20" height="50">
+                    <arguments>
+                        <argument convert="string">0/0</argument>
+                    </arguments>
+                    <properties>
+                        <property type="HAligment" convert="int">0</property>
+                        <property type="Foreground" convert="colorname">White</property>
+                    </properties>
+                </Label>
+                <Label name="name" x="10" y="70" width="W-20" height="50">
+                    <arguments>
+                        <argument convert="string">name</argument>
+                    </arguments>
+                    <properties>
+                        <property type="HAligment" convert="int">1</property>
+                        <property type="Foreground" convert="colorname">White</property>
+                    </properties>
+                </Label>
+            </childs>
+        </Panel>
+        <Panel name="researches" x="(W-800)/2" y="240" width="800" height="H-240-130">
+            <arguments>
+                <argument convert="bool">true</argument>
+            </arguments>
+            <properties>
+                <property type="Description" convert="string">#researchs</property>
+                <property type="DescConstantly" convert="bool">true</property>
+            </properties>
+            <childs>
+                <define type="Buttons.MenuButton">
+                    <property type="Bounds.Width" convert="exp">350</property>
+                    <property type="Bounds.Height" convert="exp">50</property>
+                    <property type="Bounds.X" convert="exp">0</property>
+                    <property type="Bounds.Y" convert="exp">i*51</property>
+                </define>
+            </childs>
+        </Panel>
+    </childs>
+</layout>

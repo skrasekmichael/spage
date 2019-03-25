@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<layout width="1920" height="1080">
+    <childs>
+        <Panel name="units_area" x="10" y="10" width="0.6*W-20" height="H-20">
+            <arguments>
+                <argument convert="bool">false</argument>
+            </arguments>
+            <properties>
+                <property type="Border.IsVisible" convert="bool">false</property>
+            </properties>
+        </Panel>
+        <Panel name="info" x="0.6*W" y="0.6*H" width="0.4*W-10" height="0.4*H-10">
+            <arguments>
+                <argument convert="bool">true</argument>
+            </arguments>
+            <properties>
+                <property type="Description" convert="string">#units_info</property>
+                <property type="DescConstantly" convert="bool">true</property>
+            </properties>
+            <childs>
+                <GameScreen.UnitBuyBox name="buy" x="0" y="0" width="W" height="H">
+                    <arguments>
+                        <argument convert="null"></argument>
+                    </arguments> 
+                </GameScreen.UnitBuyBox>
+            </childs>
+        </Panel>
+        <Panel name="available" x="0.6*W" y="10" width="0.4*W-10" height="0.6*H-20">
+            <arguments>
+                <argument convert="bool">true</argument>
+            </arguments>
+            <childs>
+                <define type="GameScreen.UnitBox">
+                    <property type="Checked" convert="colorname">Crimson</property>
+                    <property type="UnChecked" convert="rgb">60;60;60</property>
+                    <property type="Bounds.Width" convert="exp">350</property>
+                    <property type="Bounds.Height" convert="exp">50</property>
+                </define>
+                <define type="GameScreen.UnitBox" from="0" to="14">
+                    <property type="Bounds.X" convert="exp">0</property>
+                    <property type="Bounds.Y" convert="exp">i*51</property>
+                </define>
+                <define type="GameScreen.UnitBox" from="15" to="25">
+                    <property type="Bounds.X" convert="exp">351</property>
+                    <property type="Bounds.Y" convert="exp">(i-15)*51</property>
+                </define>
+            </childs>
+        </Panel>
+    </childs>
+</layout>

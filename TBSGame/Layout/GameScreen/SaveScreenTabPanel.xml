@@ -4,12 +4,12 @@
         <GameSavePanel name="saves">
             <arguments>
                 <argument convert="var">saves_path</argument>
-                <argument convert="int">0</argument>
+                <argument convert="int">2</argument>
             </arguments>
         </GameSavePanel>
-        <Buttons.MenuButton name="back" x="1240" y="800" width="200" height="50">
+        <Buttons.MenuButton name="exit" x="1240" y="800" width="200" height="50">
             <arguments>
-                <argument convert="string">#back</argument>
+                <argument convert="string">#exit</argument>
             </arguments>
         </Buttons.MenuButton>
     </childs>
