@@ -9,9 +9,10 @@ using System.Text;
 using System.Threading.Tasks;
 using TBSGame.MessageBoxes;
 using TBSGame.Controls;
-using MessageBox = TBSGame.MessageBoxes.MessageBox;
 using System.Reflection;
 using System.IO;
+using System.Threading;
+using MessageBox = TBSGame.MessageBoxes.MessageBox;
 
 namespace TBSGame.Screens
 {
@@ -31,6 +32,8 @@ namespace TBSGame.Screens
         protected Panel parent = new Panel(true) { Desc = false };
 
         private Task loading;
+        private Thread current;
+
         private TimeSpan start_ending = TimeSpan.Zero, start_starting = TimeSpan.Zero, start_animating = TimeSpan.Zero, 
             start_loading = TimeSpan.Zero, start_display = TimeSpan.Zero;
         private Screen next_screen = null;
@@ -68,6 +71,12 @@ namespace TBSGame.Screens
 
             load();
             loadpos();
+        }
+
+        public void StopLoading()
+        {
+            if (is_loading)
+                current.Abort();
         }
 
         protected void Reload()
@@ -165,9 +174,11 @@ namespace TBSGame.Screens
         {
             //asynchroní načítání dat
             is_loading = true;
+
             loading = new Task(() =>
             {
-                set();
+                current = Thread.CurrentThread;
+                this.set();
                 is_loading = false;
             });
 

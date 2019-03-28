@@ -85,7 +85,8 @@ namespace TBSGame
         protected override void OnExiting(Object sender, EventArgs args)
         {
             base.OnExiting(sender, args);
-            
+            screen.StopLoading();
+
             //deleting temp files
             string[] files = Directory.GetFiles(settings.Temp); 
             foreach (string file in files)
