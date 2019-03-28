@@ -156,5 +156,15 @@ namespace TBSGame.Controls
 
             return null;
         }
+
+        public void ReloadPositions()
+        {
+            foreach (Control control in Controls)
+            {
+                control.SetPosition(bounds.Location.ToVector2());
+                if (control.GetType() == typeof(Panel))
+                    ((Panel)control).ReloadPositions();
+            }
+        }
     }
 }

@@ -24,10 +24,7 @@ namespace TBSGame.Screens.ScreenTabPanels
         private Panel bar, frame, researches_panel;
         private MenuButton cancel;
 
-        public ResearchScreenTabPanel(Settings settings, GameSave game, string icon) : base(settings, game, icon)
-        {
-            
-        }
+        public ResearchScreenTabPanel(Settings settings, GameSave game, string icon) : base(settings, game, icon) { }
 
         protected override void load()
         {

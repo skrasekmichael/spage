@@ -12,7 +12,7 @@ using TBSGame.Controls.TextBoxes;
 using TBSGame.MessageBoxes;
 using TBSGame.Saver;
 
-namespace TBSGame.Controls
+namespace TBSGame.Controls.Special
 {
     public delegate void SaveGameEventHandler(object sender, int index, string name);
     public delegate void LoadGameEventHandler(object sender, int index);
@@ -107,7 +107,7 @@ namespace TBSGame.Controls
                 labels[i].Bounds = new Rectangle(panel.Bounds.Width, i * 51, 300, 50);
             }
             this.Bounds = panel.Bounds;
-            panel.Load(graphics);
+            panel.ReloadPositions();
         }
 
         protected override void load()

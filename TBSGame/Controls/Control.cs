@@ -52,7 +52,7 @@ namespace TBSGame.Controls
         protected Texture2D frame, frame_over;
         private Point last = new Point(-1, -1);
 
-        public void SetPos(Vector2 p) => start = p;
+        public void SetPosition(Vector2 pos) => start = pos;
 
         public void Load(Graphics graphics, Vector2? start = null)
         {

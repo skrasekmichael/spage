@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using TBSGame.Controls;
 using TBSGame.Controls.Buttons;
+using TBSGame.Controls.Special;
 using TBSGame.Controls.TextBoxes;
 using TBSGame.MessageBoxes;
 using TBSGame.Saver;

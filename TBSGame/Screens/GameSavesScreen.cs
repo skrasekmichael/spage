@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MapDriver;
 using TBSGame.Controls;
+using TBSGame.Controls.Special;
 using TBSGame.MessageBoxes;
 using TBSGame.Saver;
 

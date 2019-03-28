@@ -67,7 +67,7 @@
     <Compile Include="Controls\Buttons\MenuButton.cs" />
     <Compile Include="Controls\Buttons\TabPanelButton.cs" />
     <Compile Include="Controls\Control.cs" />
-    <Compile Include="Controls\GameSavePanel.cs" />
+    <Compile Include="Controls\Special\GameSavePanel.cs" />
     <Compile Include="Controls\ImagePanel.cs" />
     <Compile Include="Controls\Label.cs" />
     <Compile Include="Controls\Panel.cs" />
