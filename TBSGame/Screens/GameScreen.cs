@@ -81,6 +81,19 @@ namespace TBSGame.Screens
             UpgradesScreenTabPanel upgrades = new UpgradesScreenTabPanel(Settings, game, "anvil");
 
             ResearchScreenTabPanel research = new ResearchScreenTabPanel(Settings, game, "scroll");
+            research.OnCancelResearching += new CancelResearchingEventHandler(sender =>
+            {
+                YesNoMessageBox message = new YesNoMessageBox(Resources.GetString("cancel_researching"));
+                message.OnMessageBox += new MessageBoxEventHandler((obj, result) =>
+                {
+                    if (result == DialogResult.Yes)
+                    {
+                        game.Researching = null;
+                        reload();
+                    }
+                });
+                this.ShowMessage(message);
+            });
 
             SourcesScreenTabPanel sources = new SourcesScreenTabPanel(Settings, game, level, "income");
             sources.MapTexture = map_texture;
@@ -102,8 +115,7 @@ namespace TBSGame.Screens
                 tab.OnRefresh += new RefreshDataEventHandlet(sender =>
                 {
                     load_units();
-                    foreach (ScreenTabPanel _tab in tabs)
-                        _tab.Reload();
+                    reload();
                 });
                 tab.Load(graphics, parent);
                 index++;
@@ -201,10 +213,14 @@ namespace TBSGame.Screens
                 }
             }
 
+            reload();
+            load_units();
+        }
+
+        private void reload()
+        {
             foreach (ScreenTabPanel tab in tabs)
                 tab.Reload();
-
-            load_units();
         }
 
         private void load_units()

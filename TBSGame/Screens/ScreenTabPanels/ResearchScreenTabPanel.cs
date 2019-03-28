@@ -13,11 +13,16 @@ using TBSGame.Saver;
 
 namespace TBSGame.Screens.ScreenTabPanels
 {
+    public delegate void CancelResearchingEventHandler(object sender);
+
     public class ResearchScreenTabPanel : ScreenTabPanel
     {
+        public CancelResearchingEventHandler OnCancelResearching;
+
         private List<MenuButton> researches = new List<MenuButton>();
         private Label name, points, percent;
         private Panel bar, frame, researches_panel;
+        private MenuButton cancel;
 
         public ResearchScreenTabPanel(Settings settings, GameSave game, string icon) : base(settings, game, icon)
         {
@@ -32,6 +37,9 @@ namespace TBSGame.Screens.ScreenTabPanels
             bar = (Panel)Panel.GetControl("bar_fill");
             frame = (Panel)Panel.GetControl("bar_frame");
             researches_panel = (Panel)Panel.GetControl("researches");
+            cancel = (MenuButton)Panel.GetControl("cancel");
+            cancel.OnControlClicked += new ControlClickedEventHandler(sender => OnCancelResearching?.Invoke(this));
+
             load_researching();
             load_reasearchs();
         }
@@ -75,10 +83,14 @@ namespace TBSGame.Screens.ScreenTabPanels
 
             if (index < researches.Count)
             {
-                foreach (MenuButton btn in researches)
+                foreach (MenuButton btn in researches.GetRange(index, researches.Count - index))
+                {
                     researches_panel.Controls.Remove(btn);
-                researches.RemoveRange(index, researches.Count - index - 1);
+                    researches.Remove(btn);
+                }
             }
+
+            researches_panel.DescConstantly = researches.Count == 0;
         }
 
         private void load_researching()
@@ -87,10 +99,11 @@ namespace TBSGame.Screens.ScreenTabPanels
             {
                 double percent = (double)game.Researching.Done / game.Researching.ResearchDifficulty;
 
-                name.Text = game.Researching.GetType().Name;
+                name.Text = Resources.GetString(game.Researching.GetType().Name);
                 points.Text = $"{game.Researching.Done.ToString()}/{game.Researching.ResearchDifficulty.ToString()}";
                 this.percent.Text = (percent * 100).ToString() + "%";
                 bar.Bounds = new Rectangle(bar.Bounds.X, bar.Bounds.Y, (int)(frame.Bounds.Width * percent), bar.Bounds.Height);
+                cancel.IsVisible = true;
             }
             else
             {
@@ -98,6 +111,7 @@ namespace TBSGame.Screens.ScreenTabPanels
                 points.Text = "";
                 percent.Text = "";
                 bar.Bounds = new Rectangle(bar.Bounds.X, bar.Bounds.Y, 0, bar.Bounds.Height);
+                cancel.IsVisible = false;
             }
         }
 

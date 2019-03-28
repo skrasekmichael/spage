@@ -19,11 +19,7 @@ namespace TBSGame.Screens.ScreenTabPanels
         public GameSavePanel Saves { get; private set; }
         public MenuButton Exit { get; private set; }
 
-
-        public SaveScreenTabPanel(Settings settings, GameSave game, string icon) : base(settings, game, icon)
-        {
-
-        }
+        public SaveScreenTabPanel(Settings settings, GameSave game, string icon) : base(settings, game, icon) { }
 
         protected override void load()
         {

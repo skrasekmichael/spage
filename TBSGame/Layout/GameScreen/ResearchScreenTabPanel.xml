@@ -5,9 +5,6 @@
             <arguments>
                 <argument convert="bool">true</argument>
             </arguments>
-            <properties>
-                <property type="DescConstantly" convert="bool">false</property>
-            </properties>
             <childs>
                 <Panel name="bar_frame" x="10" y="10" width="W-20" height="50">
                     <arguments>
@@ -18,7 +15,7 @@
                         <property type="Fill" convert="rgb">30;30;30</property>
                     </properties>
                 </Panel>
-                <Panel name="bar_fill" x="10" y="10" width="0" height="50">
+                <Panel name="bar_fill" x="11" y="11" width="0" height="48">
                     <arguments>
                         <argument convert="bool">false</argument>
                     </arguments>
@@ -54,6 +51,11 @@
                         <property type="Foreground" convert="colorname">White</property>
                     </properties>
                 </Label>
+                <Buttons.MenuButton name="cancel" x="W + 10" y="10" width="150" height="50">
+                    <arguments>
+                        <argument convert="string">#cancel</argument>
+                    </arguments>
+                </Buttons.MenuButton>
             </childs>
         </Panel>
         <Panel name="researches" x="(W-800)/2" y="240" width="800" height="H-240-130">
@@ -62,7 +64,6 @@
             </arguments>
             <properties>
                 <property type="Description" convert="string">#researchs</property>
-                <property type="DescConstantly" convert="bool">true</property>
             </properties>
             <childs>
                 <define type="Buttons.MenuButton">

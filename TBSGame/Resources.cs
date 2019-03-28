@@ -46,9 +46,10 @@ namespace TBSGame
 
         public static string GetString(string key, string[] args = null)
         {
-            if (data.ContainsKey(key.ToLower()))
+            key = key.ToLower();
+            if (data.ContainsKey(key))
             {
-                string s = data[key.ToLower()].Trim();
+                string s = data[key].Trim();
                 if (args != null)
                     for (int i = 0; i < args.Length; i++) s = s.Replace("{" + i + "}", args[i]);
                 return s;
