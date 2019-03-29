@@ -12,6 +12,7 @@ using TBSGame.Saver;
 using TBSGame.Controls;
 using System.Reflection;
 using System.IO;
+using TBSGame.Controls.Special;
 
 namespace TBSGame.Screens.ScreenTabPanels
 {
@@ -37,7 +38,7 @@ namespace TBSGame.Screens.ScreenTabPanels
         protected Settings settings;
         protected GameSave game;
 
-        protected Panel UnitsPanel;
+        public UnitsPanel UnitsPanel { get; private set; }
         public Panel Panel = new Panel(true);
 
         public int Width => graphics.ScreenWidth;
@@ -64,7 +65,7 @@ namespace TBSGame.Screens.ScreenTabPanels
             ((Panel)parent.GetControl("panel")).Add(Panel);
 
             button.Load(graphics);
-            button.Bounds = new Rectangle(Width - 100, 100 * Index, 100, 100);
+            button.Bounds = new Rectangle(Width - 99, 100 * Index, 99, 99);
             button.OnControlClicked += new ControlClickedEventHandler(sender => SelectTab());
 
             Assembly assembly = Assembly.GetCallingAssembly();
@@ -82,36 +83,31 @@ namespace TBSGame.Screens.ScreenTabPanels
 
         protected abstract void load();
 
-        public virtual void LoadPosition() { }
-
         public void UpdateButton(GameTime time, KeyboardState keyboard, MouseState mouse) => button.Update(time, keyboard, mouse);
 
         public void Update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
             this.Panel.IsVisible = true;
             if (UnitsPanel != null)
-                UnitsPanel.Controls.First().Bounds = new Rectangle(0, 0, UnitsPanel.Bounds.Width, UnitsPanel.Bounds.Height); 
+                UnitsPanel.Bounds = Panel.GetControl("units_area").Bounds;
             update(time, keyboard, mouse);
         }
 
         protected virtual void update(GameTime time, KeyboardState keyboard, MouseState mouse) { }
 
         public void DrawButton() => button.Draw();
-
-        public void Draw()
-        {
-            draw();
-        }
+        public void Draw() => draw();
 
         protected virtual void draw() { }
-
+        public virtual void LoadPosition() { }
         public virtual void Reload() { }
+        public virtual void Deselect() { }
 
-        public void LoadUnitsPanel(Panel units)
+        public void LoadUnitsPanel(UnitsPanel units)
         {
-            UnitsPanel = (Panel)Panel.GetControl("units_area");
-            UnitsPanel.Add(units);
-            units.Bounds = new Rectangle(0, 0, UnitsPanel.Bounds.Width, UnitsPanel.Bounds.Height);
+            UnitsPanel = units;
+            UnitsPanel.Bounds = Panel.GetControl("units_area").Bounds;
+            Panel.Add(UnitsPanel);
         }
     }
 }

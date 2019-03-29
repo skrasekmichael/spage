@@ -106,7 +106,7 @@ namespace TBSGame
                     }
 
                     parent.Add(control);
-                    if (control.GetType() == typeof(Panel))
+                    if (type == typeof(Panel) || type.IsSubclassOf(typeof(Panel)))
                     {
                         if (node["childs"] != null)
                             load((Panel)control, node["childs"].ChildNodes);

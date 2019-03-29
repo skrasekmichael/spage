@@ -30,6 +30,7 @@ namespace TBSGame.Screens
         protected Graphics graphics { get; private set; }
         protected Texture2D black, anim;
         protected Panel parent = new Panel(true) { Desc = false };
+        private MessageBox message = null;
 
         private Task loading;
         private Thread current;
@@ -41,7 +42,6 @@ namespace TBSGame.Screens
         private double move = -60;
         private Point[] loc = new Point[] { new Point(-1, -1), new Point(-1, 1), new Point(1, 1), new Point(1, -1) };
         private int dir = 0;
-        private MessageBox message = null;
 
         protected virtual void load() { }
         protected virtual void update(GameTime time, KeyboardState keyboard, MouseState mouse) { }
@@ -93,7 +93,7 @@ namespace TBSGame.Screens
                 if (start_loading == TimeSpan.Zero)
                     start_loading = time.TotalGameTime;
 
-                if (time.TotalGameTime - start_loading > TimeSpan.FromMilliseconds(300))
+                if (time.TotalGameTime - start_loading > TimeSpan.FromMilliseconds(500))
                 {
                     if (start_animating == TimeSpan.Zero)
                     {
@@ -162,7 +162,9 @@ namespace TBSGame.Screens
                 {
                     if (!message.IsVisible)
                         message.IsVisible = true;
+
                     message.Update(time, keyboard, mouse);
+
                     if (!message.IsVisible)
                         message = null;
                 }
@@ -236,8 +238,12 @@ namespace TBSGame.Screens
                 draw_background();
                 parent.Draw();
                 draw();
+
                 if (message != null && message.IsVisible)
+                {
+                    sprite.Draw(black, new Rectangle(0, 0, Width, Height), Color.White * 0.8f);
                     message.Draw();
+                }
 
                 sprite.Draw(black, new Rectangle(0, 0, Width, Height), Color.White * end_coef);
                 sprite.Draw(black, new Rectangle(0, 0, Width, Height), Color.White * start_coef);

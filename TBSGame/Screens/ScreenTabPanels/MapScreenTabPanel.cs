@@ -28,16 +28,13 @@ namespace TBSGame.Screens.ScreenTabPanels
 
         public Texture2D MapTexture { get; set; }
 
+        private Level level;
         private LevelMap selected = null;
 
-        private Label desc = new Label("");
+        private Label desc;
         private MenuButton play, play_at_night, cancel, select_all;
         private List<UnitBox> units = new List<UnitBox>();
-
-        private Panel map_panel = new Panel(true);
-        private Panel units_panel = new Panel(true);
-
-        private Level level;
+        private Panel map_panel, units_panel;
 
         private Texture2D texture, borders, shadow, selected_map;
         private Dictionary<string, Texture2D> hover;
@@ -51,33 +48,6 @@ namespace TBSGame.Screens.ScreenTabPanels
             this.path = path;
 
             hover = new Dictionary<string, Texture2D>(level.Count);
-            play = new MenuButton(Resources.GetString("assault"));
-            play.OnControlClicked += new ControlClickedEventHandler(sender =>
-            {
-                List<Unit> list = new List<Unit>();
-                for (int i = 0; i < units.Count; i++)
-                {
-                    UnitBox unitbox = units[i];
-                    if (unitbox.IsChecked)
-                        list.Add(game.Units[i]);
-                }
-
-                if (list.Count > 0)
-                    PlayGame(selected, list);
-            });
-            play_at_night = new MenuButton(Resources.GetString("assault2"));
-            cancel = new MenuButton(Resources.GetString("cancel"));
-            cancel.OnControlClicked += new ControlClickedEventHandler(sender => deselect());
-            select_all = new MenuButton(Resources.GetString("select_all_units"));
-            select_all.OnControlClicked += new ControlClickedEventHandler(sender =>
-            {
-                MenuButton button = (MenuButton)sender;
-                bool check = (bool)button.Tag;
-                for (int i = 0; i < game.Units.Count; i++)
-                    units[i].IsChecked = check;
-                button.Tag = !check;
-                button.Text = check ? Resources.GetString("deselect_all_units") : Resources.GetString("select_all_units");
-            });
         }
 
         protected override void draw()
@@ -105,13 +75,37 @@ namespace TBSGame.Screens.ScreenTabPanels
             shadow = new Texture2D(graphics.GraphicsDevice, bounds.Width, bounds.Height);
             selected_map = new Texture2D(graphics.GraphicsDevice, bounds.Width, bounds.Height);
 
-            map_panel.Bounds = new Rectangle(10, 10, (int)(Panel.Bounds.Width * 0.5f), Panel.Bounds.Height - 20);
-            units_panel.Bounds = new Rectangle(map_panel.Bounds.Width + 20, 10, Panel.Bounds.Width - map_panel.Bounds.Width - 30, Panel.Bounds.Height - 20);
-            Panel.AddRange(new[] { map_panel, units_panel });
+            map_panel = (Panel)Panel.GetControl("map_panel");
+            units_panel = (Panel)Panel.GetControl("units_panel");
+            desc = (Label)Panel.GetControl("description");
+            play = (MenuButton)Panel.GetControl("play");
+            play_at_night = (MenuButton)Panel.GetControl("play_at_night");
+            cancel = (MenuButton)Panel.GetControl("cancel");
+            select_all = (MenuButton)Panel.GetControl("select_all");
 
-            units_panel.Description = Resources.GetString("units");
+            play.OnControlClicked += new ControlClickedEventHandler(sender =>
+            {
+                List<Unit> list = new List<Unit>();
+                for (int i = 0; i < units.Count; i++)
+                {
+                    UnitBox unitbox = units[i];
+                    if (unitbox.IsChecked)
+                        list.Add(game.Units[i]);
+                }
 
-            units_panel.IsVisible = false;
+                if (list.Count > 0)
+                    PlayGame(selected, list);
+            });
+            cancel.OnControlClicked += new ControlClickedEventHandler(sender => deselect());
+            select_all.OnControlClicked += new ControlClickedEventHandler(sender =>
+            {
+                MenuButton button = (MenuButton)sender;
+                bool check = (bool)button.Tag;
+                for (int i = 0; i < game.Units.Count; i++)
+                    units[i].IsChecked = check;
+                button.Tag = !check;
+                button.Text = check ? Resources.GetString("deselect_all_units") : Resources.GetString("select_all_units");
+            });
 
             load_units();
 
@@ -131,21 +125,7 @@ namespace TBSGame.Screens.ScreenTabPanels
                 hover.Add(lm.Name, t);
             }
 
-            desc.Bounds = new Rectangle(resize.X, resize.Y + resize.Height, resize.Width, map_panel.Bounds.Height - resize.Height - 30);
-            desc.VAligment = VerticalAligment.Top;
-            desc.HAligment = HorizontalAligment.Left;
-            desc.Foreground = Color.White;
-
-            play.Bounds = new Rectangle(0, units_panel.Bounds.Height - 50, 150, 50);
-            play_at_night.Bounds = new Rectangle(160, units_panel.Bounds.Height - 50, 210, 50);
-            cancel.Bounds = new Rectangle(380, units_panel.Bounds.Height - 50, 110, 50);
-
-            select_all.Bounds = new Rectangle(0, 0, 350, 50);
-            select_all.Tag = true;
-
-            map_panel.Add(desc);
-            units_panel.AddRange(new Control[] { play, play_at_night, cancel, select_all });
-
+            desc.Bounds = new Rectangle(desc.Bounds.X, resize.Height + 11, desc.Bounds.Width, Panel.Bounds.Height - resize.Height);
             SetColors();
         }
 
@@ -297,7 +277,7 @@ namespace TBSGame.Screens.ScreenTabPanels
         {
             set_all(false);
             selected = null;
-            desc.Text = "";
+            desc.Text = Resources.GetString("map_desc");
         }
 
         private void select(LevelMap lm)
@@ -315,9 +295,7 @@ namespace TBSGame.Screens.ScreenTabPanels
                     desc.Text = map.Description;
                 }
                 else
-                {
                     desc.Text = Resources.GetString("missing_map");
-                }
             }
         }
 
@@ -332,15 +310,8 @@ namespace TBSGame.Screens.ScreenTabPanels
             units_panel.IsVisible = visibility;
         }
 
-        public override void LoadPosition()
-        {
-            
-        }
-
-        public override void Reload()
-        {
-            load_units();
-        }
+        public override void Reload() => load_units();
+        public override void Deselect() => deselect();
 
         private void load_units()
         {
@@ -357,14 +328,10 @@ namespace TBSGame.Screens.ScreenTabPanels
                 {
                     unitbox = new UnitBox(unit);
                     units.Add(unitbox);
-                    units_panel.Add(unitbox);
+                    units_panel.Add(unitbox, index);
                 }
 
-                unitbox.Bounds = new Rectangle(0, resize.Top + index * 40 + 60, 350, 40);
-                unitbox.Checked = Color.Crimson;
-                unitbox.UnChecked = new Color(60, 60, 60);
                 unitbox.IsLocked = unit.Rounds > 0;
-
                 index++;
             }
         }

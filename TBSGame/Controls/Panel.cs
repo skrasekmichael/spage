@@ -73,7 +73,7 @@ namespace TBSGame.Controls
         protected override void draw()
         {
             if (!OnlyArea)
-                sprite.Draw(fill, bounds, Color.White);
+                sprite.Draw(fill, bounds, Color.White * Opacity);
 
             Controls.ForEach(c => c.Draw());
         }

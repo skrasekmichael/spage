@@ -49,9 +49,12 @@ namespace TBSGame.MessageBoxes
 
             panel = new Panel();
             panel.Load(graphics);
-            panel.Fill = Color.Black;
+            panel.Fill = new Color(50, 50, 50);
+            panel.Border.IsVisible = false;
+            panel.Opacity = 0.95f;
+
             if (Size == new Point(0, 0))
-                Size = new Point(400, 200);
+                Size = new Point(500, 300);
 
             load();
 

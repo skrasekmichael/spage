@@ -15,6 +15,7 @@
             </arguments>
             <properties>
                 <property type="Fill" convert="rgb">20;20;20</property>
+                <property type="Border.Color" convert="colorname">Black</property>
                 <property type="Border.IsVisible" convert="bool">false</property>
                 <property type="Border.Left" convert="bool">true</property>
             </properties>
@@ -26,6 +27,7 @@
             <properties>
                 <property type="Fill" convert="rgb">20;20;20</property>
                 <property type="Foreground" convert="colorname">White</property>
+                <property type="Border.Color" convert="colorname">Black</property>
                 <property type="Border.Right" convert="bool">false</property>
                 <property type="Border.Bottom" convert="bool">false</property>
             </properties>
@@ -54,7 +56,7 @@
                 </Label>
             </childs>
         </Panel>
-        <Panel name="units">
+        <Special.UnitsPanel name="units">
             <arguments>
                 <argument convert="bool">true</argument>
             </arguments>
@@ -77,6 +79,6 @@
                     <property type="Bounds.Y" convert="exp">(i-20)*51</property>
                 </define>
             </childs>
-        </Panel>
+        </Special.UnitsPanel>
     </childs>
 </layout>

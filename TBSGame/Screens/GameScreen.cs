@@ -26,7 +26,7 @@ namespace TBSGame.Screens
         private GameSave game;
 
         private List<UnitBox> units = new List<UnitBox>();
-        private Panel units_panel;
+        private UnitsPanel units_panel;
         private Label resources, round;
 
         public GameScreen(GameSave game)
@@ -46,7 +46,7 @@ namespace TBSGame.Screens
             this.level = Level.Load(path);
             Texture2D map_texture = sprite.GetTexture(level.Map);
 
-            units_panel = (Panel)parent.Remove("units");
+            units_panel = (UnitsPanel)parent.Remove("units");
             resources = (Label)parent.GetControl("resources");
             round = (Label)parent.GetControl("round");
 
@@ -106,14 +106,15 @@ namespace TBSGame.Screens
             {
                 tab.Index = index;
                 tab.OnSelectedTab += new SelectedTabEventHandler(sender => {
-                    ScreenTabPanel stp = (ScreenTabPanel)sender;
-                    selected = stp.Index;
+                    units_panel.Deselect();
+                    tabs[selected].Deselect();
+                    selected = ((ScreenTabPanel)sender).Index;
                     foreach (ScreenTabPanel _tab in tabs.Where(t => t.Index != index))
                         _tab.Panel.IsVisible = false;
                 });
                 tab.OnRefresh += new RefreshDataEventHandlet(sender =>
                 {
-                    load_units();
+                    units_panel.LoadUnits(game.Units);
                     reload();
                 });
                 tab.Load(graphics, parent);
@@ -156,7 +157,7 @@ namespace TBSGame.Screens
             });
             #endregion
 
-            load_units();
+            units_panel.LoadUnits(game.Units);
             units.LoadUnitsPanel(units_panel);
             upgrades.LoadUnitsPanel(units_panel);
         }
@@ -213,39 +214,13 @@ namespace TBSGame.Screens
             }
 
             reload();
-            load_units();
+            units_panel.LoadUnits(game.Units);
         }
 
         private void reload()
         {
             foreach (ScreenTabPanel tab in tabs)
                 tab.Reload();
-        }
-
-        private void load_units()
-        {
-            int index = 0;
-            foreach (Unit unit in game.Units)
-            {
-                UnitBox unitbox;
-                if (index < units.Count)
-                {
-                    unitbox = units[index];
-                    unitbox.Unit = unit;
-                }
-                else
-                {
-                    unitbox = new UnitBox(unit);
-                    units.Add(unitbox);
-                    units_panel.Add(unitbox, index);
-                }
-
-                unitbox.OnControlClicked += new ControlClickedEventHandler(sender =>
-                {
-                    units.ForEach(u => u.IsChecked = false);
-                });
-                index++;
-            }
         }
     }
 }
