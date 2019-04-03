@@ -14,7 +14,7 @@ namespace TBSGame.Controls
         public List<Control> Controls { get; } = new List<Control>();
         public List<ControlDefine> Defines { get; } = new List<ControlDefine>();
 
-        public bool OnlyArea { get; private set; } = false;
+        public bool OnlyArea { get; protected set; } = false;
         public bool Desc { get; set; } = false;
         public string Description { get; set; } = "";
         public bool DescConstantly { get; set; } = false;
@@ -26,19 +26,22 @@ namespace TBSGame.Controls
             set
             {
                 _fill = value;
-                graphics?.Sprite.SetColorFill(ref fill, _fill);
+                if (graphics != null && fill != null)
+                    graphics.Sprite.SetColorFill(ref fill, _fill);
             }
         }
 
-        private bool fore_is_changed = false;
-        public override Color Foreground
+        public Color DeepForeground
         {
-            get => _fore;
             set
             {
-                fore_is_changed = true;
-                _fore = value;
-                Controls.ForEach(c => c.Foreground = value);
+                this.Foreground = value;
+                foreach (Control control in Controls)
+                {
+                    control.Foreground = value;
+                    if (control.GetType() == typeof(Panel))
+                        ((Panel)control).DeepForeground = value;
+                }
             }
         }
 
@@ -115,7 +118,7 @@ namespace TBSGame.Controls
 
         private void load(Control control)
         {
-            if (fore_is_changed)
+            if (control.Foreground == Color.Black)
                 control.Foreground = this.Foreground;
 
             control.Opacity *= this.Opacity;
@@ -143,14 +146,14 @@ namespace TBSGame.Controls
 
         public Control GetControl(string name)
         {
-            Queue<Control> controls = new Queue<Control>(this.Controls); 
+            Queue<Control> controls = new Queue<Control>(this.Controls);
             while (controls.Count > 0)
             {
                 Control control = controls.Dequeue();
                 if (control.Name == name)
                     return control;
 
-                if (control.GetType() == typeof(Panel))
+                if (control.GetType() == typeof(Panel) || control.GetType().IsSubclassOf(typeof(Panel)))
                     ((Panel)control).Controls.ForEach(c => controls.Enqueue(c));
             }
 

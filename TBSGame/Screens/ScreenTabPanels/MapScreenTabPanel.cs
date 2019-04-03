@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Input;
 using TBSGame.Controls;
 using TBSGame.Controls.Buttons;
 using TBSGame.Controls.GameScreen;
+using TBSGame.Controls.Special;
 using TBSGame.Saver;
 
 namespace TBSGame.Screens.ScreenTabPanels
@@ -33,8 +34,8 @@ namespace TBSGame.Screens.ScreenTabPanels
 
         private Label desc;
         private MenuButton play, play_at_night, cancel, select_all;
-        private List<UnitBox> units = new List<UnitBox>();
-        private Panel map_panel, units_panel;
+        private Panel map_panel;
+        private UnitsPanel units_panel;
 
         private Texture2D texture, borders, shadow, selected_map;
         private Dictionary<string, Texture2D> hover;
@@ -76,7 +77,7 @@ namespace TBSGame.Screens.ScreenTabPanels
             selected_map = new Texture2D(graphics.GraphicsDevice, bounds.Width, bounds.Height);
 
             map_panel = (Panel)Panel.GetControl("map_panel");
-            units_panel = (Panel)Panel.GetControl("units_panel");
+            units_panel = (UnitsPanel)Panel.GetControl("units_panel");
             desc = (Label)Panel.GetControl("description");
             play = (MenuButton)Panel.GetControl("play");
             play_at_night = (MenuButton)Panel.GetControl("play_at_night");
@@ -86,9 +87,9 @@ namespace TBSGame.Screens.ScreenTabPanels
             play.OnControlClicked += new ControlClickedEventHandler(sender =>
             {
                 List<Unit> list = new List<Unit>();
-                for (int i = 0; i < units.Count; i++)
+                for (int i = 0; i < units_panel.Units.Count; i++)
                 {
-                    UnitBox unitbox = units[i];
+                    UnitBox unitbox = units_panel.Units[i];
                     if (unitbox.IsChecked)
                         list.Add(game.Units[i]);
                 }
@@ -102,7 +103,7 @@ namespace TBSGame.Screens.ScreenTabPanels
                 MenuButton button = (MenuButton)sender;
                 bool check = (bool)button.Tag;
                 for (int i = 0; i < game.Units.Count; i++)
-                    units[i].IsChecked = check;
+                    units_panel.Units[i].IsChecked = check;
                 button.Tag = !check;
                 button.Text = check ? Resources.GetString("deselect_all_units") : Resources.GetString("select_all_units");
             });
@@ -247,10 +248,10 @@ namespace TBSGame.Screens.ScreenTabPanels
         {
             key = null;
 
-            if (game.Units.Count != units.Count)
+            if (game.Units.Count != units_panel.Units.Count)
                 Reload();
 
-            bool val = (units.Where(ch => ch.IsChecked).Count() == 0);
+            bool val = (units_panel.Units.Where(ch => ch.IsChecked).Count() == 0);
             play.IsLocked = val;
             play_at_night.IsLocked = val;
 
@@ -301,7 +302,7 @@ namespace TBSGame.Screens.ScreenTabPanels
 
         private void set_all(bool visibility)
         {
-            foreach (UnitBox unitbox in units)
+            foreach (UnitBox unitbox in units_panel.Units)
                 unitbox.IsChecked = false;
 
             select_all.Text = Resources.GetString("select_all_units");
@@ -315,25 +316,9 @@ namespace TBSGame.Screens.ScreenTabPanels
 
         private void load_units()
         {
-            int index = 0;
-            foreach (Unit unit in game.Units)
-            {
-                UnitBox unitbox;
-                if (index < units.Count)
-                {
-                    unitbox = units[index];
-                    unitbox.Unit = unit;
-                }
-                else
-                {
-                    unitbox = new UnitBox(unit);
-                    units.Add(unitbox);
-                    units_panel.Add(unitbox, index);
-                }
-
-                unitbox.IsLocked = unit.Rounds > 0;
-                index++;
-            }
+            units_panel.LoadUnits(game.Units);
+            foreach (UnitBox unitbox in units_panel.Units)
+                unitbox.IsLocked = unitbox.Unit.Rounds > 0;
         }
     }
 }

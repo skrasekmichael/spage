@@ -8,9 +8,13 @@ using TBSGame.Controls.GameScreen;
 
 namespace TBSGame.Controls.Special
 {
+    public delegate void SelectedEventHandler(object sender, UnitBox target);
+
     public class UnitsPanel : Panel
     {
         public List<UnitBox> Units { get; } = new List<UnitBox>();
+        public SelectedEventHandler OnSelected;
+        public bool MultiSelect { get; set; } = false;
 
         public UnitsPanel(bool val) : base(val) { }
 
@@ -32,10 +36,17 @@ namespace TBSGame.Controls.Special
                     this.Add(unitbox, index);
                 }
 
-                unitbox.OnControlClicked += new ControlClickedEventHandler(sender =>
+                if (!MultiSelect)
                 {
-                    Units.ForEach(u => u.IsChecked = false);
-                });
+                    unitbox.Check.Handler = new ControlClickedEventHandler(sender =>
+                    {
+                        UnitBox box = (UnitBox)sender;
+                        Units.ForEach(u => u.IsChecked = false);
+                        box.IsChecked = true;
+                        OnSelected?.Invoke(this, box);
+                    });
+                }
+
                 index++;
             }
         }

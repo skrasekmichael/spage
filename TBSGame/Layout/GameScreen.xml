@@ -56,29 +56,5 @@
                 </Label>
             </childs>
         </Panel>
-        <Special.UnitsPanel name="units">
-            <arguments>
-                <argument convert="bool">true</argument>
-            </arguments>
-            <properties>
-                <property type="Description" convert="string">#units</property>
-            </properties>
-            <childs>
-                <define type="GameScreen.UnitBox">
-                    <property type="Checked" convert="colorname">Crimson</property>
-                    <property type="UnChecked" convert="rgb">60;60;60</property>
-                    <property type="Bounds.Width" convert="exp">350</property>
-                    <property type="Bounds.Height" convert="exp">50</property>
-                </define>
-                <define type="GameScreen.UnitBox" from="0" to="19">
-                    <property type="Bounds.X" convert="exp">0</property>
-                    <property type="Bounds.Y" convert="exp">i*51</property>
-                </define>
-                <define type="GameScreen.UnitBox" from="20" to="29">
-                    <property type="Bounds.X" convert="exp">351</property>
-                    <property type="Bounds.Y" convert="exp">(i-20)*51</property>
-                </define>
-            </childs>
-        </Special.UnitsPanel>
     </childs>
 </layout>

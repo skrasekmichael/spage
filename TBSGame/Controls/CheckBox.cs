@@ -9,54 +9,28 @@ using TBSGame.Controls.Buttons;
 
 namespace TBSGame.Controls
 {
-    public class CheckBox : Control
+    public class CheckBox : MenuButton
     {
-        public override event ControlClickedEventHandler OnControlClicked;
-
-        public MenuButton Label;
-
         public bool IsChecked { get; set; } = false;
         public Color Checked { get; set; } = Color.Lime;
         public Color UnChecked { get; set; } = Color.DarkGreen;
+        public ControlClickedEventHandler Handler { get; set; }
 
-        public string Text
+        public CheckBox(string text) : base(text)
         {
-            get => Label.Text;
-            set => Label.Text = value;
-        }
+            Border.Width = 0;
+            Fill = Color.Transparent;
+            MouseOverForeground = Color.White;
+            MouseOverFill = Color.Transparent;
+            Handler = sender => IsChecked = !IsChecked;
 
-        public CheckBox(string text)
-        {
-            Label = new MenuButton(text);
-            
-            Label.Border.Width = 0;
-            Label.MouseOverForeground = Color.White;
-            Label.Fill = Color.Transparent;
-            Label.MouseOverFill = Color.Transparent;
-
-            Label.OnControlClicked += new ControlClickedEventHandler(sender =>
-            {
-                IsChecked = !IsChecked;
-                OnControlClicked?.Invoke(this);
-            });
-        }
-
-        protected override void draw()
-        {
-            Label.Draw();
+            OnControlClicked += Handler;
         }
 
         protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
-            Label.Bounds = this.bounds;
-            Label.Foreground = IsChecked ? Checked : UnChecked;
-            Label.Update(time, keyboard, mouse);
-        }
-
-        protected override void load()
-        {
-            Label.Load(graphics);
-            Label.Bounds = this.bounds;
+            Foreground = IsChecked ? Checked : UnChecked;
+            base.update(time, keyboard, mouse);
         }
     }
 }

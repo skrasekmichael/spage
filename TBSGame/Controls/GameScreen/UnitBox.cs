@@ -10,15 +10,14 @@ using Microsoft.Xna.Framework.Input;
 
 namespace TBSGame.Controls.GameScreen
 {
-    public class UnitBox : Control
+    public class UnitBox : Panel
     {
         public Unit Unit { get; set; }
         public bool DisplayLevel { get; set; } = true;
         public bool DisplayHP { get; set; } = true;
         public bool DisplayIcon { get; set; } = true;
 
-        private Panel panel = new Panel(true);
-        private CheckBox check;
+        public CheckBox Check;
         private Label label, rounds;
         private ImagePanel icon;
 
@@ -26,62 +25,58 @@ namespace TBSGame.Controls.GameScreen
 
         public bool IsChecked
         {
-            get => check.IsChecked;
-            set => check.IsChecked = value;
+            get => Check.IsChecked;
+            set => Check.IsChecked = value;
         }
 
         public Color Checked
         {
-            get => check.Checked;
-            set => check.Checked = value;
+            get => Check.Checked;
+            set => Check.Checked = value;
         }
 
         public Color UnChecked
         {
-            get => check.UnChecked;
-            set => check.UnChecked = value;
+            get => Check.UnChecked;
+            set => Check.UnChecked = value;
         }
 
         public UnitBox(Unit unit)
         {
             Unit = unit;
-            check = new CheckBox(Resources.GetString(Unit.ToString()));
+            Check = new CheckBox(Resources.GetString(Unit.ToString()));
         }
 
         protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
             icon.Image = textures[(int)Unit.UnitStatus];
-            check.Text = Resources.GetString(Unit.ToString());
+            Check.Text = Resources.GetString(Unit.ToString());
             label.Text = get_level();
             rounds.Text = Unit.Rounds == 0 ? "" : Unit.Rounds.ToString();
-
-            check.Bounds = new Rectangle(0, 0, this.bounds.Width - 130 - this.bounds.Height, this.bounds.Height);
-            label.Bounds = new Rectangle(check.Bounds.Width, 0, 90, this.bounds.Height);
-            icon.Bounds = new Rectangle(this.bounds.Width - this.bounds.Height, 0, this.bounds.Height, this.bounds.Height);
-            rounds.Bounds = new Rectangle(icon.Bounds.Left - 40, 0, 40, this.bounds.Height);
-            panel.Bounds = this.bounds;
 
             icon.IsVisible = DisplayIcon;
             label.IsVisible = DisplayLevel;
 
-            panel.Update(time, keyboard, mouse);
-        }
-
-        protected override void draw()
-        {
-            panel.Draw();
+            base.update(time, keyboard, mouse);
+            if (this.IsMouseOver)
+                this.DeepForeground = Color.White;
         }
 
         protected override void load()
         {
+            Border.IsVisible = false;
+            Checked = Color.Crimson;
+            UnChecked = new Color(60, 60, 60);
+            this.Fill = new Color(30, 30, 30);
+
             load_icons();
 
-            check.Bounds = new Rectangle(0, 0, this.bounds.Width - 130 - this.bounds.Height, this.bounds.Height);
-            check.IsChecked = false;
-            check.Label.HAligment = HorizontalAligment.Left;
+            Check.Bounds = new Rectangle(0, 0, this.bounds.Width, this.bounds.Height);
+            Check.IsChecked = false;
+            Check.HAligment = HorizontalAligment.Left;
 
             label = new Label(get_level());
-            label.Bounds = new Rectangle(check.Bounds.Width, 0, 90, this.bounds.Height);
+            label.Bounds = new Rectangle(this.bounds.Width - 130 - this.bounds.Height, 0, 90, this.bounds.Height);
             label.Foreground = Color.Silver;
             label.HAligment = HorizontalAligment.Left;
 
@@ -93,10 +88,9 @@ namespace TBSGame.Controls.GameScreen
             rounds = new Label(Unit.Rounds == 0 ? "" : Unit.Rounds.ToString());
             rounds.Bounds = new Rectangle(icon.Bounds.Left - 40, 0, 40, this.bounds.Height);
             rounds.Foreground = Color.White;
-
-            panel.Bounds = this.bounds;
-            panel.Load(graphics);
-            panel.AddRange(new Control[] { check, label, icon, rounds });
+            
+            this.AddRange(new Control[] { Check, label, icon, rounds });
+            base.load();
         }
 
         private string get_level()

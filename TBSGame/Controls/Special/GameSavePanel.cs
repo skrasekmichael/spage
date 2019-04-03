@@ -58,20 +58,20 @@ namespace TBSGame.Controls.Special
         public void Reload(int index)
         {
             string file = path + index.ToString() + ".dat";
-            bool a = false;
+            bool isnull = false;
             GameSave save = null;
 
             if (File.Exists(file))
             {
                 save = GameSave.Load(file);
-                a = (save != null);
+                isnull = (save != null);
             }
 
-            input[index].SetText(a ? save.Name : "");
-            labels[index].Text = a ? save.ScenarioName + "\n" + save.SavedAt.ToString("dd.MM.yyyy HH:mm:ss") : "";
-            delete_buttons[index].IsLocked = !a;
+            input[index].SetText(isnull ? save.Name : "");
+            labels[index].Text = isnull ? $"{save.ScenarioName}\n{save.SavedAt.ToString("dd.MM.yyyy HH:mm:ss")}" : "";
+            delete_buttons[index].IsLocked = !isnull;
             if (ShowLoad)
-                load_buttons[index].IsLocked = !a;
+                load_buttons[index].IsLocked = !isnull;
         }
 
         protected override void draw()

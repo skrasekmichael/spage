@@ -38,7 +38,6 @@ namespace TBSGame.Screens.ScreenTabPanels
         protected Settings settings;
         protected GameSave game;
 
-        public UnitsPanel UnitsPanel { get; private set; }
         public Panel Panel = new Panel(true);
 
         public int Width => graphics.ScreenWidth;
@@ -88,8 +87,6 @@ namespace TBSGame.Screens.ScreenTabPanels
         public void Update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
             this.Panel.IsVisible = true;
-            if (UnitsPanel != null)
-                UnitsPanel.Bounds = Panel.GetControl("units_area").Bounds;
             update(time, keyboard, mouse);
         }
 
@@ -102,12 +99,5 @@ namespace TBSGame.Screens.ScreenTabPanels
         public virtual void LoadPosition() { }
         public virtual void Reload() { }
         public virtual void Deselect() { }
-
-        public void LoadUnitsPanel(UnitsPanel units)
-        {
-            UnitsPanel = units;
-            UnitsPanel.Bounds = Panel.GetControl("units_area").Bounds;
-            Panel.Add(UnitsPanel);
-        }
     }
 }

@@ -18,12 +18,13 @@
                 </Label>
             </childs>
         </Panel>
-        <Panel name="units_panel" x="W*0.5+20" y="10" width="W*0.5-30" height="H-20">
+        <Special.UnitsPanel name="units_panel" x="W*0.5+20" y="10" width="W*0.5-30" height="H-20">
             <arguments>
                 <argument convert="bool">true</argument>
             </arguments>
             <properties>
                 <property type="Description" convert="string">#units</property>
+                <property type="MultiSelect" convert="bool">true</property>
                 <property type="IsVisible" convert="bool">false</property>
             </properties>
             <childs>
@@ -36,8 +37,6 @@
                     </properties>
                 </Buttons.MenuButton>
                 <define type="GameScreen.UnitBox">
-                    <property type="Checked" convert="colorname">Crimson</property>
-                    <property type="UnChecked" convert="rgb">60;60;60</property>
                     <property type="Bounds.Width" convert="exp">350</property>
                     <property type="Bounds.Height" convert="exp">50</property>
                 </define>
@@ -65,6 +64,6 @@
                     </arguments>
                 </Buttons.MenuButton>
             </childs>
-        </Panel>
+        </Special.UnitsPanel>
     </childs>
 </layout>

@@ -1,14 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?> 
 <layout width="1920" height="1080">
     <childs>
-        <Panel name="units_area" x="10" y="10" width="0.6*W-20" height="H-20">
+        <Special.UnitsPanel name="units" x="10" y="10" width="0.6*W-20" height="H-20">
             <arguments>
-                <argument convert="bool">false</argument>
+                <argument convert="bool">true</argument>
             </arguments>
             <properties>
-                <property type="Border.IsVisible" convert="bool">false</property>
+                <property type="Description" convert="string">#units</property>
             </properties>
-        </Panel>
+            <childs>
+                <define type="GameScreen.UnitBox">
+                    <property type="Bounds.Width" convert="exp">350</property>
+                    <property type="Bounds.Height" convert="exp">50</property>
+                </define>
+                <define type="GameScreen.UnitBox" from="0" to="19">
+                    <property type="Bounds.X" convert="exp">0</property>
+                    <property type="Bounds.Y" convert="exp">i*51</property>
+                </define>
+                <define type="GameScreen.UnitBox" from="20" to="29">
+                    <property type="Bounds.X" convert="exp">351</property>
+                    <property type="Bounds.Y" convert="exp">(i-20)*51</property>
+                </define>
+            </childs>
+        </Special.UnitsPanel>
         <Panel name="info" x="0.6*W" y="0.6*H" width="0.4*W-10" height="0.4*H-10">
             <arguments>
                 <argument convert="bool">true</argument>
@@ -31,8 +45,6 @@
             </arguments>
             <childs>
                 <define type="GameScreen.UnitBox">
-                    <property type="Checked" convert="colorname">Crimson</property>
-                    <property type="UnChecked" convert="rgb">60;60;60</property>
                     <property type="Bounds.Width" convert="exp">350</property>
                     <property type="Bounds.Height" convert="exp">50</property>
                 </define>

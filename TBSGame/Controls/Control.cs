@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -25,19 +26,14 @@ namespace TBSGame.Controls
         protected int Width => graphics.ScreenWidth;
         protected int Height => graphics.ScreenHeight;
         protected Vector2 start = new Vector2(0, 0);
-        protected bool is_mouse_hover = false, is_mouse_down = false;
+        protected internal bool is_mouse_hover = false, is_mouse_down = false;
 
         public string Name { get; set; }
         public virtual SpriteFont Font { get; set; }
         public virtual HorizontalAligment HAligment { get; set; } = HorizontalAligment.Left;
         public virtual VerticalAligment VAligment { get; set; } = VerticalAligment.Top;
         public virtual Border Border { get; set; } = new Border();
-        protected Color _fore = Color.Black;
-        public virtual Color Foreground
-        {
-            get => _fore;
-            set => _fore = value;
-        }
+        public virtual Color Foreground { get; set; } = Color.Black;
 
         public float Opacity { get; set; } = 1f;
         public bool IsLoaded { get; private set; } = false;

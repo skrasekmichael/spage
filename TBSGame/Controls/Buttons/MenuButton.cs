@@ -17,10 +17,5 @@ namespace TBSGame.Controls.Buttons
             Fill = new Color(30, 30, 30);
             MouseOverFill = new Color(Color.Crimson, 0.8f);
         }
-
-        protected override void load()
-        {
-            base.load();
-        }
     }
 }

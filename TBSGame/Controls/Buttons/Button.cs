@@ -23,10 +23,7 @@ namespace TBSGame.Controls
 
         protected Texture2D background_fill, background_over_fill, locked_bg;
 
-        public Button(string title) : base(title)
-        {
-            
-        }
+        public Button(string title) : base(title) { }
 
         protected override void load()
         {

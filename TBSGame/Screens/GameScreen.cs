@@ -25,8 +25,6 @@ namespace TBSGame.Screens
         private int selected = 0;
         private GameSave game;
 
-        private List<UnitBox> units = new List<UnitBox>();
-        private UnitsPanel units_panel;
         private Label resources, round;
 
         public GameScreen(GameSave game)
@@ -46,7 +44,6 @@ namespace TBSGame.Screens
             this.level = Level.Load(path);
             Texture2D map_texture = sprite.GetTexture(level.Map);
 
-            units_panel = (UnitsPanel)parent.Remove("units");
             resources = (Label)parent.GetControl("resources");
             round = (Label)parent.GetControl("round");
 
@@ -106,7 +103,6 @@ namespace TBSGame.Screens
             {
                 tab.Index = index;
                 tab.OnSelectedTab += new SelectedTabEventHandler(sender => {
-                    units_panel.Deselect();
                     tabs[selected].Deselect();
                     selected = ((ScreenTabPanel)sender).Index;
                     foreach (ScreenTabPanel _tab in tabs.Where(t => t.Index != index))
@@ -114,7 +110,6 @@ namespace TBSGame.Screens
                 });
                 tab.OnRefresh += new RefreshDataEventHandlet(sender =>
                 {
-                    units_panel.LoadUnits(game.Units);
                     reload();
                 });
                 tab.Load(graphics, parent);
@@ -156,10 +151,6 @@ namespace TBSGame.Screens
                 this.ShowMessage(message);
             });
             #endregion
-
-            units_panel.LoadUnits(game.Units);
-            units.LoadUnitsPanel(units_panel);
-            upgrades.LoadUnitsPanel(units_panel);
         }
 
         protected override void loadpos()
@@ -214,7 +205,6 @@ namespace TBSGame.Screens
             }
 
             reload();
-            units_panel.LoadUnits(game.Units);
         }
 
         private void reload()

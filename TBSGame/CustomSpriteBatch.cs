@@ -40,7 +40,7 @@ namespace TBSGame
             effect.Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver2, GraphicsDevice.DisplayMode.AspectRatio, 1, 1000);
         }
 
-        public void DrawMultiLineText(SpriteFont font, string[] data, Rectangle bounds, HorizontalAligment h, VerticalAligment v, int space, Color c, int hspace = 0)
+        public void DrawMultiLineText(SpriteFont font, string[] data, Rectangle bounds, HorizontalAligment ha, VerticalAligment va, int space, Color color, int hspace = 0)
         {
             List<string> lines = new List<string>(data.Length);
             foreach (string line in data)
@@ -54,21 +54,21 @@ namespace TBSGame
                 Vector2 loc = Vector2.Zero;
                 string text = lines[i].Trim();
 
-                if (h == HorizontalAligment.Left)
+                if (ha == HorizontalAligment.Left)
                     loc.X = bounds.X + space;
-                else if (h == HorizontalAligment.Center)
+                else if (ha == HorizontalAligment.Center)
                     loc.X = bounds.X + (bounds.Width - font.MeasureString(text).X) / 2;
-                else if (h == HorizontalAligment.Right)
+                else if (ha == HorizontalAligment.Right)
                     loc.X = bounds.X + (bounds.Width - font.MeasureString(text).X) - space;
 
-                if (v == VerticalAligment.Top)
+                if (va == VerticalAligment.Top)
                     loc.Y = bounds.Y + space + i * (font.LineSpacing + hspace);
-                else if (v == VerticalAligment.Center)
+                else if (va == VerticalAligment.Center)
                     loc.Y = bounds.Y + (bounds.Height - lines.Count * (font.LineSpacing + hspace)) / 2 - 1 + i * (font.LineSpacing + hspace);
-                else if (v == VerticalAligment.Bottom)
+                else if (va == VerticalAligment.Bottom)
                     loc.Y = bounds.Y + bounds.Height - space - (lines.Count * (font.LineSpacing + hspace)) + i * (font.LineSpacing + hspace);
 
-                this.DrawString(font, text, loc, c);
+                this.DrawString(font, text, loc, color);
             }
         }
 
@@ -107,11 +107,11 @@ namespace TBSGame
             return t;
         }
 
-        public void SetColorFill(ref Texture2D t, Color color)
+        public void SetColorFill(ref Texture2D texture, Color color)
         {
-            Color[] data = new Color[t.Width * t.Height];
+            Color[] data = new Color[texture.Width * texture.Height];
             for (int i = 0; i < data.Length; i++) data[i] = color;
-            t.SetData(data);
+            texture.SetData(data);
         }
 
         public Texture2D GetColorFill(System.Drawing.Color color, int width = 1, int height = 1)
@@ -159,10 +159,10 @@ namespace TBSGame
             GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleStrip, vertex, 0, vertex.Length - 2);
         }
 
-        public void DrawLines(Vector2[] lines, Color c)
+        public void DrawLines(Vector2[] lines, Color color)
         {
             for (int i = 0; i < lines.Length - 1; i++)
-                DrawLine(c, lines[i], lines[i + 1]);
+                DrawLine(color, lines[i], lines[i + 1]);
         }
 
         public void DrawLine(VertexPositionColor[] vertex)
@@ -195,7 +195,7 @@ namespace TBSGame
             return tinted;
         }
         
-        public Texture2D Shadow(Texture2D texture, Color color, float a)
+        public Texture2D Shadow(Texture2D texture, Color color, float alpha)
         {
             Color[] colors = new Color[texture.Width * texture.Height];
             texture.GetData(colors);
@@ -206,7 +206,7 @@ namespace TBSGame
                 {
                     int index = x + y * texture.Width;
                     if (colors[index].A != 0)
-                        colors[index] = Color.Lerp(colors[index], color, a);
+                        colors[index] = Color.Lerp(colors[index], color, alpha);
                 }
             }
             Texture2D nt = new Texture2D(manager.GraphicsDevice, texture.Width, texture.Height);
@@ -214,36 +214,36 @@ namespace TBSGame
             return nt;
         }
 
-        public void Clip (Texture2D s, ref Texture2D t, Rectangle destination, SpriteEffects effect = SpriteEffects.None)
+        public void Clip (Texture2D source, ref Texture2D texture, Rectangle destination, SpriteEffects effect = SpriteEffects.None)
         {
-            Color[] source = new Color[s.Width * s.Height];
-            s.GetData(source);
+            Color[] source_color = new Color[source.Width * source.Height];
+            source.GetData(source_color);
 
-            Color[] colors = new Color[t.Width * t.Height];
+            Color[] colors = new Color[texture.Width * texture.Height];
 
-            for (int x = destination.X; x < destination.X + t.Width; x++)
+            for (int x = destination.X; x < destination.X + texture.Width; x++)
             {
-                for (int y = destination.Y; y < destination.Y + t.Height; y++)
+                for (int y = destination.Y; y < destination.Y + texture.Height; y++)
                 {
-                    int index = x + y * s.Width;
+                    int index = x + y * source.Width;
                     int px = x - destination.X;
                     if (effect == SpriteEffects.FlipHorizontally)
                         px = destination.Width - 1 - (x - destination.X);
                     int py = y - destination.Y;
                     if (effect == SpriteEffects.FlipVertically)
                         py = destination.Height - 1 - (y - destination.Y);
-                    int pindex = px + py * t.Width;
-                    colors[pindex] = source[index];
+                    int pindex = px + py * texture.Width;
+                    colors[pindex] = source_color[index];
                 }
             }
 
-            t.SetData(colors);
+            texture.SetData(colors);
         }
 
         public Texture2D GetTexture(System.Drawing.Bitmap bmp)
         {
-            Texture2D tx = new Texture2D(manager.GraphicsDevice, bmp.Width, bmp.Height);
-            Color[] data = new Color[tx.Width * tx.Height];
+            Texture2D texture = new Texture2D(manager.GraphicsDevice, bmp.Width, bmp.Height);
+            Color[] data = new Color[texture.Width * texture.Height];
 
             BitmapData bd = bmp.LockBits(new System.Drawing.Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadOnly, bmp.PixelFormat);
 
@@ -254,7 +254,7 @@ namespace TBSGame
                     byte* row = (byte*)bd.Scan0 + y * bd.Stride;
                     for (int x = 0; x < bd.Width; x++)
                     {
-                        int index = x + y * tx.Width;
+                        int index = x + y * texture.Width;
 
                         byte r = row[2];
                         byte g = row[1];
@@ -269,17 +269,17 @@ namespace TBSGame
 
             bmp.UnlockBits(bd);
 
-            tx.SetData(data);
-            return tx;
+            texture.SetData(data);
+            return texture;
         }
 
         public Texture2D Clone(Texture2D texture)
         {
-            Texture2D t = new Texture2D(this.GraphicsDevice, texture.Width, texture.Height);
+            Texture2D cloned_texture = new Texture2D(this.GraphicsDevice, texture.Width, texture.Height);
             Color[] data = new Color[texture.Width * texture.Height];
             texture.GetData(data);
-            t.SetData(data);
-            return t;
+            cloned_texture.SetData(data);
+            return cloned_texture;
         }
     }
 }
