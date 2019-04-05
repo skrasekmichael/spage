@@ -13,6 +13,7 @@ namespace TBSGame.Screens.ScreenTabPanels
 {
     public class UpgradesScreenTabPanel : ScreenTabPanel
     {
+        [LayoutControl("units")]
         private UnitsPanel units_panel;
 
         public UpgradesScreenTabPanel(Settings settings, GameSave game, string icon) : base(settings, game, icon)
@@ -27,8 +28,6 @@ namespace TBSGame.Screens.ScreenTabPanels
 
         protected override void load()
         {
-            units_panel = (UnitsPanel)Panel.GetControl("units");
-
             units_panel.LoadUnits(game.Units);
         }
     }

@@ -13,12 +13,12 @@ namespace TBSGame.Screens
 {
     public class GameSavesScreen : Screen
     {
+        [LayoutControl]
         private GameSavePanel saves;
 
         protected override void load()
         {
             parent.GetControl("back").OnControlClicked += new ControlClickedEventHandler(sender => this.Dispose(new MainMenuScreen()));
-            saves = (GameSavePanel)parent.GetControl("saves");
             saves.OnLoadGame += new LoadGameEventHandler((sender, i) =>
              {
                  GameSave game = GameSave.Load(Settings.GameSaves + i.ToString() + ".dat");

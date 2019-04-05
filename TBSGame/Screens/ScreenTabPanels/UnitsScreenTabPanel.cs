@@ -17,15 +17,15 @@ namespace TBSGame.Screens.ScreenTabPanels
     public class UnitsScreenTabPanel : ScreenTabPanel
     {
         private List<UnitBox> buy_units = new List<UnitBox>();
-        private UnitBuyBox buy;
-        private Panel buy_unist_panel, info_panel;
-        private UnitsPanel units_panel;
+        [LayoutControl] private UnitBuyBox buy;
+        [LayoutControl] private Panel available, info;
+        [LayoutControl] private UnitsPanel units;
 
         public UnitsScreenTabPanel(Settings settings, GameSave game, string icon) : base(settings, game, icon) { }
 
         public override void Reload()
         {
-            units_panel.LoadUnits(game.Units);
+            units.LoadUnits(game.Units);
             load_buy();
             if (buy.IsVisible)
                 buy.Recruit.IsLocked = game.Sources < buy.Unit.Price;
@@ -38,14 +38,9 @@ namespace TBSGame.Screens.ScreenTabPanels
 
         protected override void load()
         {
-            info_panel = (Panel)Panel.GetControl("info");
-            buy_unist_panel = (Panel)Panel.GetControl("available");
-            units_panel = (UnitsPanel)Panel.GetControl("units");
-
             load_buy();
-            units_panel.LoadUnits(game.Units);
+            units.LoadUnits(game.Units);
 
-            buy = (UnitBuyBox)Panel.GetControl("buy");
             buy.Recruit.OnControlClicked += new ControlClickedEventHandler(sender =>
             {
                 Unit unit = (Unit)Activator.CreateInstance(((Unit)((Control)sender).Tag).GetType(), new object[] { (byte)1 });
@@ -88,12 +83,12 @@ namespace TBSGame.Screens.ScreenTabPanels
                         {
                             unitbox = new UnitBox(unit);
                             buy_units.Add(unitbox);
-                            buy_unist_panel.Add(unitbox, index);
+                            available.Add(unitbox, index);
                         }
 
                         unitbox.OnControlClicked += new ControlClickedEventHandler(sender =>
                         {
-                            units_panel.Deselect();
+                            units.Deselect();
                             buy.Reload(((UnitBox)sender).Unit);
                             buy.Recruit.IsLocked = game.Sources < ((UnitBox)sender).Unit.Price;
                         });

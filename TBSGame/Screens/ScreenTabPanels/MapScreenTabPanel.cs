@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -32,10 +31,10 @@ namespace TBSGame.Screens.ScreenTabPanels
         private Level level;
         private LevelMap selected = null;
 
-        private Label desc;
-        private MenuButton play, play_at_night, cancel, select_all;
-        private Panel map_panel;
-        private UnitsPanel units_panel;
+        [LayoutControl] protected Label description;
+        [LayoutControl] private MenuButton play, play_at_night, cancel, select_all;
+        [LayoutControl] private Panel map_panel;
+        [LayoutControl] private UnitsPanel units_panel;
 
         private Texture2D texture, borders, shadow, selected_map;
         private Dictionary<string, Texture2D> hover;
@@ -75,14 +74,6 @@ namespace TBSGame.Screens.ScreenTabPanels
             borders = new Texture2D(graphics.GraphicsDevice, bounds.Width, bounds.Height);
             shadow = new Texture2D(graphics.GraphicsDevice, bounds.Width, bounds.Height);
             selected_map = new Texture2D(graphics.GraphicsDevice, bounds.Width, bounds.Height);
-
-            map_panel = (Panel)Panel.GetControl("map_panel");
-            units_panel = (UnitsPanel)Panel.GetControl("units_panel");
-            desc = (Label)Panel.GetControl("description");
-            play = (MenuButton)Panel.GetControl("play");
-            play_at_night = (MenuButton)Panel.GetControl("play_at_night");
-            cancel = (MenuButton)Panel.GetControl("cancel");
-            select_all = (MenuButton)Panel.GetControl("select_all");
 
             play.OnControlClicked += new ControlClickedEventHandler(sender =>
             {
@@ -126,7 +117,7 @@ namespace TBSGame.Screens.ScreenTabPanels
                 hover.Add(lm.Name, t);
             }
 
-            desc.Bounds = new Rectangle(desc.Bounds.X, resize.Height + 11, desc.Bounds.Width, Panel.Bounds.Height - resize.Height);
+            description.Bounds = new Rectangle(description.Bounds.X, resize.Height + 11, description.Bounds.Width, Panel.Bounds.Height - resize.Height);
             SetColors();
         }
 
@@ -278,7 +269,7 @@ namespace TBSGame.Screens.ScreenTabPanels
         {
             set_all(false);
             selected = null;
-            desc.Text = Resources.GetString("map_desc");
+            description.Text = Resources.GetString("map_desc");
         }
 
         private void select(LevelMap lm)
@@ -293,10 +284,10 @@ namespace TBSGame.Screens.ScreenTabPanels
                 if (File.Exists(path))
                 {
                     Map map = Map.Load(path);
-                    desc.Text = map.Description;
+                    description.Text = map.Description;
                 }
                 else
-                    desc.Text = Resources.GetString("missing_map");
+                    description.Text = Resources.GetString("missing_map");
             }
         }
 

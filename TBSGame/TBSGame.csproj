@@ -81,6 +81,7 @@
     <Compile Include="FPSCounter.cs" />
     <Compile Include="Graphics.cs" />
     <Compile Include="Layout.cs" />
+    <Compile Include="LayoutLoader.cs" />
     <Compile Include="MessageBoxes\InfoMessageBox.cs" />
     <Compile Include="MessageBoxes\YesNoMessageBox.cs" />
     <Compile Include="Screens\AboutScreen.cs" />

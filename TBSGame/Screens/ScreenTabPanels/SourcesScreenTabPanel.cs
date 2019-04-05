@@ -21,8 +21,13 @@ namespace TBSGame.Screens.ScreenTabPanels
         private ImagePanel image;
         private List<Label> labels = new List<Label>();
 
-        private Panel switch_panel, image_panel, bar_panel1, bar_panel2;
-        private Label source_label, research_label, total;
+        [LayoutControl("switch")] private Panel switch_panel;
+        [LayoutControl("image")] private Panel image_panel; 
+        [LayoutControl("bar1")] private Panel bar_panel1;
+        [LayoutControl("bar2")] private Panel bar_panel2;
+        [LayoutControl("income_label")] private Label source_label;
+        [LayoutControl("research_label")] private Label research_label;
+        [LayoutControl] private Label total;
 
         private int total_income = 0;
 
@@ -34,9 +39,6 @@ namespace TBSGame.Screens.ScreenTabPanels
         protected override void load()
         {
             set_map(Color.DarkGreen, 0.7f, Color.Black, 0.7f);
-
-            image_panel = (Panel)Panel.GetControl("image");
-            switch_panel = (Panel)Panel.GetControl("switch");
 
             image = new ImagePanel(MapTexture);
             image_panel.Add(image);
@@ -59,11 +61,6 @@ namespace TBSGame.Screens.ScreenTabPanels
 
             game.Income = total_income - game.Research * 3;
 
-            bar_panel1 = (Panel)Panel.GetControl("bar1");
-            bar_panel2 = (Panel)Panel.GetControl("bar2");
-
-            total = (Label)Panel.GetControl("total");
-            source_label = (Label)Panel.GetControl("income_label");
             MenuButton researchs = (MenuButton)Panel.GetControl("btn_research");
             researchs.OnControlClicked += new ControlClickedEventHandler(sender =>
             {
@@ -71,7 +68,6 @@ namespace TBSGame.Screens.ScreenTabPanels
                     game.Research += 1;
             });
 
-            research_label = (Label)Panel.GetControl("research_label");
             MenuButton sources = (MenuButton)Panel.GetControl("btn_income");
             sources.OnControlClicked += new ControlClickedEventHandler(sender =>
             {

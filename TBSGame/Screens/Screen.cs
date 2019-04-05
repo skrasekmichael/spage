@@ -16,7 +16,7 @@ using MessageBox = TBSGame.MessageBoxes.MessageBox;
 
 namespace TBSGame.Screens
 {
-    public abstract class Screen
+    public abstract class Screen : Layout
     {
         public int Width => graphics.ScreenWidth;
         public int Height => graphics.ScreenHeight;
@@ -65,8 +65,9 @@ namespace TBSGame.Screens
             Stream stream = assembly.GetManifestResourceStream(res);
             if (stream != null)
             {
-                Layout layout = new Layout(Settings, stream);
+                LayoutLoader layout = new LayoutLoader(Settings, stream);
                 layout.Load(graphics, parent);
+                base.LoadControls(parent);
             }
 
             load();

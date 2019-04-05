@@ -17,16 +17,12 @@ namespace TBSGame.Screens.ScreenTabPanels
 {
     public class SaveScreenTabPanel : ScreenTabPanel
     {
-        public GameSavePanel Saves { get; private set; }
-        public MenuButton Exit { get; private set; }
+        [LayoutControl("saves")] public GameSavePanel Saves;
+        [LayoutControl("exit")] public MenuButton Exit;
 
         public SaveScreenTabPanel(Settings settings, GameSave game, string icon) : base(settings, game, icon) { }
 
-        protected override void load()
-        {
-            Saves = (GameSavePanel)Panel.GetControl("saves");
-            Exit = (MenuButton)Panel.GetControl("exit");
-        }
+        protected override void load() { }
 
         public override void LoadPosition()
         {

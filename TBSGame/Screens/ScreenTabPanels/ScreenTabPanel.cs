@@ -19,7 +19,7 @@ namespace TBSGame.Screens.ScreenTabPanels
     public delegate void SelectedTabEventHandler(object sender);
     public delegate void RefreshDataEventHandlet(object sender);
 
-    public abstract class ScreenTabPanel
+    public abstract class ScreenTabPanel : Layout
     {
         public event RefreshDataEventHandlet OnRefresh;
         protected void Refresh() => OnRefresh?.Invoke(this);
@@ -73,8 +73,9 @@ namespace TBSGame.Screens.ScreenTabPanels
             Stream stream = assembly.GetManifestResourceStream(res);
             if (stream != null)
             {
-                Layout layout = new Layout(settings, stream);
+                LayoutLoader layout = new LayoutLoader(settings, stream);
                 layout.Load(graphics, Panel);
+                base.LoadControls(Panel);
             }
 
             load();

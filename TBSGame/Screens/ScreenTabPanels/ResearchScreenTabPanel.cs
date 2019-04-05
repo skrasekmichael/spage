@@ -20,21 +20,15 @@ namespace TBSGame.Screens.ScreenTabPanels
         public CancelResearchingEventHandler OnCancelResearching;
 
         private List<MenuButton> researches = new List<MenuButton>();
-        private Label name, points, percent;
-        private Panel bar, frame, researches_panel;
-        private MenuButton cancel;
+        [LayoutControl("researches")] private Panel researches_panel;
+        [LayoutControl] private Label name, points, percent;
+        [LayoutControl] private Panel bar_fill, bar_frame;
+        [LayoutControl] private MenuButton cancel;
 
         public ResearchScreenTabPanel(Settings settings, GameSave game, string icon) : base(settings, game, icon) { }
 
         protected override void load()
         {
-            name = (Label)Panel.GetControl("name");
-            points = (Label)Panel.GetControl("points");
-            percent = (Label)Panel.GetControl("percent");
-            bar = (Panel)Panel.GetControl("bar_fill");
-            frame = (Panel)Panel.GetControl("bar_frame");
-            researches_panel = (Panel)Panel.GetControl("researches");
-            cancel = (MenuButton)Panel.GetControl("cancel");
             cancel.OnControlClicked += new ControlClickedEventHandler(sender => OnCancelResearching?.Invoke(this));
 
             load_researching();
@@ -99,7 +93,7 @@ namespace TBSGame.Screens.ScreenTabPanels
                 name.Text = Resources.GetString(game.Researching.GetType().Name);
                 points.Text = $"{game.Researching.Done.ToString()}/{game.Researching.ResearchDifficulty.ToString()}";
                 this.percent.Text = (percent * 100).ToString() + "%";
-                bar.Bounds = new Rectangle(bar.Bounds.X, bar.Bounds.Y, (int)(frame.Bounds.Width * percent), bar.Bounds.Height);
+                bar_fill.Bounds = new Rectangle(bar_fill.Bounds.X, bar_fill.Bounds.Y, (int)(bar_frame.Bounds.Width * percent), bar_fill.Bounds.Height);
                 cancel.IsVisible = true;
             }
             else
@@ -107,7 +101,7 @@ namespace TBSGame.Screens.ScreenTabPanels
                 name.Text = Resources.GetString("none_researching");
                 points.Text = "";
                 percent.Text = "";
-                bar.Bounds = new Rectangle(bar.Bounds.X, bar.Bounds.Y, 0, bar.Bounds.Height);
+                bar_fill.Bounds = new Rectangle(bar_fill.Bounds.X, bar_fill.Bounds.Y, 0, bar_fill.Bounds.Height);
                 cancel.IsVisible = false;
             }
         }
