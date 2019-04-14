@@ -84,7 +84,11 @@ namespace TBSGame.Controls
         protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)
         {
             for (int i = 0; i < Controls.Count; i++)
+            {
+                if (!Controls[i].IsLocked)
+                    Controls[i].IsLocked = this.IsLocked;
                 Controls[i].Update(time, keyboard, mouse, bounds.Location.ToVector2());
+            }
         }
 
         protected override void load()

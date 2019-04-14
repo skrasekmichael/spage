@@ -14,7 +14,12 @@ namespace TBSGame.Controls
         public bool IsChecked { get; set; } = false;
         public Color Checked { get; set; } = Color.Lime;
         public Color UnChecked { get; set; } = Color.DarkGreen;
-        public ControlClickedEventHandler Handler { get; set; }
+        public bool CallHandler { get; set; } = true;
+        protected override void click()
+        {
+            if (CallHandler)
+                base.click();
+        }
 
         public CheckBox(string text) : base(text)
         {
@@ -22,9 +27,7 @@ namespace TBSGame.Controls
             Fill = Color.Transparent;
             MouseOverForeground = Color.White;
             MouseOverFill = Color.Transparent;
-            Handler = sender => IsChecked = !IsChecked;
-
-            OnControlClicked += Handler;
+            this.OnControlClicked += sender => IsChecked = !IsChecked;
         }
 
         protected override void update(GameTime time, KeyboardState keyboard, MouseState mouse)

@@ -18,6 +18,7 @@ namespace TBSGame.Controls
     public abstract class Control
     {
         public virtual event ControlClickedEventHandler OnControlClicked;
+        protected virtual void click() => OnControlClicked?.Invoke(this);
         public virtual event ControlMouseMoveEventHandler OnMouseMoved;
 
         protected CustomSpriteBatch sprite => graphics.Sprite;
@@ -114,7 +115,7 @@ namespace TBSGame.Controls
                     this.is_mouse_hover = true;
                     if (mouse.LeftButton != ButtonState.Pressed && is_mouse_down)
                     {
-                        OnControlClicked?.Invoke(this);
+                        click();
                         this.is_mouse_down = false;
                     }
                     else

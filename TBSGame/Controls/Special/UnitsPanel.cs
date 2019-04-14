@@ -13,7 +13,7 @@ namespace TBSGame.Controls.Special
     public class UnitsPanel : Panel
     {
         public List<UnitBox> Units { get; } = new List<UnitBox>();
-        public SelectedEventHandler OnSelected;
+        public event SelectedEventHandler OnSelected;
         public bool MultiSelect { get; set; } = false;
 
         public UnitsPanel(bool val) : base(val) { }
@@ -38,7 +38,8 @@ namespace TBSGame.Controls.Special
 
                 if (!MultiSelect)
                 {
-                    unitbox.Check.Handler = new ControlClickedEventHandler(sender =>
+                    unitbox.Check.CallHandler = false;
+                    unitbox.OnControlClicked += new ControlClickedEventHandler(sender =>
                     {
                         UnitBox box = (UnitBox)sender;
                         Units.ForEach(u => u.IsChecked = false);

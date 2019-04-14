@@ -73,16 +73,19 @@ namespace TBSGame
                 }
                 else
                 {
-                    Type type = Type.GetType("TBSGame.Controls." + node.Name + ", TBSGame");
+                    Type type = Type.GetType($"TBSGame.Controls.{node.Name}, TBSGame");
 
                     List<object> args = new List<object>();
-                    foreach (XmlNode attr in node["arguments"].ChildNodes)
+                    if (node["arguments"] != null)
                     {
-                        string convert = attr.Attributes["convert"].Value;
-                        string val = convert == "null" ? "null" : attr.FirstChild.Value;
+                        foreach (XmlNode attr in node["arguments"].ChildNodes)
+                        {
+                            string convert = attr.Attributes["convert"].Value;
+                            string val = convert == "null" ? "null" : attr.FirstChild.Value;
 
-                        object obj = parse(val, convert);
-                        args.Add(obj);
+                            object obj = parse(val, convert);
+                            args.Add(obj);
+                        }
                     }
 
                     Control control = (Control)type.GetConstructors()[0].Invoke(args.ToArray());

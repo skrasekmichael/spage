@@ -38,7 +38,7 @@ namespace TBSGame.Screens.ScreenTabPanels
         protected Settings settings;
         protected GameSave game;
 
-        public Panel Panel = new Panel(true);
+        public Panel Panel = new Panel(false);
 
         public int Width => graphics.ScreenWidth;
         public int Height => graphics.ScreenHeight;
@@ -58,6 +58,8 @@ namespace TBSGame.Screens.ScreenTabPanels
         {
             this.graphics = graphics;
 
+            Panel.Fill = new Color(10, 10, 10);
+            Panel.Border.IsVisible = false;
             Panel.Bounds = new Rectangle(0, 0, Width - 100, Height);
             Panel.Desc = false;
             Panel.IsVisible = false;

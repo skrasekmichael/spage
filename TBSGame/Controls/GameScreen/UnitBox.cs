@@ -66,8 +66,8 @@ namespace TBSGame.Controls.GameScreen
         {
             Border.IsVisible = false;
             Checked = Color.Crimson;
-            UnChecked = new Color(60, 60, 60);
-            this.Fill = new Color(30, 30, 30);
+            UnChecked = new Color(100, 100, 100);
+            this.Fill = new Color(40, 40, 40);
 
             load_icons();
 

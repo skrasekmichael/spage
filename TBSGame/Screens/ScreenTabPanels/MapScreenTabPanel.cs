@@ -94,7 +94,10 @@ namespace TBSGame.Screens.ScreenTabPanels
                 MenuButton button = (MenuButton)sender;
                 bool check = (bool)button.Tag;
                 for (int i = 0; i < game.Units.Count; i++)
-                    units_panel.Units[i].IsChecked = check;
+                {
+                    if (!units_panel.Units[i].IsLocked)
+                        units_panel.Units[i].IsChecked = check;
+                }
                 button.Tag = !check;
                 button.Text = check ? Resources.GetString("deselect_all_units") : Resources.GetString("select_all_units");
             });
@@ -294,7 +297,10 @@ namespace TBSGame.Screens.ScreenTabPanels
         private void set_all(bool visibility)
         {
             foreach (UnitBox unitbox in units_panel.Units)
+            {
                 unitbox.IsChecked = false;
+                unitbox.IsLocked = unitbox.Unit.UnitStatus != UnitStatus.InBarracks;
+            }
 
             select_all.Text = Resources.GetString("select_all_units");
             select_all.Tag = true;
@@ -309,7 +315,7 @@ namespace TBSGame.Screens.ScreenTabPanels
         {
             units_panel.LoadUnits(game.Units);
             foreach (UnitBox unitbox in units_panel.Units)
-                unitbox.IsLocked = unitbox.Unit.Rounds > 0;
+                unitbox.IsLocked = unitbox.Unit.UnitStatus != UnitStatus.InBarracks;
         }
     }
 }

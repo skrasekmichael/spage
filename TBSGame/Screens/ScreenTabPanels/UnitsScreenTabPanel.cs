@@ -86,11 +86,16 @@ namespace TBSGame.Screens.ScreenTabPanels
                             available.Add(unitbox, index);
                         }
 
+                        unitbox.Check.CallHandler = false;
                         unitbox.OnControlClicked += new ControlClickedEventHandler(sender =>
                         {
+                            UnitBox obj = (UnitBox)sender;
+                            buy_units.ForEach(ub => ub.IsChecked = false);
+                            obj.IsChecked = true;
+
                             units.Deselect();
-                            buy.Reload(((UnitBox)sender).Unit);
-                            buy.Recruit.IsLocked = game.Sources < ((UnitBox)sender).Unit.Price;
+                            buy.Reload(obj.Unit);
+                            buy.Recruit.IsLocked = game.Sources < obj.Unit.Price;
                         });
                         index++;
                     }

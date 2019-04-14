@@ -30,7 +30,7 @@
             <childs>
                 <Buttons.MenuButton name="select_all" x="1" y="1" width="350" height="50">
                     <arguments>
-                        <argument convert="string">#select_all</argument>
+                        <argument convert="string">#select_all_units</argument>
                     </arguments>
                     <properties>
                         <property type="Tag" convert="bool">true</property>
