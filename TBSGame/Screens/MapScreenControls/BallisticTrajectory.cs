@@ -34,10 +34,11 @@ namespace TBSGame.Screens.MapScreenControls
             double distance = Math.Pow(Math.Pow(s.X, 2) + Math.Pow(s.Y, 2) + Math.Pow(s.Z, 2), 0.5);
             double d = Math.Pow(Math.Pow(s.X, 2) + Math.Pow(s.Y, 2), 0.5);
 
-            //úhly otočení
-            alpha = Math.Atan2(0, 1) - Math.Atan2(s.Y, s.X); 
-            gama = (Math.Atan2(0, 1) - Math.Atan2(s.Z, d)); 
-            beta = Math.PI / 5.2;
+            //rotační úhly
+            alpha = Math.PI / 4 - (Math.Atan2(0, 1) - Math.Atan2(s.Y, s.X)); 
+            gama = Math.Atan2(0, 1) - Math.Atan2(s.Z, d);
+            //beta = Math.PI / 5.1;
+            beta = Math.PI / 6; //30°
 
             if (gama % Math.PI == 0)
                 gama = 0;
@@ -67,21 +68,11 @@ namespace TBSGame.Screens.MapScreenControls
             double ry = py * Math.Cos(gama) - px * Math.Sin(gama);
 
             //otočení paraboly do správne pozice
-            double x = cx(rx, 0, ry, Math.PI / 4 - alpha, beta);
-            double y = cy(rx, 0, ry, Math.PI / 4 - alpha, beta);
+            double x = rx * Math.Cos(alpha);
+            double y = rx * Math.Sin(alpha) * Math.Sin(beta) + ry * Math.Cos(beta);
 
             System.Drawing.PointF s = engine.GetCenter(A.X, A.Y);
             return new Point((int)(s.X + x), (int)(s.Y + y + h1));
         }
-
-        private double cxx(double a, double b, double c) => Math.Cos(c) * Math.Cos(a) - Math.Sin(c) * Math.Sin(a) * Math.Sin(b);
-        private double cxy(double a, double b, double c) => Math.Cos(c) * Math.Sin(a) * Math.Sin(b) + Math.Sin(c) * Math.Cos(a);
-        private double cyx(double a, double b, double c) => -Math.Cos(c) * Math.Sin(a) - Math.Sin(c) * Math.Cos(a) * Math.Sin(b);
-        private double cyy(double a, double b, double c) => Math.Cos(c) * Math.Cos(a) * Math.Sin(b) - Math.Sin(c) * Math.Sin(a);
-        private double czx(double a, double b, double c) => -Math.Sin(c) * Math.Cos(b);
-        private double czy(double a, double b, double c) => Math.Cos(c) * Math.Cos(b);
-
-        private double cx(double x, double y, double z, double a, double b, double c = 0) => x * cxx(a, b, c) + y * cyx(a, b, c) + z * czx(a, b, c);
-        private double cy(double x, double y, double z, double a, double b, double c = 0) => x * cxy(a, b, c) + y * cyy(a, b, c) + z * czy(a, b, c);
     }
 }
