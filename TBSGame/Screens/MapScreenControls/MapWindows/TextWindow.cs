@@ -1,21 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MapDriver;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using TBSGame.Controls;
-using TBSGame.Saver;
 
 namespace TBSGame.Screens.MapScreenControls.MapWindows
 {
+	public delegate void HideWindowEventHandler(object sender);
+
     public class TextWindow : MapWindow
     {
         private Rectangle bounds;
         private string text;
 
+        public event HideWindowEventHandler OnHideWindow;
         public VerticalAligment VerticalAligment { get; set; } = VerticalAligment.Center;
         public HorizontalAligment HorizontalAligment { get; set; } = HorizontalAligment.Left;
 
@@ -41,6 +36,7 @@ namespace TBSGame.Screens.MapScreenControls.MapWindows
                 if (mouse.RightButton == ButtonState.Pressed || mouse.LeftButton == ButtonState.Pressed)
                 {
                     Visible = false;
+                    OnHideWindow?.Invoke(this);
                     return;
                 }
             }

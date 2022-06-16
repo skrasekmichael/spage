@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 
 namespace TBSGame
 {
-    public static class Resources
+	public static class Resources
     {
-        private static Dictionary<string, string> data = new Dictionary<string, string>();
-        private static List<string> missing = new List<string>();
+        private static readonly Dictionary<string, string> data = new Dictionary<string, string>();
+        private static readonly List<string> missing = new List<string>();
 
         public static void Load(string text_path)
         {
+            Resources.data.Clear();
             List<string> content = new List<string>();
             using (StreamReader sr = new StreamReader(text_path))
             {

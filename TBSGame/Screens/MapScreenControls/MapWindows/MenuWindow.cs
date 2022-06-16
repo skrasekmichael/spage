@@ -2,17 +2,13 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TBSGame.Controls;
 using TBSGame.Controls.Buttons;
 using TBSGame.Saver;
 
 namespace TBSGame.Screens.MapScreenControls.MapWindows
 {
-    public delegate void LoadMapSaveEventHandler(object sender, Map map);
+	public delegate void LoadMapSaveEventHandler(object sender, Map map);
 
     public class MenuWindow : MapWindow
     {
@@ -47,6 +43,7 @@ namespace TBSGame.Screens.MapScreenControls.MapWindows
 
             #region system_panel
             system = new Panel();
+            system.Load(graphics);
 
             TabPanelButton btn_saves = new TabPanelButton(Resources.GetString("system"));
             tab.Add("system", system, btn_saves);
@@ -134,6 +131,8 @@ namespace TBSGame.Screens.MapScreenControls.MapWindows
                 {
                     int i = saver.Saves;
                     Panel save_row = new Panel();
+                    save_row.Load(graphics);
+
                     Label name = new Label($"{i}. save");
                     name.Foreground = Color.White;
                     MenuButton load = new MenuButton(Resources.GetString("load"));

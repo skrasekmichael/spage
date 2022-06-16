@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MapDriver;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
 using TBSGame.AI;
 using TBSGame.Controls;
 using TBSGame.Controls.Buttons;
@@ -20,7 +16,7 @@ using TBSGame.MessageBoxes;
 
 namespace TBSGame.Screens
 {
-    public class MapScreen : Screen
+	public class MapScreen : Screen
     {
         private const int START = 0;
         private const int GAME = 1;
@@ -62,6 +58,7 @@ namespace TBSGame.Screens
             if (name != null)
             {
                 this.info = game.Info[name];
+                selected_units.ForEach(u => u.Health = u.MaxHealth);
                 this.selected_units = selected_units;
             }
 
@@ -73,6 +70,7 @@ namespace TBSGame.Screens
             start_message = new TextWindow(map.Scout);
             start_message.Visible = true;
             win_message = new TextWindow(map.Win);
+            win_message.OnHideWindow += new HideWindowEventHandler(sender => win());
 
             //načíst
             menu.OnLoadMapSaveEventHandler += new LoadMapSaveEventHandler((sender, loaded_map) =>
@@ -122,8 +120,13 @@ namespace TBSGame.Screens
 
                         if (unit != null && unit.Player == 1)
                         {
-                            if (!(obj != null && obj.GetType() == typeof(StartPoint)))
+                            if (obj == null || obj.GetType() != typeof(StartPoint))
                                 death.Add(unit);
+                            else
+                            {
+                                unit.UnitStatus = UnitStatus.OnWay;
+                                unit.Rounds = 1;
+                            }
                         }
                     }
                 }
@@ -133,6 +136,7 @@ namespace TBSGame.Screens
                 {
                     if (result == DialogResult.Yes)
                     {
+                        set_unist();
                         info.MapVisibilities = visibilities;
                         game.Units = game.Units.Where(u => !death.Contains(u)).ToList();
                         this.Dispose(new GameScreen(game));
@@ -422,7 +426,14 @@ namespace TBSGame.Screens
                     else
                         engine.SetVisibility(x, y, info.MapVisibilities[x, y]);
                 }
-            }  
+            }
+
+            if (info.Units != null)
+            {
+                map.Units.Clear();
+                foreach (KeyValuePair<Point, Unit> kvp in info.Units)
+                    map.Units.Add(new System.Drawing.Point(kvp.Key.X, kvp.Key.Y), kvp.Value);
+            }
         }
 
         private void refresh(MouseState mouse, KeyboardState keyboard)
@@ -442,18 +453,12 @@ namespace TBSGame.Screens
                 {
                     //pokud všechny jednotky umřou
                     if (map.Units.Where(kvp => kvp.Value.Player == 1).Count() == 0)
-                    {
-                        Dispose(new GameScreen(game));
-                    }
+                        lose();
 
                     //pokud budou splněny všechny úkoly
                     List<Quest> task = map.QuestList.ToList();
-                    if (task.Where(t => t.Check(map, engine)).Count() == task.Count)
-                    {
-                        if (!win_message.Visible)
-                            Dispose(new GameScreen(game));
+                    if (task.Where(t => t.Check(map, engine)).Count() == task.Count && info.IsEnemy == true)
                         show_window(win_message);
-                    }
 
                     buttons.ForEach(btn => btn.Update(time, keyboard, mouse));
 
@@ -498,6 +503,45 @@ namespace TBSGame.Screens
             }
 
             refresh(mouse, keyboard);
+        }
+
+        private void set_unist()
+        {
+            Dictionary<Point, Unit> units = new Dictionary<Point, Unit>();
+            foreach (KeyValuePair<System.Drawing.Point, Unit> kvp in map.Units)
+            {
+                if (kvp.Value.Player != 1)
+                    units.Add(new Point(kvp.Key.X, kvp.Key.Y), kvp.Value);
+            }
+            info.Units = units;
+        }
+
+        private void lose()
+        {
+            set_unist();
+            info.MapVisibilities = engine.GetVisibilities(0);
+            this.Dispose(new GameScreen(game));
+        }
+
+        private void win()
+        {
+            Visibility[,] visibilities = engine.GetVisibilities(0);
+            List<Unit> alive = new List<Unit>();
+            foreach (Unit unit in map.Units.Values)
+            {
+                if (unit.Player == 1)
+                {
+                    unit.UnitStatus = UnitStatus.OnWay;
+                    unit.Stamina = unit.MaxStamina;
+                    unit.Rounds = 1;
+                    alive.Add(unit);
+                }
+            }
+
+            info.IsEnemy = false;
+            info.MapVisibilities = visibilities;
+            game.Units.AddRange(alive);
+            this.Dispose(new GameScreen(game));
         }
     }
 }

@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MapDriver;
+﻿using MapDriver;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using TBSGame.Controls;
-using TBSGame.Controls.Buttons;
 using TBSGame.Saver;
 
 namespace TBSGame.Screens
 {
-    public class MainMenuScreen : Screen
+	public class MainMenuScreen : Screen
     {
         private ImagePanel background;
 
@@ -34,7 +27,7 @@ namespace TBSGame.Screens
             string[] buttons = { "campaign", "custom", "loadgame", "about", "settings", "exit" };
             ControlClickedEventHandler[] handlers = new ControlClickedEventHandler[] {
                 sender => {
-                    Scenario scenario = Scenario.Load("scenario\\campaign.dat", Settings.Scenario + "campaign\\");
+                    Scenario scenario = Scenario.Load("Resources\\Scenario\\campaign.dat", Settings.Scenario + "campaign\\");
                     GameSave game = new GameSave(scenario, Settings);
                     Dispose(new GameScreen(game));
                 },

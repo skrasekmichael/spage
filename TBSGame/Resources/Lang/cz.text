@@ -1,0 +1,80 @@
+﻿#exit: Konec
+#about: O aplikaci
+#newgame: Nová hra
+#loadgame: Načíst hru
+#back: Zpět
+#about_text: 
+Námět: Michael Škrášek
+Spojení her Spellcross & Age of Empires II
+Programátor a Grafik: Michael Škrášek
+Programovací jazyk: C#.NET
+Technologie: MonoGame
+Copyright (c) Michael Škrášek 2018 - 2019
+#title: Spage
+#create: vytvořit
+#settings: Nastavení
+#campaign: Kampaň
+#custom_scenario: Vlastní hra
+#cancel: Storno
+#tasks: Úkoly
+#play: Hrát
+#save: Uložit
+#retreat: Ustoupit
+#system: System
+#killallunits: Zabít všechny jednotky
+#archer: Lukostřelec
+#paladin: Paladin
+#missing_map: Chybí soubor s mapou
+#empty: Neuloženo
+#load: Načíst
+#delete: Smazat
+#select_all_units: Vybrat všechny jednotky
+#retreat?: Opravdu chcete ustopit? 
+Zemře {0} jednotek. 
+#deselect_all_units: Zrušit výběr
+#yes: Ano
+#no: Ne
+#delete?: Opravdu chcete smazat tuto uložku?
+#assault: Zaútočit
+#assault2: Zaútočit v noci
+#gold: Zlato
+#round: Kolo
+#research: Výzkum
+#points_in_researching: Jsou nastaveny body do výzkumu, ale nic se nezkoumá. Ukončit kolo?
+#recruit: Naverbovat
+#scout: Průzkumník
+#cavalery: Kavalerie
+#unittype: Typ jednotky
+#price: Cena
+#range: Dostřel
+#piecearmor: Průraznost
+#armor: Armor
+#attack: Útok
+#archers: Lukostřelci
+#units: Jednotky
+#units_info: Informace o jednotce
+#available_units: Dostupné jednotky
+#res169: Rozlišení 16:9
+#res43: Rozlišení 4:3
+#resdone: Výzkum {0} byl dokončen.
+#ironprocessing: Zpracovávání železa
+#none_researching: Výzkum nebyl zahájen
+#researchs: Žádné výzkumy k dispozici
+#cancel_researching: Opravdu chcete zrušit výzkum?
+#exit?: Opravdu chcete odejít?
+#map_desc: Popis mapy
+#ironspikes: Železné hroty
+#steelspikes: Ocelové hroty
+#ironsword: Železný meč
+#steelsword: Ocelový meč
+#hardedsword: Kalený meč
+#chainarmor: Kroužková zbroj
+#platearmor: Plátová zbroj
+#ok: Ok
+#upgrades: Vylepšení
+#unit_upgrades: Výbava jednotky
+#default: Výchozí
+#weapon: Zbraň
+#rounds: Kol
+#upgrade: Vylepšit
+#langs: Jazyk

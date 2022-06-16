@@ -14,6 +14,7 @@
     <FileAlignment>512</FileAlignment>
     <MonoGamePlatform>Windows</MonoGamePlatform>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -26,7 +27,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -51,6 +51,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <LangVersion>7.2</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
@@ -59,6 +60,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AI\GameAI.cs" />
     <Compile Include="AI\MapAI.cs" />
     <Compile Include="Controls\Buttons\Button.cs" />
     <Compile Include="Controls\Buttons\TextButton.cs" />
@@ -148,6 +150,7 @@
     <EmbeddedResource Include="Layout\GameScreen\UpgradesScreenTabPanel.xml" />
     <EmbeddedResource Include="Layout\GameScreen\SourcesScreenTabPanel.xml" />
     <EmbeddedResource Include="Layout\GameScreen\SaveScreenTabPanel.xml" />
+    <EmbeddedResource Include="Layout\GameScreen\UnitsScreenTabPanel.xml" />
     <EmbeddedResource Include="Layout\GameScreen.xml" />
     <EmbeddedResource Include="Layout\GameSavesScreen.xml" />
     <EmbeddedResource Include="Layout\AboutScreen.xml" />
@@ -159,7 +162,18 @@
     <None Include="app.manifest">
       <SubType>Designer</SubType>
     </None>
-    <EmbeddedResource Include="Layout\GameScreen\UnitsScreenTabPanel.xml" />
+    <Content Include="Resources\default.ini">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Lang\cz.text">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Lang\en.text">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Scenario\campaign.dat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
@@ -171,11 +185,4 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

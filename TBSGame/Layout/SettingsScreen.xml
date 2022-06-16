@@ -63,7 +63,24 @@
                 </Buttons.MenuButton>
             </childs>
         </Panel>
-        <Buttons.MenuButton name="back" x="1700" y="1000" width="200" height="50">
+        <Panel name="lang" x="W-620" y="20" width="600" height="H-100">
+            <arguments>
+                <argument convert="bool">True</argument>
+            </arguments>
+            <properties>
+                <property type="Description" convert="string">#langs</property>
+                <property type="DescConstantly" convert="bool">true</property>
+            </properties>
+            <childs>
+                <define type="Buttons.MenuButton">
+                    <property type="Bounds.Width" convert="exp">300</property>
+                    <property type="Bounds.Height" convert="exp">50</property>
+                    <property type="Bounds.X" convert="exp">0</property>
+                    <property type="Bounds.Y" convert="exp">i*51+65</property>
+                </define>
+            </childs>
+        </Panel>
+        <Buttons.MenuButton name="back" x="W-220" y="H-70" width="200" height="50">
             <arguments>
                 <argument convert="string">#back</argument>
             </arguments>

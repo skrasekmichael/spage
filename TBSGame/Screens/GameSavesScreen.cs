@@ -22,7 +22,7 @@ namespace TBSGame.Screens
             saves.OnLoadGame += new LoadGameEventHandler((sender, i) =>
              {
                  GameSave game = GameSave.Load(Settings.GameSaves + i.ToString() + ".dat");
-                 Scenario.Load("scenario\\campaign.dat", game.Scenario + "campaign\\");
+                 Scenario.Load("Resources\\Scenario\\campaign.dat", game.Scenario + "campaign\\");
                  if (game != null)
                  {
                      if (game.Map == null)

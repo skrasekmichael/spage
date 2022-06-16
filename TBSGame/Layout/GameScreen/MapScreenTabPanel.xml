@@ -57,6 +57,9 @@
                     <arguments>
                         <argument convert="string">#assault2</argument>
                     </arguments>
+                    <properties>
+                        <property type="IsLocked" convert="bool">True</property>
+                    </properties>
                 </Buttons.MenuButton>
                 <Buttons.MenuButton name="cancel" x="363" y="H-51" width="110" height="50">
                     <arguments>

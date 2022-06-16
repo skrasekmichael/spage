@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MapDriver;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using TBSGame.AI;
 using TBSGame.Controls;
 using TBSGame.Controls.Buttons;
 using TBSGame.Controls.GameScreen;
@@ -16,7 +14,7 @@ using TBSGame.Saver;
 
 namespace TBSGame.Screens.ScreenTabPanels
 {
-    public delegate void PlayGameEventhandle(object sender, LevelMap map, List<Unit> list);
+	public delegate void PlayGameEventhandle(object sender, LevelMap map, List<Unit> list);
 
     public class MapScreenTabPanel : ScreenTabPanel
     {
@@ -41,6 +39,7 @@ namespace TBSGame.Screens.ScreenTabPanels
         private Rectangle bounds = new Rectangle(140, 140, 800, 600);
         private Rectangle resize;
         private string key = null, path = null;
+        private LevelMap target = null;
 
         public MapScreenTabPanel(string path, Settings settings, GameSave game, Level level, string icon) : base(settings, game, icon)
         {
@@ -48,6 +47,18 @@ namespace TBSGame.Screens.ScreenTabPanels
             this.path = path;
 
             hover = new Dictionary<string, Texture2D>(level.Count);
+        }
+
+        public void Attack(GameAI ai)
+        {
+            List<Unit> units = ai.GenUnits();
+            List<string> maps = level.Maps.Where(m => m.Player == 2).Select(m => m.Name).ToList();
+            List<LevelMap> territories = level.Maps.Where(m => m.Player == 1 && m.Neighbors.Union(maps).Count() > 0).ToList();
+            target = ai.GetTarget(territories);
+            Map target_map = select(target);
+            if (target_map != null)
+                ai.SetUnits(target_map, units);
+
         }
 
         protected override void draw()
@@ -86,9 +97,20 @@ namespace TBSGame.Screens.ScreenTabPanels
                 }
 
                 if (list.Count > 0)
+                {
+                    list.ForEach(u => this.game.Units.Remove(u));
                     PlayGame(selected, list);
+                }
             });
-            cancel.OnControlClicked += new ControlClickedEventHandler(sender => deselect());
+            cancel.OnControlClicked += new ControlClickedEventHandler(sender => {
+                deselect();
+                if (target != null)
+                {
+                    target.Player = 2;
+                    target = null;
+                    SetColors();
+                }
+            });
             select_all.OnControlClicked += new ControlClickedEventHandler(sender =>
             {
                 MenuButton button = (MenuButton)sender;
@@ -110,6 +132,14 @@ namespace TBSGame.Screens.ScreenTabPanels
             for (int i = 0; i < level.Count; i++)
             {
                 LevelMap lm = level.GetByIndex(i);
+                if (game.Info.ContainsKey(lm.Name))
+                {
+                    if (game.Info[lm.Name].IsEnemy)
+                        lm.Player = 2;
+                    else
+                        lm.Player = 1;
+                }
+
                 if (lm.Player == 1 || lm.Neighbors.Where(s => level[s].Player == 1).Count() > 0)
                     lm.IsVisibled = true;
                 else
@@ -247,23 +277,26 @@ namespace TBSGame.Screens.ScreenTabPanels
 
             bool val = (units_panel.Units.Where(ch => ch.IsChecked).Count() == 0);
             play.IsLocked = val;
-            play_at_night.IsLocked = val;
+            //play_at_night.IsLocked = val;
 
-            if (resize.Contains(mouse.Position))
+            if (target == null)
             {
-                Point p = new Point(mouse.Position.X - resize.Left, mouse.Position.Y - resize.Top);
-                double coef = (double)resize.Width / bounds.Width;
-                string k = level.GetMap((int)(p.X / coef), (int)(p.Y / coef));
-                if (k != null)
+                if (resize.Contains(mouse.Position))
                 {
-                    if (mouse.LeftButton == ButtonState.Pressed)
+                    Point p = new Point(mouse.Position.X - resize.Left, mouse.Position.Y - resize.Top);
+                    double coef = (double)resize.Width / bounds.Width;
+                    string k = level.GetMap((int)(p.X / coef), (int)(p.Y / coef));
+                    if (k != null)
                     {
-                        if (level[k].Player == 2 && level[k].IsVisibled)
-                            select(level[k]);
-                    }
+                        if (mouse.LeftButton == ButtonState.Pressed)
+                        {
+                            if (level[k].Player == 2 && level[k].IsVisibled)
+                                select(level[k]);
+                        }
 
-                    if (level[k].IsVisibled)
-                        key = k;
+                        if (level[k].IsVisibled)
+                            key = k;
+                    }
                 }
             }
         }
@@ -275,7 +308,7 @@ namespace TBSGame.Screens.ScreenTabPanels
             description.Text = Resources.GetString("map_desc");
         }
 
-        private void select(LevelMap lm)
+        private Map select(LevelMap lm)
         {
             if (selected != lm)
             {
@@ -288,10 +321,12 @@ namespace TBSGame.Screens.ScreenTabPanels
                 {
                     Map map = Map.Load(path);
                     description.Text = map.Description;
+                    return map;
                 }
                 else
                     description.Text = Resources.GetString("missing_map");
             }
+            return null;
         }
 
         private void set_all(bool visibility)

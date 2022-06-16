@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using TBSGame.Controls;
+﻿using TBSGame.Controls;
 using TBSGame.Controls.Buttons;
+using System.IO;
 
 namespace TBSGame.Screens
 {
-    public class SettingsScreen : Screen
+	public class SettingsScreen : Screen
     {
+        [LayoutControl] private Panel lang;
+
         protected override void load()
         {
             ControlClickedEventHandler handler = new ControlClickedEventHandler(sender =>
@@ -29,6 +23,18 @@ namespace TBSGame.Screens
                 parent.GetControl("btn_" + (i + 1).ToString()).OnControlClicked += handler;
 
             parent.GetControl("back").OnControlClicked += new ControlClickedEventHandler(sender => this.Dispose(new MainMenuScreen()));
+
+            string[] langs = Directory.GetFiles("Resources/Lang");
+            for (int i = 0; i < langs.Length; i++)
+            {
+                MenuButton button = new MenuButton(langs[i]);
+                button.OnControlClicked += new ControlClickedEventHandler(sender =>
+                {
+                    Resources.Load(((MenuButton)sender).Text);
+                    this.Dispose(new SettingsScreen());
+                });
+                lang.Add(button, i);
+            }
         }
     }
 }

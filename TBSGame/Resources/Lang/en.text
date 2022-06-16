@@ -1,0 +1,80 @@
+﻿#exit: Exit
+#about: About game
+#newgame: New game
+#loadgame: Load game
+#back: Back
+#about_text: 
+Theme: Michael Škrášek
+based on Spellcross & Age of Empires II
+Programmer and graphic designer: Michael Škrášek
+Programming language: C#.NET
+Technology: MonoGame
+Copyright (c) Michael Škrášek 2018 - 2019
+#title: Spage
+#create: Create
+#settings: Settings
+#campaign: Campaign
+#custom_scenario: Custom scenario
+#cancel: Cancel
+#tasks: Quests
+#play: Play
+#save: Save
+#retreat: Retreat
+#system: System
+#killallunits: Kill all units
+#archer: Archer
+#paladin: Paladin
+#missing_map: Map file is missing
+#empty: Empty state
+#load: Load
+#delete: Delete
+#select_all_units: Select all units
+#retreat?: Are you sure that you want to retreat?
+{0} units will die. 
+#deselect_all_units: Deselect units
+#yes: Yes
+#no: No
+#delete?: Are you sure to delete this save?
+#assault: Assault
+#assault2: Assault at night. 
+#gold: Gold
+#round: Round
+#research: Research
+#points_in_researching: You have point in reserching, but you aren't researching tech. End turn?
+#recruit: Recruit
+#scout: Scout
+#cavalery: Cavalery
+#unittype: Unit type
+#price: Price
+#range: Attack range
+#piecearmor: Piece armor
+#armor: Armor
+#attack: Attack
+#archers: Archers
+#units: Units
+#units_info: Unit's info
+#available_units: Available units
+#res169: Resolution 16:9
+#res43: Resolution 4:3
+#resdone: Research {0} has been completed.
+#ironprocessing: Iron processing
+#none_researching: Nothing is researching
+#researchs: No research is avalaible
+#cancel_researching: Are you sure that you want cancel researching?
+#exit?: Do you really want to leave?
+#map_desc: Map description
+#ironspikes: Iron spikes
+#steelspikes: Steel spikes
+#ironsword: Iron sword
+#steelsword: Steel sword
+#hardedsword: Harded sword
+#chainarmor: Chain armor
+#platearmor: Plate armor
+#ok: OK
+#upgrades: Upgrades
+#unit_upgrades: Unit's upgrades
+#default: Default
+#weapon: Weapon
+#rounds: Rounds
+#upgrade: Upgrade
+#langs:Language

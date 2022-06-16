@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MapDriver;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using TBSGame.AI;
 using TBSGame.Controls;
-using TBSGame.Controls.GameScreen;
 using TBSGame.Controls.Special;
 using TBSGame.MessageBoxes;
 using TBSGame.Saver;
@@ -17,20 +14,33 @@ using TBSGame.Screens.ScreenTabPanels;
 
 namespace TBSGame.Screens
 {
-    public class GameScreen : Screen
+	public class GameScreen : Screen
     {
         private ScreenTabPanel[] tabs;
         private Level level;
         private string path;
         private int selected = 0;
         private GameSave game;
+        private GameAI ai;
 
-        private Label resources, round;
+        [LayoutControl] private Label resources, round;
+        [LayoutControl] private Button next_turn;
 
         public GameScreen(GameSave game)
         {
             this.game = game;
             this.path = game.Level;
+            ai = new GameAI(game);
+            ai.OnAttack += new AttackEventHandler(sender =>
+            {
+                select(tabs[0]);
+                foreach (ScreenTabPanel tab in tabs)
+                {
+                    tab.Button.IsLocked = true;
+                    next_turn.IsLocked = true;
+                }
+                ((MapScreenTabPanel)tabs[0]).Attack(ai);
+            });
         }
 
         protected override void draw()
@@ -44,10 +54,7 @@ namespace TBSGame.Screens
             this.level = Level.Load(path);
             Texture2D map_texture = sprite.GetTexture(level.Map);
 
-            resources = (Label)parent.GetControl("resources");
-            round = (Label)parent.GetControl("round");
-
-            parent.GetControl("next_turn").OnControlClicked += new ControlClickedEventHandler(sender =>
+            next_turn.OnControlClicked += new ControlClickedEventHandler(sender =>
             {
                 if (game.Researching == null && game.Research > 0)
                 {
@@ -102,16 +109,8 @@ namespace TBSGame.Screens
             foreach (ScreenTabPanel tab in tabs)
             {
                 tab.Index = index;
-                tab.OnSelectedTab += new SelectedTabEventHandler(sender => {
-                    tabs[selected].Deselect();
-                    selected = ((ScreenTabPanel)sender).Index;
-                    foreach (ScreenTabPanel _tab in tabs.Where(t => t.Index != index))
-                        _tab.Panel.IsVisible = false;
-                });
-                tab.OnRefresh += new RefreshDataEventHandlet(sender =>
-                {
-                    reload();
-                });
+                tab.OnSelectedTab += new SelectedTabEventHandler(select);
+                tab.OnRefresh += new RefreshDataEventHandlet(sender => reload());
                 tab.Load(graphics, parent);
                 index++;
             }
@@ -126,7 +125,7 @@ namespace TBSGame.Screens
             save.Saves.OnLoadGame += new LoadGameEventHandler((sender, i) =>
             {
                 GameSave game = GameSave.Load(Settings.GameSaves + i.ToString() + ".dat");
-                Scenario.Load("scenario\\campaign.dat", game.Scenario + "campaign\\");
+                Scenario.Load("Resources\\Scenario\\campaign.dat", game.Scenario + "campaign\\");
                 if (game != null)
                     this.Dispose(new GameScreen(game));
             });
@@ -153,6 +152,14 @@ namespace TBSGame.Screens
             #endregion
         }
 
+        private void select(object sender)
+        {
+            tabs[selected].Deselect();
+            selected = ((ScreenTabPanel)sender).Index;
+            foreach (ScreenTabPanel _tab in tabs.Where(t => t.Index != selected))
+                _tab.Panel.IsVisible = false;
+        }
+
         protected override void loadpos()
         {
             tabs?.ToList().ForEach(t => t.LoadPosition());
@@ -169,6 +176,8 @@ namespace TBSGame.Screens
 
         private void next()
         {
+            //ai.Update();
+
             if (game.Researching != null)
             {
                 game.Researching.Done += game.Research;

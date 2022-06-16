@@ -1,21 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.IO;
 
 namespace TBSGame
 {
-    public class Settings
+	public class Settings
     {
-        private Dictionary<string, string> data = new Dictionary<string, string>();
-        private string path;
+        private readonly Dictionary<string, string> data = new Dictionary<string, string>();
+        private readonly string path;
 
         public Settings(string path)
         {
+            if (!File.Exists(path))
+                File.Copy("Resources\\default.ini", path);
+
             this.path = path;
-            using (StreamReader sr = new StreamReader(path))
+            using (var sr = new StreamReader(path))
             {
                 string line = null;
                 while ((line = sr.ReadLine()) != null)

@@ -1,18 +1,13 @@
 ﻿using MapDriver;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TBSGame.Screens.MapScreenControls
 {
-    public class UnitControl : MapControl
+	public class UnitControl : MapControl
     {
         public Unit Unit { get; set; }
         public int BaseIndex { get; set; } = -1;
@@ -114,10 +109,22 @@ namespace TBSGame.Screens.MapScreenControls
         private void _attack()
         {
             int hp = enemy.Unit.Health - (Unit.Attack - enemy.Unit.Armor);
+            int exp = 5;
             if (hp <= 0)
+            {
+                exp += enemy.Unit.Experience / 5 + enemy.Unit.Price;
                 map.SetUnit(enemy.X, enemy.Y, null);
+            }
             else
                 enemy.Unit.Health = (ushort)hp;
+
+            int level = this.Unit.GetLevel();
+            this.Unit.Experience += (ushort)exp;
+            if (level < this.Unit.GetLevel())
+            {
+
+            }
+
             enemy = null;
             shooting = false;
         }
